@@ -448,6 +448,40 @@ function getGistSettings() {
   try { const s = localStorage.getItem(GIST_SETTINGS_KEY); return s ? JSON.parse(s) : { token:'', gistId:'' }; }
   catch(e) { return { token:'', gistId:'' }; }
 }
+// ลบ base64 ขนาดใหญ่ออกก่อน push Gist (photos/attachments เก็บไว้ใน localStorage เท่านั้น)
+function stripBinaryForGist(data) {
+  const d = JSON.parse(JSON.stringify(data));
+  if (d.directors) d.directors.forEach(dir => { if (dir.photo && dir.photo.startsWith('data:')) dir.photo = '__LOCAL__'; });
+  if (d.documents) d.documents.forEach(doc => { if (doc.fileData && doc.fileData.startsWith('data:')) doc.fileData = '__LOCAL__'; });
+  if (d.meetings) d.meetings.forEach(m => {
+    if (m.agendaAttachments) m.agendaAttachments.forEach(a => { if (a.data) a.data = '__LOCAL__'; });
+    if (m.momAttachments) m.momAttachments.forEach(a => { if (a.data) a.data = '__LOCAL__'; });
+  });
+  return d;
+}
+// รวม binary กลับจาก localStorage หลัง fetch Gist
+function mergeBinaryFromLocal(gistData) {
+  try {
+    const local = JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}');
+    if (local.directors && gistData.directors) {
+      gistData.directors.forEach(gd => {
+        if (gd.photo === '__LOCAL__') {
+          const ld = local.directors.find(x => x.id === gd.id);
+          if (ld) gd.photo = ld.photo || '';
+        }
+      });
+    }
+    if (local.documents && gistData.documents) {
+      gistData.documents.forEach(gd => {
+        if (gd.fileData === '__LOCAL__') {
+          const ld = local.documents.find(x => x.id === gd.id);
+          if (ld) gd.fileData = ld.fileData || '';
+        }
+      });
+    }
+  } catch(e) {}
+  return gistData;
+}
 async function fetchFromGist(token, gistId) {
   const res = await fetch(`https://api.github.com/gists/${gistId}`, {
     headers: { 'Authorization': `token ${token}`, 'Accept': 'application/vnd.github.v3+json' }
@@ -456,24 +490,34 @@ async function fetchFromGist(token, gistId) {
   const gist = await res.json();
   const file = gist.files['nrc-data.json'];
   if (!file) throw new Error('ไม่พบไฟล์ nrc-data.json ใน Gist');
-  return JSON.parse(file.content);
+  let parsed;
+  if (file.truncated) {
+    const rawRes = await fetch(file.raw_url, { headers: { 'Authorization': `token ${token}` } });
+    if (!rawRes.ok) throw new Error(`Raw fetch ${rawRes.status}`);
+    parsed = await rawRes.json();
+  } else {
+    parsed = JSON.parse(file.content);
+  }
+  return mergeBinaryFromLocal(parsed);
 }
 async function pushToGist(token, gistId, data) {
+  const lean = stripBinaryForGist(data);
   const res = await fetch(`https://api.github.com/gists/${gistId}`, {
     method: 'PATCH',
     headers: { 'Authorization': `token ${token}`, 'Content-Type': 'application/json', 'Accept': 'application/vnd.github.v3+json' },
-    body: JSON.stringify({ files: { 'nrc-data.json': { content: JSON.stringify(data, null, 2) } } })
+    body: JSON.stringify({ files: { 'nrc-data.json': { content: JSON.stringify(lean) } } })
   });
   if (!res.ok) throw new Error(`Gist save ${res.status}: ${res.statusText}`);
 }
 async function createNewGist(token, data) {
+  const lean = stripBinaryForGist(data);
   const res = await fetch('https://api.github.com/gists', {
     method: 'POST',
     headers: { 'Authorization': `token ${token}`, 'Content-Type': 'application/json', 'Accept': 'application/vnd.github.v3+json' },
     body: JSON.stringify({
       description: 'NRC Management System Data — PCC',
       public: false,
-      files: { 'nrc-data.json': { content: JSON.stringify(data, null, 2) } }
+      files: { 'nrc-data.json': { content: JSON.stringify(lean) } }
     })
   });
   if (!res.ok) throw new Error(`Create Gist ${res.status}: ${res.statusText}`);
@@ -786,7 +830,7 @@ function renderDashboard() {
       const rows = recentLogs.map(l=>`<div style="display:flex;align-items:flex-start;gap:10px;padding:8px 0;border-bottom:1px solid var(--border)">
         <div style="width:8px;height:8px;border-radius:50%;background:${typeColors[l.changeType]||'var(--text-light)'};margin-top:5px;flex-shrink:0"></div>
         <div style="flex:1">
-          <div style="font-size:13px;font-weight:600;color:var(--navy)">${l.directorName}</div>
+          <div style="font-size:13px;font-weight:600;color:var(--navy);display:flex;align-items:center;gap:7px">${directorAvatar(l.directorName,26)}<span>${l.directorName}</span></div>
           <div style="font-size:12px;color:var(--text-light)">${typeLabels[l.changeType]||l.changeType} — ${l.changeDetail}</div>
           ${l.nrcMeetingRef?`<div style="font-size:11px;color:var(--blue)">📋 ${l.nrcMeetingRef}</div>`:''}
         </div>
@@ -1387,7 +1431,7 @@ function renderSubcommittees() {
           <thead><tr><th>ชื่อกรรมการ</th><th>บทบาท</th><th>ประเภท</th><th>วาระ</th><th>จัดการ</th></tr></thead>
           <tbody>${(sc.members||[]).map(mem=>`
             <tr>
-              <td>${mem.name}</td><td>${mem.role}</td>
+              <td><div class="dir-avatar-wrap" style="gap:8px">${directorAvatar(mem.name,28)}<span>${mem.name}</span></div></td><td>${mem.role}</td>
               <td><span class="tag">${mem.type==='independent'?'อิสระ':mem.type==='executive'?'บริหาร':mem.type==='nonexecutive'?'ไม่ใช่บริหาร':mem.type}</span></td>
               <td>${mem.term||'-'}</td>
               <td>
@@ -1414,7 +1458,7 @@ function renderSubsidiaries() {
             <thead><tr><th>ชื่อกรรมการ</th><th>บทบาท</th><th>ประเภท</th><th>จัดการ</th></tr></thead>
             <tbody>${(sub.directors||[]).map((d,i)=>`
               <tr>
-                <td>${d.name}</td><td>${d.role}</td>
+                <td><div class="dir-avatar-wrap" style="gap:8px">${directorAvatar(d.name,28)}<span>${d.name}</span></div></td><td>${d.role}</td>
                 <td><span class="tag">${d.type==='pcc-representative'?'ตัวแทน PCC':d.type==='independent'?'อิสระ':d.type==='executive'?'บริหาร':d.type}</span></td>
                 <td>
                   <button class="btn btn-sm btn-orange" onclick="editSubDirector('${sub.id}',${i})">&#9998;</button>
@@ -1552,11 +1596,11 @@ function renderSuccession() {
         </div>
       </div>
       <div class="sc-body">
-        <div class="text-muted" style="font-size:11px;margin-bottom:8px">ผู้ดำรงตำแหน่ง: <strong>${sp.incumbent}</strong></div>
+        <div class="text-muted" style="font-size:11px;margin-bottom:8px;display:flex;align-items:center;gap:6px">ผู้ดำรงตำแหน่ง: ${directorAvatar(sp.incumbent,22)}<strong>${sp.incumbent}</strong></div>
         ${(sp.successors||[]).map((s,i)=>`
           <div class="sc-successor">
             <div class="label">ผู้สืบทอด #${i+1}</div>
-            <div class="flex-between"><div class="name">${s.name}</div>
+            <div class="flex-between"><div class="name" style="display:flex;align-items:center;gap:7px">${directorAvatar(s.name,22)}<span>${s.name}</span></div>
               <span class="readiness ${s.readiness}">${READINESS_MAP[s.readiness]?READINESS_MAP[s.readiness][1]:s.readiness}</span>
             </div>
             ${s.idp?`<div class="text-muted" style="font-size:11px;margin-top:2px">IDP: ${s.idp}</div>`:''}
@@ -1691,7 +1735,7 @@ function renderChangelog() {
         <div class="cl-header">
           <div>
             <span class="cl-type-badge ${t.cls}">${t.label}</span>
-            <div class="cl-title">${l.directorName||'—'}</div>
+            <div class="cl-title" style="display:flex;align-items:center;gap:8px">${directorAvatar(l.directorName,30)}<span>${l.directorName||'—'}</span></div>
           </div>
           <div style="display:flex;align-items:center;gap:8px;flex-shrink:0">
             <span class="cl-date">${thDate(l.effectiveDate)}</span>
@@ -1925,7 +1969,7 @@ function renderRemuneration() {
     grandTotal += tot;
     const shortName = d.name.replace(/^(รศ\.ดร\.ภก\.|รศ\.ดร\.|ดร\.|นางสาว|นาง|นาย)\s*/,'');
     return `<tr>
-      <td><strong>${shortName}</strong><div class="text-muted" style="font-size:11px">${d.position||''}</div></td>
+      <td><div class="dir-avatar-wrap" style="gap:9px">${directorAvatar(d.name,34)}<div><strong>${shortName}</strong><div class="text-muted" style="font-size:11px">${d.position||''}</div></div></div></td>
       <td class="text-right">${fmtBaht(r.retainer)}</td>
       <td class="text-right">${fmtBaht(r.boardFee)}</td>
       <td class="text-right">${fmtBaht(r.nrcFee)}</td>
@@ -1993,7 +2037,7 @@ function bulkEditRemun(year) {
   const rows = DB.directors.map(d=>{
     const r = DB.remuneration.find(x=>x.directorId===d.id && x.year===year)||{};
     const sn = d.name.replace(/^(รศ\.ดร\.ภก\.|รศ\.ดร\.|ดร\.|นางสาว|นาง|นาย)\s*/,'');
-    return `<tr><td style="font-size:12px">${sn}</td>
+    return `<tr><td style="font-size:12px"><div class="dir-avatar-wrap" style="gap:7px">${directorAvatar(d.name,26)}<span>${sn}</span></div></td>
       <td><input class="form-control" style="width:110px;padding:4px 6px;font-size:12px" data-did="${d.id}" data-f="retainer" type="number" value="${r.retainer||0}"></td>
       <td><input class="form-control" style="width:110px;padding:4px 6px;font-size:12px" data-did="${d.id}" data-f="boardFee" type="number" value="${r.boardFee||0}"></td>
       <td><input class="form-control" style="width:110px;padding:4px 6px;font-size:12px" data-did="${d.id}" data-f="nrcFee" type="number" value="${r.nrcFee||0}"></td>
@@ -2055,14 +2099,14 @@ function renderTraining() {
     const sn = d.name.replace(/^(รศ\.ดร\.ภก\.|รศ\.ดร\.|ดร\.|นางสาว|นาง|นาย)\s*/,'').split(' ')[0];
     const pct = Math.min(hrs/24*100,100);
     const color = hrs>=24?'var(--green)':hrs>=12?'var(--blue)':'var(--orange)';
-    return `<div class="training-bar-wrap"><span style="font-size:11px;min-width:80px">${sn}</span><div class="training-bar-bg"><div class="training-bar-fill" style="width:${pct}%;background:${color}"></div></div><span style="font-size:11px;min-width:50px;text-align:right">${hrs} ชม.</span></div>`;
+    return `<div class="training-bar-wrap">${directorAvatar(d.name,26)}<span style="font-size:11px;min-width:80px">${sn}</span><div class="training-bar-bg"><div class="training-bar-fill" style="width:${pct}%;background:${color}"></div></div><span style="font-size:11px;min-width:50px;text-align:right">${hrs} ชม.</span></div>`;
   }).join('');
 
   const tRows = rows.map(t=>{
     const d = DB.directors.find(x=>x.id===t.directorId);
     const sn = d ? d.name.replace(/^(รศ\.ดร\.ภก\.|รศ\.ดร\.|ดร\.|นางสาว|นาง|นาย)\s*/,'') : t.directorName;
     return `<tr>
-      <td>${sn}</td>
+      <td><div class="dir-avatar-wrap" style="gap:8px">${directorAvatar(d?d.name:sn,28)}<span>${sn}</span></div></td>
       <td><strong>${t.course||'-'}</strong></td>
       <td>${t.organizer||'-'}</td>
       <td>${thDate(t.date)}</td>
@@ -2476,7 +2520,7 @@ function renderConflict() {
     const sn = d ? d.name.replace(/^(รศ\.ดร\.ภก\.|รศ\.ดร\.|ดร\.|นางสาว|นาง|นาย)\s*/,'') : c.directorName;
     return `<tr>
       <td>${thDate(c.date)}</td>
-      <td><strong>${sn}</strong></td>
+      <td><div class="dir-avatar-wrap" style="gap:8px">${directorAvatar(d?d.name:sn,28)}<strong>${sn}</strong></div></td>
       <td>${c.meetingRef||'-'}</td>
       <td style="max-width:200px;white-space:normal">${c.agenda||'-'}</td>
       <td style="text-align:center">${c.declared?'<span class="badge-status status-completed">✅ แจ้ง</span>':'<span class="badge-status status-overdue">❌</span>'}</td>
