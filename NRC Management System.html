@@ -1,0 +1,2799 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NRC Management System — PCC</title>
+<style>
+:root {
+  --navy: #1F3864; --blue: #2E75B6; --orange: #ED7D31; --green: #70AD47;
+  --red: #C00000; --gold: #C9A227; --light-blue: #BDD7EE;
+  --light-gray: #F5F5F5; --border: #D0D7E3; --text: #2C3E50; --text-light: #6C7A89;
+  --sidebar-w: 220px; --header-h: 56px;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: "Sarabun","Segoe UI",sans-serif; background: var(--light-gray); color: var(--text); font-size: 14px; display: flex; height: 100vh; overflow: hidden; }
+#sidebar { width: var(--sidebar-w); background: var(--navy); color: #fff; display: flex; flex-direction: column; flex-shrink: 0; overflow-y: auto; position: fixed; top: 0; left: 0; height: 100vh; z-index: 100; }
+#sidebar .logo { padding: 16px 14px 12px; border-bottom: 1px solid rgba(255,255,255,0.15); }
+#sidebar .logo h2 { font-size: 16px; font-weight: 700; letter-spacing: 1px; }
+#sidebar .logo p { font-size: 11px; color: rgba(255,255,255,0.6); margin-top: 2px; }
+#sidebar nav { flex: 1; padding: 8px 0; }
+#sidebar nav a { display: flex; align-items: center; gap: 10px; padding: 11px 16px; color: rgba(255,255,255,0.8); text-decoration: none; font-size: 13.5px; transition: background 0.15s,color 0.15s; cursor: pointer; border: none; background: none; width: 100%; }
+#sidebar nav a:hover { background: rgba(255,255,255,0.1); color: #fff; }
+#sidebar nav a.active { background: var(--blue); color: #fff; font-weight: 600; }
+#sidebar nav a .icon { font-size: 16px; width: 20px; text-align: center; }
+#sidebar .sidebar-footer { padding: 12px 16px; border-top: 1px solid rgba(255,255,255,0.15); font-size: 11px; color: rgba(255,255,255,0.5); }
+#main { margin-left: var(--sidebar-w); flex: 1; display: flex; flex-direction: column; overflow: hidden; }
+#topbar { height: var(--header-h); background: #fff; border-bottom: 1px solid var(--border); display: flex; align-items: center; padding: 0 24px; gap: 12px; position: sticky; top: 0; z-index: 50; flex-shrink: 0; }
+#topbar h1 { font-size: 18px; font-weight: 700; color: var(--navy); flex: 1; }
+#topbar .badge { background: var(--navy); color: #fff; font-size: 11px; padding: 3px 10px; border-radius: 12px; }
+#sync-status { font-size: 11px; color: var(--muted); white-space: nowrap; transition: color .3s; cursor: default; }
+#sync-status.syncing { color: var(--blue); }
+#sync-status.ok { color: var(--green); }
+#sync-status.error { color: var(--red); }
+#sync-status.idle { color: var(--muted); }
+#content { flex: 1; overflow-y: auto; padding: 20px 24px; }
+.cards-row { display: flex; gap: 14px; flex-wrap: wrap; margin-bottom: 20px; }
+.card { background: #fff; border-radius: 8px; border: 1px solid var(--border); padding: 16px 20px; flex: 1; min-width: 150px; }
+.card .card-label { font-size: 11px; color: var(--text-light); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 6px; }
+.card .card-value { font-size: 28px; font-weight: 700; color: var(--navy); }
+.card .card-sub { font-size: 12px; color: var(--text-light); margin-top: 4px; }
+.card.orange .card-value { color: var(--orange); } .card.green .card-value { color: var(--green); } .card.red .card-value { color: var(--red); } .card.blue .card-value { color: var(--blue); }
+.panel { background: #fff; border-radius: 8px; border: 1px solid var(--border); margin-bottom: 16px; overflow: hidden; }
+.panel-header { background: var(--navy); color: #fff; padding: 10px 16px; display: flex; align-items: center; justify-content: space-between; }
+.panel-header h3 { font-size: 14px; font-weight: 600; }
+.panel-body { padding: 16px; }
+.tbl { width: 100%; border-collapse: collapse; font-size: 13px; }
+.tbl th { background: var(--navy); color: #fff; padding: 8px 12px; text-align: left; font-weight: 600; white-space: nowrap; }
+.tbl td { padding: 8px 12px; border-bottom: 1px solid var(--border); vertical-align: middle; }
+.tbl tr:last-child td { border-bottom: none; }
+.tbl tr:hover td { background: #f0f4fa; }
+.tbl tr.clickable { cursor: pointer; }
+.btn { display: inline-flex; align-items: center; gap: 6px; padding: 7px 14px; border-radius: 5px; font-size: 13px; border: none; cursor: pointer; font-family: inherit; transition: opacity 0.15s; }
+.btn:hover { opacity: 0.85; }
+.btn-primary { background: var(--blue); color: #fff; } .btn-navy { background: var(--navy); color: #fff; } .btn-orange { background: var(--orange); color: #fff; } .btn-green { background: var(--green); color: #fff; } .btn-red { background: var(--red); color: #fff; } .btn-outline { background: #fff; color: var(--navy); border: 1px solid var(--border); }
+.btn-sm { padding: 4px 10px; font-size: 12px; }
+.btn-group { display: flex; gap: 8px; flex-wrap: wrap; }
+/* Buttons on dark (navy) panel headers */
+.btn-light { background: rgba(255,255,255,0.15); color: #fff; border: 1px solid rgba(255,255,255,0.5); }
+.btn-light:hover { background: rgba(255,255,255,0.28); opacity: 1; }
+.btn-light-red { background: rgba(192,0,0,0.25); color: #ffaaaa; border: 1px solid rgba(255,100,100,0.5); }
+.btn-light-red:hover { background: rgba(192,0,0,0.45); opacity: 1; }
+.badge-status { display: inline-block; padding: 2px 8px; border-radius: 10px; font-size: 11px; font-weight: 600; white-space: nowrap; }
+.status-completed { background: #E2EFDA; color: #375623; } .status-planned { background: #DEEAF1; color: var(--blue); } .status-pending { background: #FFF2CC; color: #996633; } .status-overdue { background: #FCE4D6; color: var(--red); } .status-inprogress { background: #E2E8F8; color: var(--navy); } .status-done { background: #E2EFDA; color: #375623; }
+.form-group { margin-bottom: 14px; }
+.form-group label { display: block; font-size: 13px; font-weight: 600; color: var(--navy); margin-bottom: 5px; }
+.form-control { width: 100%; padding: 7px 10px; border: 1px solid var(--border); border-radius: 5px; font-size: 13px; font-family: inherit; background: #fff; color: var(--text); transition: border-color 0.15s; }
+.form-control:focus { outline: none; border-color: var(--blue); box-shadow: 0 0 0 2px rgba(46,117,182,0.15); }
+textarea.form-control { resize: vertical; min-height: 80px; }
+.form-row { display: flex; gap: 12px; flex-wrap: wrap; }
+.form-row .form-group { flex: 1; min-width: 160px; }
+.modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.45); z-index: 1000; align-items: center; justify-content: center; }
+.modal-overlay.show { display: flex; }
+.modal { background: #fff; border-radius: 10px; width: 90%; max-width: 720px; max-height: 88vh; overflow-y: auto; box-shadow: 0 20px 60px rgba(0,0,0,0.3); }
+.modal-header { background: var(--navy); color: #fff; padding: 14px 20px; display: flex; align-items: center; justify-content: space-between; border-radius: 10px 10px 0 0; position: sticky; top: 0; z-index: 1; }
+.modal-header h3 { font-size: 15px; font-weight: 700; }
+.modal-close { background: none; border: none; color: #fff; font-size: 20px; cursor: pointer; line-height: 1; }
+.modal-body { padding: 20px; }
+.modal-footer { padding: 14px 20px; border-top: 1px solid var(--border); display: flex; gap: 8px; justify-content: flex-end; }
+.tabs { display: flex; gap: 0; border-bottom: 2px solid var(--border); margin-bottom: 16px; flex-wrap: wrap; }
+.tab-btn { padding: 8px 16px; border: none; background: none; cursor: pointer; font-size: 13px; color: var(--text-light); border-bottom: 2px solid transparent; margin-bottom: -2px; font-family: inherit; transition: all 0.15s; }
+.tab-btn.active { color: var(--blue); border-bottom-color: var(--blue); font-weight: 600; }
+.tab-btn:hover { color: var(--navy); }
+.skills-matrix { overflow-x: auto; }
+.skills-matrix table { border-collapse: collapse; font-size: 11px; }
+.skills-matrix th, .skills-matrix td { border: 1px solid var(--border); padding: 5px 8px; text-align: center; white-space: nowrap; }
+.skills-matrix th { background: var(--navy); color: #fff; }
+.skills-matrix .dir-name { text-align: left; font-weight: 600; background: #f0f4fa; min-width: 200px; }
+.skill-cell { font-size: 16px; cursor: pointer; }
+.skill-1 { color: var(--green); } .skill-0 { color: #ddd; }
+.succession-grid { display: grid; grid-template-columns: repeat(auto-fill,minmax(280px,1fr)); gap: 14px; }
+.succession-card { background: #fff; border: 1px solid var(--border); border-radius: 8px; overflow: hidden; }
+.succession-card .sc-header { background: var(--navy); color: #fff; padding: 10px 14px; display: flex; align-items: center; justify-content: space-between; }
+.succession-card .sc-header h4 { font-size: 13px; font-weight: 700; }
+.succession-card .sc-body { padding: 12px 14px; }
+.succession-card .sc-successor { margin-bottom: 8px; }
+.succession-card .sc-successor .label { font-size: 10px; color: var(--text-light); text-transform: uppercase; }
+.succession-card .sc-successor .name { font-size: 13px; font-weight: 600; }
+.readiness { display: inline-block; padding: 2px 8px; border-radius: 10px; font-size: 11px; font-weight: 600; }
+.ready-now { background: #E2EFDA; color: #375623; } .ready-1y { background: #DEEAF1; color: var(--blue); } .ready-2y { background: #FFF2CC; color: #996633; } .ready-not { background: #FCE4D6; color: var(--red); }
+.section-title { font-size: 16px; font-weight: 700; color: var(--navy); margin-bottom: 14px; display: flex; align-items: center; gap: 8px; }
+.divider { border: none; border-top: 1px solid var(--border); margin: 16px 0; }
+.text-muted { color: var(--text-light); font-size: 12px; }
+.alert { padding: 10px 14px; border-radius: 6px; margin-bottom: 12px; font-size: 13px; }
+.alert-info { background: #DEEAF1; color: var(--navy); border-left: 4px solid var(--blue); }
+.alert-warn { background: #FFF2CC; color: #665500; border-left: 4px solid var(--gold); }
+.alert-success { background: #E2EFDA; color: #375623; border-left: 4px solid var(--green); }
+.progress-bar { height: 8px; background: var(--border); border-radius: 4px; overflow: hidden; margin-top: 6px; }
+.progress-fill { height: 100%; border-radius: 4px; background: var(--blue); transition: width 0.3s; }
+.empty-state { text-align: center; padding: 40px 20px; color: var(--text-light); }
+.empty-state .emoji { font-size: 36px; margin-bottom: 10px; }
+.float-right { float: right; }
+.flex-between { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+.flex-center { display: flex; align-items: center; gap: 8px; }
+.mt-8 { margin-top: 8px; } .mt-16 { margin-top: 16px; } .mb-8 { margin-bottom: 8px; } .mb-0 { margin-bottom: 0; }
+.tag { display: inline-block; background: var(--light-blue); color: var(--navy); padding: 2px 8px; border-radius: 10px; font-size: 11px; margin: 2px; }
+/* ATTACHMENT STYLES */
+.attach-zone { border: 2px dashed var(--border); border-radius: 8px; padding: 16px; text-align: center; cursor: pointer; transition: border-color 0.15s, background 0.15s; }
+.attach-zone:hover { border-color: var(--blue); background: #f0f4fa; }
+.attach-zone input[type=file] { display: none; }
+.attach-list { margin-top: 10px; }
+.attach-item { display: flex; align-items: center; gap: 8px; padding: 6px 10px; background: #f8f9fa; border: 1px solid var(--border); border-radius: 5px; margin-bottom: 6px; font-size: 12px; }
+.attach-item .attach-icon { font-size: 18px; }
+.attach-item .attach-name { flex: 1; color: var(--navy); font-weight: 500; word-break: break-all; }
+.attach-item a { color: var(--blue); text-decoration: none; }
+.attach-item a:hover { text-decoration: underline; }
+.attach-item .btn-remove { background: none; border: none; color: var(--red); cursor: pointer; font-size: 14px; padding: 0 2px; }
+.meeting-doc-row { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 8px; }
+.meeting-doc-card { display: flex; align-items: center; gap: 8px; background: #f0f4fa; border: 1px solid var(--border); border-radius: 6px; padding: 8px 12px; font-size: 12px; min-width: 160px; }
+.meeting-doc-card .doc-icon { font-size: 20px; }
+.meeting-doc-card .doc-info { flex: 1; }
+.meeting-doc-card .doc-name { font-weight: 600; color: var(--navy); }
+.meeting-doc-card .doc-size { color: var(--text-light); font-size: 10px; }
+/* Director Changelog Timeline */
+.changelog-timeline { position: relative; padding-left: 28px; }
+.changelog-timeline::before { content:''; position:absolute; left:10px; top:0; bottom:0; width:2px; background:var(--border); }
+.cl-entry { position:relative; margin-bottom:16px; background:#fff; border:1px solid var(--border); border-radius:8px; padding:14px 16px; }
+.cl-entry::before { content:''; position:absolute; left:-22px; top:18px; width:12px; height:12px; border-radius:50%; border:2px solid #fff; box-shadow:0 0 0 2px var(--blue); background:var(--blue); }
+.cl-entry.type-appointed::before { background:var(--green); box-shadow:0 0 0 2px var(--green); }
+.cl-entry.type-resigned::before { background:var(--red); box-shadow:0 0 0 2px var(--red); }
+.cl-entry.type-role_change::before { background:var(--orange); box-shadow:0 0 0 2px var(--orange); }
+.cl-entry.type-committee_change::before { background:var(--gold); box-shadow:0 0 0 2px var(--gold); }
+.cl-entry.type-position_change::before { background:var(--blue); box-shadow:0 0 0 2px var(--blue); }
+.cl-header { display:flex; align-items:flex-start; justify-content:space-between; gap:8px; margin-bottom:8px; flex-wrap:wrap; }
+.cl-title { font-size:14px; font-weight:700; color:var(--navy); }
+.cl-date { font-size:11px; color:var(--text-light); white-space:nowrap; }
+.cl-detail { font-size:13px; color:var(--text); margin-bottom:6px; }
+.cl-refs { display:flex; gap:8px; flex-wrap:wrap; margin-top:6px; }
+.cl-ref-tag { background:#f0f4fa; border:1px solid var(--border); border-radius:12px; padding:2px 10px; font-size:11px; color:var(--navy); }
+.cl-ref-tag.nrc { background:#DEEAF1; border-color:var(--blue); color:var(--blue); }
+.cl-ref-tag.board { background:#E2E8F8; border-color:var(--navy); color:var(--navy); }
+.cl-ref-tag.agm { background:#FFF2CC; border-color:var(--gold); color:#665500; }
+.cl-actions { display:flex; gap:6px; }
+.cl-type-badge { display:inline-block; padding:2px 8px; border-radius:10px; font-size:11px; font-weight:600; margin-bottom:6px; }
+.cltype-appointed { background:#E2EFDA; color:#375623; }
+.cltype-resigned { background:#FCE4D6; color:var(--red); }
+.cltype-role_change { background:#FCE4D6; color:#7B2500; }
+.cltype-committee_change { background:#FFF2CC; color:#665500; }
+.cltype-position_change { background:#DEEAF1; color:var(--blue); }
+.cltype-other { background:#F5F5F5; color:var(--text-light); }
+/* ===== New modules CSS ===== */
+.doc-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(240px,1fr)); gap:14px; }
+.doc-card { background:#fff; border:1px solid var(--border); border-radius:8px; padding:14px; }
+.doc-card .doc-type-badge { display:inline-block; font-size:10px; font-weight:700; padding:2px 7px; border-radius:10px; margin-bottom:8px; }
+.doc-type-charter { background:#DEEAF1; color:var(--blue); }
+.doc-type-policy { background:#E2EFDA; color:#375623; }
+.doc-type-procedure { background:#FFF2CC; color:#665500; }
+.doc-type-form { background:#FCE4D6; color:var(--red); }
+.doc-type-other { background:#F5F5F5; color:var(--text-light); }
+.remun-total-card { background:var(--navy); color:#fff; border-radius:8px; padding:14px 20px; text-align:center; min-width:130px; }
+.remun-total-card .rtval { font-size:22px; font-weight:700; }
+.remun-total-card .rtlbl { font-size:11px; opacity:0.75; }
+.assess-card { background:#fff; border:1px solid var(--border); border-radius:8px; padding:14px; }
+.assess-score { font-size:28px; font-weight:800; color:var(--navy); }
+.agm-item-row { display:flex; align-items:center; gap:10px; padding:10px 0; border-bottom:1px solid var(--border); }
+.indep-criterion { display:flex; align-items:flex-start; gap:10px; padding:8px 12px; background:#f9f9f9; border:1px solid var(--border); border-radius:6px; margin-bottom:6px; }
+.indep-criterion label { flex:1; font-size:13px; cursor:pointer; }
+.icheck-pass { background:#E2EFDA; color:#375623; }
+.icheck-fail { background:#FCE4D6; color:var(--red); }
+.icheck-pending { background:#FFF2CC; color:#996633; }
+.training-bar-wrap { display:flex; align-items:center; gap:8px; margin-bottom:6px; }
+.training-bar-bg { flex:1; height:8px; background:#eee; border-radius:4px; overflow:hidden; }
+.training-bar-fill { height:100%; background:var(--blue); border-radius:4px; }
+.sync-highlight { background:#FFF9E6; border:1px solid var(--gold); border-radius:8px; padding:12px 16px; margin-bottom:12px; }
+</style>
+</head>
+<body>
+<div id="sidebar">
+  <div class="logo"><h2>NRC &#9679; PCC</h2><p>ระบบบริหารจัดการ NRC</p></div>
+  <nav id="nav">
+    <a onclick="showSection('dashboard')" class="active" id="nav-dashboard"><span class="icon">&#128202;</span> Dashboard</a>
+    <a onclick="showSection('meetings')" id="nav-meetings"><span class="icon">&#128197;</span> การประชุม</a>
+    <a onclick="showSection('directors')" id="nav-directors"><span class="icon">&#128101;</span> คณะกรรมการ</a>
+    <a onclick="showSection('controllist')" id="nav-controllist"><span class="icon">&#127970;</span> Control List</a>
+    <a onclick="showSection('succession')" id="nav-succession"><span class="icon">&#127919;</span> Succession Plan</a>
+    <a onclick="showSection('changelog')" id="nav-changelog"><span class="icon">&#128221;</span> ประวัติกรรมการ</a>
+    <a onclick="showSection('remuneration')" id="nav-remuneration"><span class="icon">&#128176;</span> ค่าตอบแทน</a>
+    <a onclick="showSection('training')" id="nav-training"><span class="icon">&#128218;</span> พัฒนากรรมการ</a>
+    <a onclick="showSection('assessment')" id="nav-assessment"><span class="icon">&#128202;</span> ประเมินผล</a>
+    <a onclick="showSection('documents')" id="nav-documents"><span class="icon">&#128193;</span> คลังเอกสาร</a>
+    <a onclick="showSection('agm')" id="nav-agm"><span class="icon">&#128499;</span> AGM Tracker</a>
+    <a onclick="showSection('conflict')" id="nav-conflict"><span class="icon">&#9888;</span> ผลประโยชน์ฯ</a>
+    <a onclick="showSection('settings')" id="nav-settings"><span class="icon">&#9881;</span> ตั้งค่า</a>
+  </nav>
+  <div class="sidebar-footer">PCC &copy; 2569 | v2.1 &#9729;</div>
+</div>
+<div id="main">
+  <div id="topbar">
+    <h1 id="page-title">Dashboard</h1>
+    <span id="sync-status" class="idle" title="สถานะ GitHub Gist Sync — คลิกที่ตั้งค่าเพื่อ connect">&#9729; ไม่ได้ connect</span>
+    <span class="badge" id="topbar-badge">NRC PCC</span>
+  </div>
+  <div id="content"></div>
+</div>
+<div class="modal-overlay" id="modal-overlay">
+  <div class="modal" id="modal">
+    <div class="modal-header">
+      <h3 id="modal-title">Modal</h3>
+      <button class="modal-close" onclick="closeModal()">&times;</button>
+    </div>
+    <div class="modal-body" id="modal-body"></div>
+    <div class="modal-footer" id="modal-footer"></div>
+  </div>
+</div>
+
+<script>
+const STORAGE_KEY = 'nrc_pcc_data_v2';
+const GIST_SETTINGS_KEY = 'nrc_gist_settings_v1';
+let gistSyncInProgress = false;
+
+const DEFAULT_DATA = {
+  company: {
+    name: 'บริษัท พรีไซซ คอร์ปอเรชั่น จำกัด (มหาชน)',
+    abbr: 'PCC', secretary: 'นายจิณนภัสฐ์ ภัสฐาพงษ์', fiscalYear: 2569
+  },
+  directors: [
+    { id:'d1', name:'นายอชิตศักดิ์ บรรจงโพธิ์กลาง', nameEn:'Achitsak Bunjongpotiklang',
+      position:'ประธานกรรมการบริษัท', type:'independent', gender:'male', startDate:'',
+      nrcRole:'none', acRole:'none', rmcRole:'none', gcgRole:'none', excoRole:'none',
+      skills:{ finance:1, law:0, strategy:1, it:0, risk:1, hr:0, marketing:0, industry:1 },
+      training:[], note:'ประธานกรรมการบริษัท / กรรมการอิสระ' },
+    { id:'d2', name:'นายสรรค์ชัย เตียวประเสริฐกุล', nameEn:'Sanchai Thiewprasertkul',
+      position:'รองประธานกรรมการบริษัท', type:'independent', gender:'male', startDate:'',
+      nrcRole:'none', acRole:'member', rmcRole:'none', gcgRole:'chair', excoRole:'none',
+      skills:{ finance:1, law:1, strategy:1, it:0, risk:0, hr:0, marketing:0, industry:1 },
+      training:[], note:'รองประธานกรรมการบริษัท / กรรมการตรวจสอบ / ประธาน GCG / กรรมการอิสระ' },
+    { id:'d3', name:'นายกิตติ สัมฤทธิ์', nameEn:'Kitti Sumrit',
+      position:'ประธานเจ้าหน้าที่บริหาร (CEO)', type:'executive', gender:'male', startDate:'',
+      nrcRole:'none', acRole:'none', rmcRole:'none', gcgRole:'none', excoRole:'chair',
+      skills:{ finance:1, law:0, strategy:1, it:1, risk:1, hr:0, marketing:1, industry:1 },
+      training:[], note:'กรรมการบริษัท / ประธาน ExCo / ประธานเจ้าหน้าที่บริหาร' },
+    { id:'d4', name:'นายสุธี จุฬานุตรกุล', nameEn:'Suthee Chulanutrakul',
+      position:'กรรมการบริษัท', type:'nonexecutive', gender:'male', startDate:'',
+      nrcRole:'member', acRole:'none', rmcRole:'none', gcgRole:'none', excoRole:'none',
+      skills:{ finance:1, law:0, strategy:1, it:0, risk:0, hr:0, marketing:1, industry:1 },
+      training:[], note:'กรรมการบริษัท / กรรมการ NRC' },
+    { id:'d5', name:'นายกิตติ ณัฐชยางกุล', nameEn:'Kitti Natchayangkul',
+      position:'กรรมการบริษัท', type:'nonexecutive', gender:'male', startDate:'',
+      nrcRole:'none', acRole:'none', rmcRole:'chair', gcgRole:'none', excoRole:'none',
+      skills:{ finance:0, law:0, strategy:1, it:1, risk:1, hr:0, marketing:0, industry:1 },
+      training:[], note:'กรรมการบริษัท / ประธาน RMC' },
+    { id:'d6', name:'นางสาวสุดารัตน์ ตั้งสุนทรกิจ', nameEn:'Sudarat Tangsoontornkij',
+      position:'ประธานคณะกรรมการตรวจสอบ', type:'independent', gender:'female', startDate:'',
+      nrcRole:'none', acRole:'chair', rmcRole:'none', gcgRole:'none', excoRole:'none',
+      skills:{ finance:1, law:1, strategy:0, it:0, risk:1, hr:0, marketing:0, industry:0 },
+      training:[], note:'กรรมการบริษัท / ประธาน AC / กรรมการอิสระ' },
+    { id:'d7', name:'นายบุญชัย พิทักษ์ดำรงกิจ', nameEn:'Boonchai Pitugdamrongkija',
+      position:'กรรมการบริษัท', type:'independent', gender:'male', startDate:'',
+      nrcRole:'none', acRole:'member', rmcRole:'none', gcgRole:'member', excoRole:'none',
+      skills:{ finance:1, law:0, strategy:0, it:0, risk:1, hr:0, marketing:0, industry:1 },
+      training:[], note:'กรรมการบริษัท / กรรมการ GCG / กรรมการ AC / กรรมการอิสระ' },
+    { id:'d8', name:'รศ.ดร.ภก.ลือรัตน์ อนุรัตน์พานิช', nameEn:'Luerut Anuratphanich',
+      position:'ประธานคณะกรรมการ NRC', type:'independent', gender:'male', startDate:'',
+      nrcRole:'chair', acRole:'none', rmcRole:'none', gcgRole:'none', excoRole:'none',
+      skills:{ finance:0, law:1, strategy:1, it:0, risk:0, hr:1, marketing:0, industry:0 },
+      training:[], note:'กรรมการบริษัท / ประธาน NRC / กรรมการอิสระ' },
+    { id:'d9', name:'นายณรงค์ จันทร์สร้อย', nameEn:'Narong Chansoi',
+      position:'กรรมการบริษัท', type:'independent', gender:'male', startDate:'',
+      nrcRole:'member', acRole:'none', rmcRole:'none', gcgRole:'none', excoRole:'none',
+      skills:{ finance:0, law:1, strategy:1, it:0, risk:0, hr:1, marketing:0, industry:0 },
+      training:[], note:'กรรมการบริษัท / กรรมการ NRC / กรรมการอิสระ' },
+    { id:'d10', name:'นายอมร แดงโชติ', nameEn:'Amorn Daengchot',
+      position:'กรรมการบริษัท', type:'executive', gender:'male', startDate:'',
+      nrcRole:'none', acRole:'none', rmcRole:'member', gcgRole:'none', excoRole:'member',
+      skills:{ finance:1, law:0, strategy:1, it:0, risk:1, hr:0, marketing:0, industry:1 },
+      training:[], note:'กรรมการบริษัท / กรรมการ RMC / กรรมการบริหาร (ExCo)' },
+    { id:'d11', name:'นางสาวเกตินาท สัมฤทธิ์', nameEn:'Ketinart Sumrit',
+      position:'กรรมการบริษัท', type:'executive', gender:'female', startDate:'',
+      nrcRole:'none', acRole:'none', rmcRole:'none', gcgRole:'member', excoRole:'member',
+      skills:{ finance:0, law:0, strategy:1, it:1, risk:0, hr:1, marketing:1, industry:1 },
+      training:[], note:'กรรมการบริษัท / กรรมการ GCG / กรรมการบริหาร (ExCo)' },
+    { id:'d12', name:'นางสาวณิชา ณัฐชยางกุล', nameEn:'Nicha Nutchayangkul',
+      position:'กรรมการบริษัท', type:'executive', gender:'female', startDate:'',
+      nrcRole:'none', acRole:'none', rmcRole:'member', gcgRole:'none', excoRole:'member',
+      skills:{ finance:1, law:0, strategy:0, it:1, risk:1, hr:0, marketing:0, industry:1 },
+      training:[], note:'กรรมการบริษัท / กรรมการ RMC / กรรมการบริหาร (ExCo)' }
+  ],
+  meetings: [
+    { id:'m1', year:2569, no:1, date:'2569-02-13', type:'ordinary', status:'completed',
+      agendaFile:'', momFile:'', agendaAttachments:[], momAttachments:[],
+      agendaItems:[
+        { id:'a1', title:'รับรองรายงานการประชุม NRC ครั้งที่ 5/2568', type:'approve', status:'done', note:'', attachments:[] },
+        { id:'a2', title:'รายงานผลการดำเนินงานของฝ่ายจัดการ', type:'inform', status:'done', note:'', attachments:[] },
+        { id:'a3', title:'พิจารณาโครงสร้างค่าตอบแทนกรรมการประจำปี 2569', type:'approve', status:'done', note:'', attachments:[] },
+        { id:'a4', title:'ทบทวนกฎบัตรคณะกรรมการสรรหาฯ', type:'approve', status:'done', note:'', attachments:[] }
+      ], actionItems:[], note:'' },
+    { id:'m2', year:2569, no:2, date:'2569-03-18', type:'ordinary', status:'completed',
+      agendaFile:'', momFile:'', agendaAttachments:[], momAttachments:[],
+      agendaItems:[
+        { id:'a5', title:'รับรองรายงานการประชุม NRC ครั้งที่ 1/2569', type:'approve', status:'done', note:'', attachments:[] },
+        { id:'a6', title:'พิจารณาเสนอชื่อกรรมการเพื่อดำรงตำแหน่งแทนกรรมการที่ออกตามวาระ (AGM 2569)', type:'approve', status:'done', note:'', attachments:[] },
+        { id:'a7', title:'พิจารณาค่าตอบแทนกรรมการเสนอ AGM 2569', type:'approve', status:'done', note:'', attachments:[] },
+        { id:'a8', title:'ประเมินผล CEO รอบ 12 เดือน (2568)', type:'approve', status:'done', note:'', attachments:[] }
+      ], actionItems:[], note:'' },
+    { id:'m3', year:2569, no:3, date:'2569-04-22', type:'ordinary', status:'completed',
+      agendaFile:'', momFile:'', agendaAttachments:[], momAttachments:[],
+      agendaItems:[
+        { id:'a9', title:'รับรองรายงานการประชุม NRC ครั้งที่ 2/2569', type:'approve', status:'done', note:'', attachments:[] },
+        { id:'a10', title:'รายงานผลการประชุมสามัญผู้ถือหุ้น (AGM) 2569', type:'inform', status:'done', note:'', attachments:[] },
+        { id:'a11', title:'พิจารณาแผนพัฒนากรรมการ (Director Development Plan)', type:'approve', status:'done', note:'', attachments:[] },
+        { id:'a12', title:'ทบทวน Board Skills Matrix ประจำปี 2569', type:'approve', status:'inprogress', note:'', attachments:[] }
+      ], actionItems:[], note:'' },
+    { id:'m4', year:2569, no:4, date:'2569-06-10', type:'ordinary', status:'completed',
+      agendaFile:'', momFile:'', agendaAttachments:[], momAttachments:[],
+      agendaItems:[
+        { id:'a13', title:'รับรองรายงานการประชุม NRC ครั้งที่ 3/2569', type:'approve', status:'done', note:'', attachments:[] },
+        { id:'a14', title:'รายงาน Succession Plan กรรมการและผู้บริหารระดับสูง', type:'inform', status:'done', note:'', attachments:[] },
+        { id:'a15', title:'พิจารณา RACI Matrix ความรับผิดชอบ NRC', type:'approve', status:'inprogress', note:'ส่งมอบฝ่ายเลขานุการพัฒนาร่าง RACI ก่อนประชุมครั้งถัดไป', attachments:[] },
+        { id:'a16', title:'พิจารณาโครงสร้างการจ่ายค่าตอบแทน CEO', type:'approve', status:'done', note:'', attachments:[] }
+      ], actionItems:[], note:'' },
+    { id:'m5', year:2569, no:5, date:'2569-08-03', type:'ordinary', status:'planned',
+      agendaFile:'', momFile:'', agendaAttachments:[], momAttachments:[],
+      agendaItems:[
+        { id:'a17', title:'รับรองรายงานการประชุม NRC ครั้งที่ 4/2569', type:'approve', status:'pending', note:'', attachments:[] },
+        { id:'a18', title:'นำเสนอ RACI Matrix ฉบับสมบูรณ์', type:'approve', status:'pending', note:'', attachments:[] },
+        { id:'a19', title:'รายงานผลการประเมิน CEO รอบ 6 เดือน', type:'inform', status:'pending', note:'', attachments:[] },
+        { id:'a20', title:'ทบทวนรายชื่อกรรมการบริษัทย่อยและ Sub-Committee', type:'approve', status:'pending', note:'', attachments:[] }
+      ], actionItems:[], note:'' },
+    { id:'m6', year:2569, no:6, date:'2569-09-11', type:'ordinary', status:'planned',
+      agendaFile:'', momFile:'', agendaAttachments:[], momAttachments:[],
+      agendaItems:[
+        { id:'a21', title:'รับรองรายงานการประชุม NRC ครั้งที่ 5/2569', type:'approve', status:'pending', note:'', attachments:[] },
+        { id:'a22', title:'นำเสนอ Leadership Pipeline และแผนสืบทอดตำแหน่งผู้บริหาร', type:'approve', status:'pending', note:'', attachments:[] },
+        { id:'a23', title:'เป้าหมายการสรรหากรรมการใหม่ (Board Recruitment Target)', type:'approve', status:'pending', note:'', attachments:[] },
+        { id:'a24', title:'รายงานผลการพัฒนากรรมการ (Training & Development)', type:'inform', status:'pending', note:'', attachments:[] }
+      ], actionItems:[], note:'' },
+    { id:'m7', year:2569, no:7, date:'2569-11-02', type:'ordinary', status:'planned',
+      agendaFile:'', momFile:'', agendaAttachments:[], momAttachments:[],
+      agendaItems:[
+        { id:'a25', title:'รับรองรายงานการประชุม NRC ครั้งที่ 6/2569', type:'approve', status:'pending', note:'', attachments:[] },
+        { id:'a26', title:'สรุป Board Skills Matrix 2569 ฉบับสมบูรณ์', type:'approve', status:'pending', note:'', attachments:[] },
+        { id:'a27', title:'ประเมินผลการปฏิบัติงานคณะกรรมการ NRC ประจำปี 2569', type:'approve', status:'pending', note:'', attachments:[] },
+        { id:'a28', title:'วางแผนงาน NRC ประจำปี 2570', type:'approve', status:'pending', note:'', attachments:[] },
+        { id:'a29', title:'รายงานการปฏิบัติตาม CG Scorecard', type:'inform', status:'pending', note:'', attachments:[] }
+      ], actionItems:[], note:'' }
+  ],
+  actionItems: [
+    { id:'ai1', title:'จัดทำ RACI Matrix ความรับผิดชอบ NRC', owner:'นายจิณนภัสฐ์ ภัสฐาพงษ์', dueDate:'2569-08-03', status:'inprogress', priority:'high', meetingRef:'m4', note:'ร่าง RACI ต้องเสร็จก่อนประชุม 3 ส.ค.' },
+    { id:'ai2', title:'ปิด Loop การประเมินผล CEO รอบ 6 เดือน', owner:'นายจิณนภัสฐ์ ภัสฐาพงษ์', dueDate:'2569-08-03', status:'pending', priority:'high', meetingRef:'m5', note:'รวบรวมแบบประเมินจากกรรมการทุกท่าน' },
+    { id:'ai3', title:'จัดทำ Leadership Pipeline และแผน Succession', owner:'นายจิณนภัสฐ์ ภัสฐาพงษ์', dueDate:'2569-09-11', status:'pending', priority:'high', meetingRef:'m6', note:'ประสานฝ่าย HR รวบรวมข้อมูลผู้บริหาร' },
+    { id:'ai4', title:'กำหนด Board Recruitment Target ปี 2570', owner:'นายจิณนภัสฐ์ ภัสฐาพงษ์', dueDate:'2569-09-11', status:'pending', priority:'medium', meetingRef:'m6', note:'วิเคราะห์ช่องว่างทักษะจาก Skills Matrix' },
+    { id:'ai5', title:'จัดทำ Board Skills Matrix 2569 ฉบับสมบูรณ์', owner:'นายจิณนภัสฐ์ ภัสฐาพงษ์', dueDate:'2569-11-02', status:'pending', priority:'medium', meetingRef:'m7', note:'อัปเดตหลังการฝึกอบรมกรรมการ Q3' }
+  ],
+  succession: [
+    { id:'sp1', position:'CEO', incumbent:'นายกิตติ สัมฤทธิ์', successors:[{ name:'ผู้สืบทอด A', readiness:'ready-1y', idp:'Executive Leadership Program, Board Exposure' },{ name:'ผู้สืบทอด B', readiness:'ready-2y', idp:'P&L Responsibility, Strategic Planning' }], note:'' },
+    { id:'sp2', position:'CFO', incumbent:'ประธานเจ้าหน้าที่การเงิน', successors:[{ name:'ผู้สืบทอด C', readiness:'ready-now', idp:'Investor Relations, M&A Experience' }], note:'' },
+    { id:'sp3', position:'COO', incumbent:'ประธานเจ้าหน้าที่ปฏิบัติการ', successors:[{ name:'ผู้สืบทอด D', readiness:'ready-2y', idp:'Operations Excellence, Cross-functional' }], note:'' },
+    { id:'sp4', position:'CTO', incumbent:'ประธานเจ้าหน้าที่เทคโนโลยี', successors:[{ name:'ผู้สืบทอด E', readiness:'ready-1y', idp:'Digital Transformation, AI Strategy' }], note:'' },
+    { id:'sp5', position:'CHRO', incumbent:'นายจิณนภัสฐ์ ภัสฐาพงษ์', successors:[{ name:'ผู้สืบทอด F', readiness:'ready-now', idp:'Organization Design, Culture Change' }], note:'' },
+    { id:'sp6', position:'CEO-PPP', incumbent:'ผู้บริหาร PPP', successors:[{ name:'ผู้สืบทอด G', readiness:'ready-2y', idp:'Business Development' }], note:'' },
+    { id:'sp7', position:'MD-PSL', incumbent:'ผู้บริหาร PSL', successors:[{ name:'ผู้สืบทอด H', readiness:'ready-not', idp:'Leadership Development Program' }], note:'' },
+    { id:'sp8', position:'MD-PDE', incumbent:'ผู้บริหาร PDE', successors:[{ name:'ผู้สืบทอด I', readiness:'ready-1y', idp:'Industry Knowledge, Network' }], note:'' }
+  ],
+  controlList: {
+    subcommittees: [
+      { id:'sc1', name:'คณะกรรมการตรวจสอบ (AC)', members:[
+          { name:'นางสาวสุดารัตน์ ตั้งสุนทรกิจ', role:'ประธาน', type:'independent', term:'' },
+          { name:'นายสรรค์ชัย เตียวประเสริฐกุล', role:'กรรมการ', type:'independent', term:'' },
+          { name:'นายบุญชัย พิทักษ์ดำรงกิจ', role:'กรรมการ', type:'independent', term:'' }
+        ]},
+      { id:'sc2', name:'คณะกรรมการสรรหาและพิจารณาค่าตอบแทน (NRC)', members:[
+          { name:'รศ.ดร.ภก.ลือรัตน์ อนุรัตน์พานิช', role:'ประธาน', type:'independent', term:'' },
+          { name:'นายสุธี จุฬานุตรกุล', role:'กรรมการ', type:'nonexecutive', term:'' },
+          { name:'นายณรงค์ จันทร์สร้อย', role:'กรรมการ', type:'independent', term:'' }
+        ]},
+      { id:'sc3', name:'คณะกรรมการบริหารความเสี่ยง (RMC)', members:[
+          { name:'นายกิตติ ณัฐชยางกุล', role:'ประธาน', type:'nonexecutive', term:'' },
+          { name:'นายอมร แดงโชติ', role:'กรรมการ', type:'executive', term:'' },
+          { name:'นางสาวณิชา ณัฐชยางกุล', role:'กรรมการ', type:'executive', term:'' }
+        ]},
+      { id:'sc4', name:'คณะกรรมการกำกับดูแลกิจการที่ดีและการพัฒนาอย่างยั่งยืน (GCG)', members:[
+          { name:'นายสรรค์ชัย เตียวประเสริฐกุล', role:'ประธาน', type:'independent', term:'' },
+          { name:'นายบุญชัย พิทักษ์ดำรงกิจ', role:'กรรมการ', type:'independent', term:'' },
+          { name:'นางสาวเกตินาท สัมฤทธิ์', role:'กรรมการ', type:'executive', term:'' }
+        ]},
+      { id:'sc5', name:'คณะกรรมการบริหาร (ExCo)', members:[
+          { name:'นายกิตติ สัมฤทธิ์', role:'ประธาน', type:'executive', term:'' },
+          { name:'นายอมร แดงโชติ', role:'กรรมการ', type:'executive', term:'' },
+          { name:'นางสาวเกตินาท สัมฤทธิ์', role:'กรรมการ', type:'executive', term:'' },
+          { name:'นางสาวณิชา ณัฐชยางกุล', role:'กรรมการ', type:'executive', term:'' }
+        ]}
+    ],
+    subsidiaries: [
+      { id:'sub1', name:'PPP', fullName:'บริษัท พรีไซซ พาวเวอร์ แอนด์ เพาเวอร์ จำกัด',
+        directors:[{ name:'กรรมการ PPP-1', role:'ประธาน', type:'pcc-representative' }]},
+      { id:'sub2', name:'SKB', fullName:'บริษัท สกายบริดจ์ จำกัด',
+        directors:[{ name:'กรรมการ SKB-1', role:'ประธาน', type:'pcc-representative' }]},
+      { id:'sub3', name:'CEP', fullName:'บริษัท คลีน เอนเนอร์ยี่ พลัส จำกัด',
+        directors:[{ name:'กรรมการ CEP-1', role:'ประธาน', type:'pcc-representative' }]},
+      { id:'sub4', name:'PKB', fullName:'บริษัท พีเคบี จำกัด',
+        directors:[{ name:'กรรมการ PKB-1', role:'ประธาน', type:'pcc-representative' }]},
+      { id:'sub5', name:'PSL', fullName:'บริษัท พรีไซซ โซลูชั่น จำกัด',
+        directors:[{ name:'กรรมการ PSL-1', role:'ประธาน', type:'pcc-representative' }]},
+      { id:'sub6', name:'NSPC', fullName:'บริษัท นอร์ทสตาร์ พาวเวอร์ คอร์ป จำกัด',
+        directors:[{ name:'กรรมการ NSPC-1', role:'ประธาน', type:'pcc-representative' }]},
+      { id:'sub7', name:'PPD', fullName:'บริษัท พรีไซซ พาวเวอร์ ดีเวลลอปเมนต์ จำกัด',
+        directors:[{ name:'กรรมการ PPD-1', role:'ประธาน', type:'pcc-representative' }]},
+      { id:'sub8', name:'PDE', fullName:'บริษัท พรีไซซ ดิจิตอล เอนเนอร์ยี่ จำกัด',
+        directors:[{ name:'กรรมการ PDE-1', role:'ประธาน', type:'pcc-representative' }]},
+      { id:'sub9', name:'PEMC', fullName:'บริษัท พรีไซซ เอนเนอร์ยี่ แมเนจเมนต์ แอนด์ คอนซัลติ้ง จำกัด',
+        directors:[{ name:'กรรมการ PEMC-1', role:'ประธาน', type:'pcc-representative' }]}
+    ]
+  },
+  directorChangelog: [
+    { id:'dcl1', effectiveDate:'2569-01-01', directorId:'', directorName:'(ตัวอย่าง) นายอชิตศักดิ์ บรรจงโพธิ์กลาง',
+      changeType:'appointed', changeDetail:'แต่งตั้งเป็นประธานกรรมการบริษัทและกรรมการอิสระ',
+      previousValue:'', newValue:'ประธานกรรมการบริษัท / กรรมการอิสระ',
+      nrcMeetingRef:'', boardMeetingRef:'Board 1/2569', agmRef:'AGM 2569',
+      approvedBy:'agm', note:'ออกตามวาระ และได้รับการเลือกตั้งกลับเข้ามาใหม่', recordedDate:'2569-05-23', recordedBy:'จิณนภัสฐ์' }
+  ],
+  remuneration: [],
+  directorTraining: [],
+  selfAssessments: [],
+  documents: [],
+  agmItems: [],
+  independenceChecks: [],
+  conflictLog: []
+};
+
+let DB = {};
+// ── GitHub Gist API ──────────────────────────────────────────────────────────
+function getGistSettings() {
+  try { const s = localStorage.getItem(GIST_SETTINGS_KEY); return s ? JSON.parse(s) : { token:'', gistId:'' }; }
+  catch(e) { return { token:'', gistId:'' }; }
+}
+async function fetchFromGist(token, gistId) {
+  const res = await fetch(`https://api.github.com/gists/${gistId}`, {
+    headers: { 'Authorization': `token ${token}`, 'Accept': 'application/vnd.github.v3+json' }
+  });
+  if (!res.ok) throw new Error(`Gist API ${res.status}: ${res.statusText}`);
+  const gist = await res.json();
+  const file = gist.files['nrc-data.json'];
+  if (!file) throw new Error('ไม่พบไฟล์ nrc-data.json ใน Gist');
+  return JSON.parse(file.content);
+}
+async function pushToGist(token, gistId, data) {
+  const res = await fetch(`https://api.github.com/gists/${gistId}`, {
+    method: 'PATCH',
+    headers: { 'Authorization': `token ${token}`, 'Content-Type': 'application/json', 'Accept': 'application/vnd.github.v3+json' },
+    body: JSON.stringify({ files: { 'nrc-data.json': { content: JSON.stringify(data, null, 2) } } })
+  });
+  if (!res.ok) throw new Error(`Gist save ${res.status}: ${res.statusText}`);
+}
+async function createNewGist(token, data) {
+  const res = await fetch('https://api.github.com/gists', {
+    method: 'POST',
+    headers: { 'Authorization': `token ${token}`, 'Content-Type': 'application/json', 'Accept': 'application/vnd.github.v3+json' },
+    body: JSON.stringify({
+      description: 'NRC Management System Data — PCC',
+      public: false,
+      files: { 'nrc-data.json': { content: JSON.stringify(data, null, 2) } }
+    })
+  });
+  if (!res.ok) throw new Error(`Create Gist ${res.status}: ${res.statusText}`);
+  const gist = await res.json();
+  return gist.id;
+}
+function updateSyncStatus(state, msg) {
+  const el = document.getElementById('sync-status');
+  if (!el) return;
+  el.className = state;
+  const icons = { idle:'☁', syncing:'🔄', ok:'✅', error:'⚠' };
+  el.textContent = `${icons[state]||'☁'} ${msg}`;
+  el.title = `GitHub Gist Sync — ${msg}`;
+}
+async function initDataFromGist() {
+  const { token, gistId } = getGistSettings();
+  if (!token || !gistId) { updateSyncStatus('idle', 'ไม่ได้ connect'); return; }
+  updateSyncStatus('syncing', 'โหลดจาก Gist...');
+  try {
+    const data = await fetchFromGist(token, gistId);
+    DB = data;
+    migrateDB();
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(DB));
+    const t = new Date().toLocaleTimeString('th-TH', { hour:'2-digit', minute:'2-digit' });
+    updateSyncStatus('ok', `Sync ${t}`);
+    showSection(currentSection || 'dashboard');
+  } catch(e) {
+    console.warn('Gist load failed:', e.message);
+    updateSyncStatus('error', 'ใช้ local (Gist error)');
+  }
+}
+// ─────────────────────────────────────────────────────────────────────────────
+function migrateDB() {
+  if (DB.meetings) {
+    DB.meetings.forEach(m => {
+      if (!m.agendaAttachments) m.agendaAttachments = [];
+      if (!m.momAttachments) m.momAttachments = [];
+      if (!m.agendaFile) m.agendaFile = '';
+      if (!m.momFile) m.momFile = '';
+      if (m.agendaItems) m.agendaItems.forEach(a => { if (!a.attachments) a.attachments = []; });
+    });
+  }
+  if (!DB.directorChangelog) DB.directorChangelog = [];
+  if (!DB.remuneration) DB.remuneration = [];
+  if (!DB.directorTraining) DB.directorTraining = [];
+  if (!DB.selfAssessments) DB.selfAssessments = [];
+  if (!DB.documents) DB.documents = [];
+  if (!DB.agmItems) DB.agmItems = [];
+  if (!DB.independenceChecks) DB.independenceChecks = [];
+  if (!DB.conflictLog) DB.conflictLog = [];
+}
+function loadData() {
+  try { const s = localStorage.getItem(STORAGE_KEY); DB = s ? JSON.parse(s) : JSON.parse(JSON.stringify(DEFAULT_DATA)); }
+  catch(e) { DB = JSON.parse(JSON.stringify(DEFAULT_DATA)); }
+  migrateDB();
+}
+function saveData() {
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(DB));
+  const { token, gistId } = getGistSettings();
+  if (token && gistId && !gistSyncInProgress) {
+    gistSyncInProgress = true;
+    updateSyncStatus('syncing', 'กำลัง sync...');
+    pushToGist(token, gistId, DB)
+      .then(() => {
+        const t = new Date().toLocaleTimeString('th-TH', { hour:'2-digit', minute:'2-digit' });
+        updateSyncStatus('ok', `Sync ${t}`);
+      })
+      .catch(e => {
+        console.warn('Gist save failed:', e.message);
+        updateSyncStatus('error', 'Sync ไม่สำเร็จ');
+      })
+      .finally(() => { gistSyncInProgress = false; });
+  }
+}
+function genId(p) { return p + Date.now().toString(36) + Math.random().toString(36).substr(2,5); }
+
+function showSection(section) {
+  document.querySelectorAll('#nav a').forEach(a => a.classList.remove('active'));
+  const navEl = document.getElementById('nav-'+section);
+  if (navEl) navEl.classList.add('active');
+  const titles = { dashboard:'Dashboard', meetings:'การประชุม NRC', directors:'คณะกรรมการบริษัท (Board)', controllist:'Control List', succession:'Succession Plan', changelog:'ประวัติการเปลี่ยนแปลงกรรมการ', remuneration:'ค่าตอบแทนกรรมการ', training:'แผนพัฒนากรรมการ', assessment:'ประเมินผลกรรมการ', documents:'คลังเอกสาร', agm:'AGM Tracker', conflict:'ผลประโยชน์ทับซ้อน', settings:'ตั้งค่าระบบ' };
+  document.getElementById('page-title').textContent = titles[section]||section;
+  const renders = { dashboard:renderDashboard, meetings:renderMeetings, directors:renderDirectors, controllist:renderControlList, succession:renderSuccession, changelog:renderChangelog, remuneration:renderRemuneration, training:renderTraining, assessment:renderAssessment, documents:renderDocuments, agm:renderAGM, conflict:renderConflict, settings:renderSettings };
+  document.getElementById('content').innerHTML = '';
+  if (renders[section]) renders[section]();
+  if (section === 'settings') setTimeout(loadGistSettingsUI, 80);
+}
+
+// ---- Date helpers (dates stored in BE format, e.g. "2569-08-03") ----
+function thDate(isoDate) {
+  if (!isoDate) return '-';
+  const parts = isoDate.split('-');
+  if (parts.length < 3) return '-';
+  const year = parseInt(parts[0]);
+  const month = parseInt(parts[1]) - 1;
+  const day = parseInt(parts[2]);
+  const months = ['ม.ค.','ก.พ.','มี.ค.','เม.ย.','พ.ค.','มิ.ย.','ก.ค.','ส.ค.','ก.ย.','ต.ค.','พ.ย.','ธ.ค.'];
+  // If year > 2500 → already BE; if ≤ 2500 → CE from date picker, add 543
+  const displayYear = year > 2500 ? year : year + 543;
+  return `${day} ${months[month]} ${displayYear}`;
+}
+// Convert stored date (BE if >2500) to a CE Date object for comparison
+function toDateCE(isoDate) {
+  if (!isoDate) return null;
+  const parts = isoDate.split('-');
+  if (parts.length < 3) return null;
+  const year = parseInt(parts[0]);
+  const ceYear = year > 2500 ? year - 543 : year;
+  return new Date(`${String(ceYear).padStart(4,'0')}-${parts[1]}-${parts[2]}`);
+}
+// Convert stored BE date → CE string for <input type="date"> value
+function toCEStr(isoDate) {
+  if (!isoDate) return '';
+  const parts = isoDate.split('-');
+  if (parts.length < 3) return isoDate;
+  const year = parseInt(parts[0]);
+  if (year > 2500) return `${year - 543}-${parts[1]}-${parts[2]}`;
+  return isoDate;
+}
+// Convert CE string from date picker → BE string for storage
+function toBEStr(ceDate) {
+  if (!ceDate) return '';
+  const parts = ceDate.split('-');
+  if (parts.length < 3) return ceDate;
+  const year = parseInt(parts[0]);
+  if (year <= 2500) return `${year + 543}-${parts[1]}-${parts[2]}`;
+  return ceDate;
+}
+function statusBadge(status) {
+  const map = { completed:['status-completed','สำเร็จแล้ว'], planned:['status-planned','กำหนดการ'], pending:['status-pending','รอดำเนินการ'], overdue:['status-overdue','เกินกำหนด'], inprogress:['status-inprogress','กำลังดำเนินการ'], done:['status-done','เสร็จสิ้น'] };
+  const [cls,label] = map[status]||['status-pending',status];
+  return `<span class="badge-status ${cls}">${label}</span>`;
+}
+function priorityTag(p) {
+  const m={high:'#C00000',medium:'#ED7D31',low:'#70AD47'}, l={high:'สูง',medium:'กลาง',low:'ต่ำ'};
+  return `<span style="color:${m[p]||'#999'};font-weight:700;font-size:11px">${l[p]||p}</span>`;
+}
+function calcTenureYears(startDate) {
+  if (!startDate) return null;
+  const start = toDateCE(startDate); if (!start) return null;
+  const now = new Date();
+  return ((now-start)/(1000*60*60*24*365.25)).toFixed(1);
+}
+function getDirectorCGStats() {
+  const dirs = DB.directors; const total = dirs.length;
+  const independent = dirs.filter(d=>d.type==='independent').length;
+  const female = dirs.filter(d=>d.gender==='female').length;
+  const nonexec = dirs.filter(d=>d.type!=='executive').length;
+  return { total, independent, female, nonexec,
+    indepRatio: total ? Math.round(independent/total*100):0,
+    femaleRatio: total ? Math.round(female/total*100):0,
+    nonexecRatio: total ? Math.round(nonexec/total*100):0 };
+}
+function openModal(title, bodyHTML, footerHTML) {
+  document.getElementById('modal-title').textContent = title;
+  document.getElementById('modal-body').innerHTML = bodyHTML;
+  document.getElementById('modal-footer').innerHTML = footerHTML||'';
+  document.getElementById('modal-overlay').classList.add('show');
+}
+function closeModal() { document.getElementById('modal-overlay').classList.remove('show'); }
+document.getElementById('modal-overlay').addEventListener('click', function(e){ if(e.target===this) closeModal(); });
+
+// FILE ATTACHMENT UTILITIES
+function fileIcon(name) {
+  if (!name) return '&#128196;';
+  const ext = name.split('.').pop().toLowerCase();
+  const icons = { pdf:'&#128196;', docx:'&#128196;', doc:'&#128196;', xlsx:'&#128202;', xls:'&#128202;', pptx:'&#127897;', ppt:'&#127897;', jpg:'&#128444;', jpeg:'&#128444;', png:'&#128444;', zip:'&#128230;' };
+  return icons[ext]||'&#128196;';
+}
+function formatSize(bytes) {
+  if (!bytes||bytes===0) return '';
+  if (bytes < 1024) return bytes+'B';
+  if (bytes < 1048576) return (bytes/1024).toFixed(1)+'KB';
+  return (bytes/1048576).toFixed(1)+'MB';
+}
+function renderAttachList(attachments, onRemove) {
+  if (!attachments||!attachments.length) return '<p class="text-muted" style="font-size:12px">ยังไม่มีเอกสารแนบ</p>';
+  return attachments.map((att,i)=>`
+    <div class="attach-item">
+      <span class="attach-icon">${fileIcon(att.name)}</span>
+      <div class="attach-name">
+        ${att.data ? `<a href="${att.data}" download="${att.name}">${att.name}</a>` : att.name}
+        ${att.size ? `<br><span style="color:var(--text-light);font-size:10px">${formatSize(att.size)}</span>` : ''}
+      </div>
+      ${onRemove ? `<button class="btn-remove" onclick="${onRemove}(${i})">&#10005;</button>` : ''}
+    </div>`).join('');
+}
+function readFileAsBase64(file) {
+  return new Promise((resolve,reject)=>{
+    if (file.size > 5*1024*1024) { resolve({ name:file.name, size:file.size, data:null, note:'ไฟล์ขนาดใหญ่ (>5MB) บันทึกเฉพาะชื่อ' }); return; }
+    const reader = new FileReader();
+    reader.onload = e => resolve({ name:file.name, size:file.size, data:e.target.result });
+    reader.onerror = reject;
+    reader.readAsDataURL(file);
+  });
+}
+</script>
+<script>
+// ============================================================
+// DASHBOARD
+// ============================================================
+function renderDashboard() {
+  const cg = getDirectorCGStats();
+  const upcoming = DB.meetings.filter(m=>m.status==='planned').slice(0,3);
+  const openAI = DB.actionItems.filter(ai=>ai.status!=='done'&&ai.status!=='completed');
+  const today = new Date();
+  const completedMeetings = DB.meetings.filter(m=>m.status==='completed').length;
+
+  const upcomingHTML = upcoming.length===0 ? '<p class="text-muted">ไม่มีการประชุมที่กำหนดไว้</p>' :
+    upcoming.map(m=>`<div class="flex-between" style="padding:8px 0;border-bottom:1px solid var(--border)">
+      <div><strong>NRC ครั้งที่ ${m.no}/${m.year}</strong><div class="text-muted">${thDate(m.date)}</div></div>
+      <div class="flex-center">${statusBadge(m.status)}<button class="btn btn-sm btn-outline" onclick="showSection('meetings');setTimeout(()=>viewMeeting('${m.id}'),100)">ดู</button></div>
+    </div>`).join('');
+
+  const aiHTML = openAI.length===0 ? '<p class="text-muted">ไม่มี Action Items ที่ค้างอยู่</p>' :
+    openAI.map(ai=>{
+      const due=toDateCE(ai.dueDate); const isOverdue=due&&due<today&&ai.status!=='done';
+      return `<div style="padding:8px 0;border-bottom:1px solid var(--border)">
+        <div class="flex-between"><strong style="font-size:13px">${ai.title}</strong>${priorityTag(ai.priority)}</div>
+        <div class="text-muted flex-between mt-8"><span>&#128197; ${thDate(ai.dueDate)} ${isOverdue?'&#9888; เกินกำหนด':''}</span>${statusBadge(ai.status)}</div>
+      </div>`;
+    }).join('');
+
+  document.getElementById('content').innerHTML = `
+    <div class="cards-row">
+      <div class="card"><div class="card-label">กรรมการบริษัท</div><div class="card-value">${cg.total}</div><div class="card-sub">คน</div></div>
+      <div class="card ${cg.indepRatio>=50?'green':'red'}">
+        <div class="card-label">กรรมการอิสระ</div><div class="card-value">${cg.indepRatio}%</div>
+        <div class="card-sub">${cg.independent}/${cg.total} คน ${cg.indepRatio>=50?'&#9989;':'&#9888; ต่ำกว่า 50%'}</div>
+      </div>
+      <div class="card ${cg.femaleRatio>=30?'green':'orange'}">
+        <div class="card-label">สัดส่วนหญิง</div><div class="card-value">${cg.femaleRatio}%</div>
+        <div class="card-sub">${cg.female}/${cg.total} คน ${cg.femaleRatio>=30?'&#9989; Bonus CG':'&#9888; ต่ำกว่า 30%'}</div>
+      </div>
+      <div class="card ${cg.nonexecRatio>=66?'green':'orange'}">
+        <div class="card-label">Non-Executive</div><div class="card-value">${cg.nonexecRatio}%</div>
+        <div class="card-sub">${cg.nonexec}/${cg.total} คน ${cg.nonexecRatio>=66?'&#9989;':'&#9888; ต่ำกว่า 66%'}</div>
+      </div>
+      <div class="card blue"><div class="card-label">ประชุม 2569</div><div class="card-value">${completedMeetings}/${DB.meetings.length}</div><div class="card-sub">ครั้งที่สำเร็จ</div></div>
+      <div class="card orange"><div class="card-label">Action Items ค้าง</div><div class="card-value">${openAI.length}</div><div class="card-sub">รายการ</div></div>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px">
+      <div class="panel"><div class="panel-header"><h3>&#128197; การประชุมที่กำหนดไว้</h3></div><div class="panel-body">${upcomingHTML}</div></div>
+      <div class="panel"><div class="panel-header"><h3>&#9989; Action Items ที่ต้องติดตาม</h3></div><div class="panel-body">${aiHTML}</div></div>
+    </div>
+    <div class="panel mt-16">
+      <div class="panel-header"><h3>&#128202; CG Scorecard — Board of Directors</h3></div>
+      <div class="panel-body">
+        <div class="cards-row">
+          <div style="flex:1;min-width:140px"><div class="text-muted mb-8">กรรมการอิสระ &gt; 50%</div>
+            <div class="progress-bar"><div class="progress-fill" style="width:${Math.min(cg.indepRatio,100)}%;background:${cg.indepRatio>=50?'var(--green)':'var(--red)'}"></div></div>
+            <div style="font-size:12px;margin-top:4px">${cg.indepRatio}% (เกณฑ์: &gt;50%) ${cg.indepRatio>=50?'&#9989;':'&#10060;'}</div>
+          </div>
+          <div style="flex:1;min-width:140px"><div class="text-muted mb-8">กรรมการหญิง &ge; 30%</div>
+            <div class="progress-bar"><div class="progress-fill" style="width:${Math.min(cg.femaleRatio,100)}%;background:${cg.femaleRatio>=30?'var(--green)':'var(--orange)'}"></div></div>
+            <div style="font-size:12px;margin-top:4px">${cg.femaleRatio}% (เกณฑ์: &ge;30%) ${cg.femaleRatio>=30?'&#9989;':'&#9888;'}</div>
+          </div>
+          <div style="flex:1;min-width:140px"><div class="text-muted mb-8">Non-Executive &gt; 66%</div>
+            <div class="progress-bar"><div class="progress-fill" style="width:${Math.min(cg.nonexecRatio,100)}%;background:${cg.nonexecRatio>=66?'var(--green)':'var(--orange)'}"></div></div>
+            <div style="font-size:12px;margin-top:4px">${cg.nonexecRatio}% (เกณฑ์: &gt;66%) ${cg.nonexecRatio>=66?'&#9989;':'&#9888;'}</div>
+          </div>
+        </div>
+        ${(()=>{
+          const stripPrefix = n => n.replace(/^(รศ\.ดร\.ภก\.|รศ\.ดร\.|ดร\.|นางสาว|นาง|นาย)\s*/,'').trim();
+          const indepNames = DB.directors.filter(d=>d.type==='independent').map(d=>stripPrefix(d.name)).join(', ');
+          const femaleNames = DB.directors.filter(d=>d.gender==='female').map(d=>stripPrefix(d.name)).join(', ');
+          const execCount = DB.directors.filter(d=>d.type==='executive').length;
+          return `<div class="alert alert-info mt-8" style="margin-bottom:0">
+            <strong>กรรมการอิสระ ${cg.independent} คน:</strong> ${indepNames||'-'}<br>
+            <strong>กรรมการหญิง ${cg.female} คน:</strong> ${femaleNames||'-'} &nbsp;|&nbsp;
+            <strong>กรรมการบริหาร:</strong> ${execCount} คน
+          </div>`;
+        })()}
+      </div>
+    </div>
+    ${(()=>{
+      const recentLogs = [...(DB.directorChangelog||[])].sort((a,b)=>(toDateCE(b.effectiveDate)||new Date(0))-(toDateCE(a.effectiveDate)||new Date(0))).slice(0,5);
+      const typeColors = { appointed:'var(--green)', resigned:'var(--red)', role_change:'var(--orange)', committee_change:'var(--gold)', position_change:'var(--blue)', other:'var(--text-light)' };
+      const typeLabels = { appointed:'แต่งตั้ง', resigned:'พ้นตำแหน่ง', role_change:'เปลี่ยนบทบาท', committee_change:'เปลี่ยนคณะย่อย', position_change:'เปลี่ยนตำแหน่ง', other:'อื่นๆ' };
+      if (recentLogs.length === 0) return `<div class="panel mt-16"><div class="panel-header" style="justify-content:space-between"><h3>📋 ประวัติการเปลี่ยนแปลงกรรมการ (ล่าสุด)</h3><button class="btn btn-light btn-sm" onclick="showSection('changelog')">ดูทั้งหมด</button></div><div class="panel-body"><p class="text-muted">ยังไม่มีประวัติการเปลี่ยนแปลง — ไปที่เมนู "ประวัติกรรมการ" เพื่อเพิ่มรายการ</p></div></div>`;
+      const rows = recentLogs.map(l=>`<div style="display:flex;align-items:flex-start;gap:10px;padding:8px 0;border-bottom:1px solid var(--border)">
+        <div style="width:8px;height:8px;border-radius:50%;background:${typeColors[l.changeType]||'var(--text-light)'};margin-top:5px;flex-shrink:0"></div>
+        <div style="flex:1">
+          <div style="font-size:13px;font-weight:600;color:var(--navy)">${l.directorName}</div>
+          <div style="font-size:12px;color:var(--text-light)">${typeLabels[l.changeType]||l.changeType} — ${l.changeDetail}</div>
+          ${l.nrcMeetingRef?`<div style="font-size:11px;color:var(--blue)">📋 ${l.nrcMeetingRef}</div>`:''}
+        </div>
+        <div style="font-size:11px;color:var(--text-light);white-space:nowrap">${thDate(l.effectiveDate)}</div>
+      </div>`).join('');
+      return `<div class="panel mt-16"><div class="panel-header" style="justify-content:space-between"><h3>📋 ประวัติการเปลี่ยนแปลงกรรมการ (ล่าสุด)</h3><button class="btn btn-light btn-sm" onclick="showSection('changelog')">ดูทั้งหมด +</button></div><div class="panel-body">${rows}</div></div>`;
+    })()}`;
+}
+
+// ============================================================
+// MEETINGS
+// ============================================================
+function renderMeetings() {
+  const meetings = [...DB.meetings].sort((a,b)=>a.no-b.no);
+  const rows = meetings.map(m=>`
+    <tr class="clickable" onclick="viewMeeting('${m.id}')">
+      <td><strong>NRC ${m.no}/${m.year}</strong></td>
+      <td>${thDate(m.date)}</td>
+      <td>${m.agendaItems?m.agendaItems.length:0} วาระ</td>
+      <td>${m.agendaAttachments&&m.agendaAttachments.length ? `<span class="tag">&#128196; Agenda (${m.agendaAttachments.length})</span>`:''} ${m.momAttachments&&m.momAttachments.length ? `<span class="tag">&#128196; MoM (${m.momAttachments.length})</span>`:''}</td>
+      <td>${statusBadge(m.status)}</td>
+      <td class="no-hover-bg">
+        <button class="btn btn-sm btn-outline" onclick="event.stopPropagation();viewMeeting('${m.id}')">&#128196; รายละเอียด</button>
+        <button class="btn btn-sm btn-orange" onclick="event.stopPropagation();editMeeting('${m.id}')">&#9998;</button>
+        <button class="btn btn-sm btn-red" onclick="event.stopPropagation();deleteMeeting('${m.id}')">&#128465;</button>
+      </td>
+    </tr>`).join('');
+
+  document.getElementById('content').innerHTML = `
+    <div class="flex-between mb-8">
+      <div class="section-title">&#128197; รายการประชุม NRC</div>
+      <button class="btn btn-primary" onclick="editMeeting(null)">+ เพิ่มการประชุม</button>
+    </div>
+    <div class="panel">
+      <div class="panel-body" style="padding:0">
+        <table class="tbl">
+          <thead><tr><th>การประชุม</th><th>วันที่</th><th>วาระ</th><th>เอกสาร</th><th>สถานะ</th><th>จัดการ</th></tr></thead>
+          <tbody>${rows}</tbody>
+        </table>
+      </div>
+    </div>
+    <div class="panel">
+      <div class="panel-header"><h3>&#9989; Action Items ทั้งหมด</h3>
+        <button class="btn btn-sm btn-light" onclick="editActionItem(null)">+ เพิ่ม</button>
+      </div>
+      <div class="panel-body" style="padding:0" id="ai-panel">${renderActionItemsTable()}</div>
+    </div>`;
+}
+
+function renderActionItemsTable() {
+  const items = DB.actionItems; if (!items.length) return '<p class="empty-state"><div class="emoji">&#9989;</div>ไม่มี Action Items</p>';
+  const today = new Date();
+  return `<table class="tbl"><thead><tr><th>รายการ</th><th>ผู้รับผิดชอบ</th><th>กำหนดส่ง</th><th>ลำดับ</th><th>สถานะ</th><th>จัดการ</th></tr></thead>
+  <tbody>${items.map(ai=>{
+    const due=toDateCE(ai.dueDate); const overdue=due&&due<today&&ai.status!=='done'&&ai.status!=='completed';
+    return `<tr><td><strong>${ai.title}</strong>${ai.note?`<br><span class="text-muted">${ai.note}</span>`:''}</td>
+      <td>${ai.owner}</td><td style="color:${overdue?'var(--red)':'inherit'}">${thDate(ai.dueDate)}${overdue?' &#9888;':''}</td>
+      <td>${priorityTag(ai.priority)}</td><td>${statusBadge(ai.status)}</td>
+      <td><button class="btn btn-sm btn-green" onclick="toggleAIStatus('${ai.id}')">&#8635;</button>
+          <button class="btn btn-sm btn-orange" onclick="editActionItem('${ai.id}')">&#9998;</button>
+          <button class="btn btn-sm btn-red" onclick="deleteActionItem('${ai.id}')">&#128465;</button></td></tr>`;
+  }).join('')}</tbody></table>`;
+}
+
+function viewMeeting(id) {
+  const m = DB.meetings.find(x=>x.id===id); if (!m) return;
+  const agendaRows = (m.agendaItems||[]).map((a,i)=>`
+    <tr>
+      <td>${i+1}</td><td><strong>${a.title}</strong></td>
+      <td><span class="tag">${a.type==='approve'?'พิจารณาอนุมัติ':a.type==='inform'?'รับทราบ':a.type}</span></td>
+      <td>${statusBadge(a.status)}</td>
+      <td>${(a.attachments&&a.attachments.length)?`<span class="tag">&#128196; ${a.attachments.length}</span>`:'-'}</td>
+      <td>
+        <button class="btn btn-sm btn-primary" onclick="manageAgendaAttachments('${id}','${a.id}')">&#128206;</button>
+        <button class="btn btn-sm btn-orange" onclick="editAgendaItem('${id}','${a.id}')">&#9998;</button>
+        <button class="btn btn-sm btn-red" onclick="deleteAgendaItem('${id}','${a.id}')">&#128465;</button>
+      </td>
+    </tr>`).join('');
+
+  const agendaDocs = (m.agendaAttachments&&m.agendaAttachments.length) ?
+    m.agendaAttachments.map(att=>`<div class="meeting-doc-card"><span class="doc-icon">${fileIcon(att.name)}</span><div class="doc-info"><div class="doc-name">${att.data?`<a href="${att.data}" download="${att.name}">${att.name}</a>`:att.name}</div><div class="doc-size">${formatSize(att.size)}</div></div></div>`).join('') :
+    '<span class="text-muted">ยังไม่มี</span>';
+  const momDocs = (m.momAttachments&&m.momAttachments.length) ?
+    m.momAttachments.map(att=>`<div class="meeting-doc-card"><span class="doc-icon">${fileIcon(att.name)}</span><div class="doc-info"><div class="doc-name">${att.data?`<a href="${att.data}" download="${att.name}">${att.name}</a>`:att.name}</div><div class="doc-size">${formatSize(att.size)}</div></div></div>`).join('') :
+    '<span class="text-muted">ยังไม่มี</span>';
+
+  openModal(`NRC ครั้งที่ ${m.no}/${m.year} — ${thDate(m.date)}`,
+    `<div class="flex-between mb-8"><div>${statusBadge(m.status)}</div>
+      <div class="btn-group">
+        <button class="btn btn-sm btn-orange" onclick="closeModal();editMeeting('${id}')">&#9998; แก้ไข</button>
+        <button class="btn btn-sm btn-red" onclick="closeModal();deleteMeeting('${id}')">&#128465; ลบ</button>
+      </div>
+    </div>
+    ${m.note?`<div class="alert alert-info mb-8">${m.note}</div>`:''}
+    
+    <div class="panel mb-0" style="border:1px solid var(--border)">
+      <div class="panel-header" style="padding:8px 12px"><h3>&#128206; เอกสารการประชุม</h3>
+        <div class="btn-group">
+          <button class="btn btn-sm btn-light" onclick="uploadMeetingDoc('${id}','agenda')">&#128196; + Agenda</button>
+          <button class="btn btn-sm btn-light" onclick="uploadMeetingDoc('${id}','mom')">&#128196; + MoM</button>
+        </div>
+      </div>
+      <div class="panel-body" style="padding:12px">
+        <div class="form-row" style="gap:16px">
+          <div style="flex:1"><strong style="font-size:12px;color:var(--navy)">&#128196; Agenda (วาระการประชุม)</strong>
+            <div class="meeting-doc-row">${agendaDocs}</div></div>
+          <div style="flex:1"><strong style="font-size:12px;color:var(--navy)">&#128196; MoM (รายงานการประชุม)</strong>
+            <div class="meeting-doc-row">${momDocs}</div></div>
+        </div>
+      </div>
+    </div>
+
+    <h4 style="color:var(--navy);margin:14px 0 8px">วาระการประชุม</h4>
+    <table class="tbl">
+      <thead><tr><th>#</th><th>วาระ</th><th>ประเภท</th><th>สถานะ</th><th>ไฟล์แนบ</th><th>จัดการ</th></tr></thead>
+      <tbody>${agendaRows||'<tr><td colspan="6" class="empty-state">ยังไม่มีวาระ</td></tr>'}</tbody>
+    </table>
+    <button class="btn btn-primary mt-8" onclick="addAgendaItem('${id}')">+ เพิ่มวาระ</button>`,
+    `<button class="btn btn-outline" onclick="closeModal()">ปิด</button>`);
+}
+
+// Upload meeting-level documents (Agenda / MoM)
+function uploadMeetingDoc(meetingId, docType) {
+  const input = document.createElement('input');
+  input.type = 'file';
+  input.multiple = true;
+  input.accept = '.pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx,.jpg,.jpeg,.png,.zip';
+  input.onchange = async function() {
+    const m = DB.meetings.find(x=>x.id===meetingId); if (!m) return;
+    const field = docType==='agenda' ? 'agendaAttachments' : 'momAttachments';
+    if (!m[field]) m[field] = [];
+    for (const file of Array.from(this.files)) {
+      const att = await readFileAsBase64(file);
+      m[field].push(att);
+    }
+    saveData();
+    viewMeeting(meetingId);
+  };
+  input.click();
+}
+
+// Agenda item attachments
+function manageAgendaAttachments(meetingId, agendaId) {
+  const m = DB.meetings.find(x=>x.id===meetingId);
+  const a = m&&m.agendaItems ? m.agendaItems.find(x=>x.id===agendaId) : null;
+  if (!a) return;
+  if (!a.attachments) a.attachments = [];
+
+  const renderList = ()=>{
+    const listEl = document.getElementById('att-list');
+    if (listEl) listEl.innerHTML = renderAttachList(a.attachments, 'removeAgendaAttachment');
+  };
+
+  window._currentAttachRef = { meetingId, agendaId };
+
+  openModal(`เอกสารแนบ — ${a.title}`,
+    `<div id="att-list">${renderAttachList(a.attachments, 'removeAgendaAttachment')}</div>
+    <div class="attach-zone mt-8" onclick="document.getElementById('att-input').click()">
+      <input type="file" id="att-input" multiple accept=".pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx,.jpg,.jpeg,.png">
+      <div style="font-size:24px">&#128206;</div>
+      <div style="color:var(--text-light);font-size:13px">คลิกเพื่อเลือกไฟล์แนบ</div>
+    </div>`,
+    `<button class="btn btn-outline" onclick="closeModal();viewMeeting('${meetingId}')">ปิด</button>`);
+
+  document.getElementById('att-input').onchange = async function() {
+    const ref = window._currentAttachRef;
+    const m2 = DB.meetings.find(x=>x.id===ref.meetingId);
+    const a2 = m2&&m2.agendaItems ? m2.agendaItems.find(x=>x.id===ref.agendaId) : null;
+    if (!a2) return;
+    if (!a2.attachments) a2.attachments = [];
+    for (const file of Array.from(this.files)) {
+      const att = await readFileAsBase64(file);
+      a2.attachments.push(att);
+    }
+    saveData();
+    const listEl = document.getElementById('att-list');
+    if (listEl) listEl.innerHTML = renderAttachList(a2.attachments, 'removeAgendaAttachment');
+  };
+}
+
+window.removeAgendaAttachment = function(idx) {
+  const ref = window._currentAttachRef; if (!ref) return;
+  const m = DB.meetings.find(x=>x.id===ref.meetingId);
+  const a = m&&m.agendaItems ? m.agendaItems.find(x=>x.id===ref.agendaId) : null;
+  if (!a||!a.attachments) return;
+  a.attachments.splice(idx,1);
+  saveData();
+  const listEl = document.getElementById('att-list');
+  if (listEl) listEl.innerHTML = renderAttachList(a.attachments, 'removeAgendaAttachment');
+};
+
+function editMeeting(id) {
+  const m = id ? DB.meetings.find(x=>x.id===id) : null;
+  const isNew = !m;
+  const f = m||{ id:genId('m'), year:2569, no:'', date:'', type:'ordinary', status:'planned', agendaItems:[], agendaAttachments:[], momAttachments:[], note:'' };
+  openModal(isNew?'เพิ่มการประชุม':`แก้ไข NRC ครั้งที่ ${f.no}/${f.year}`,
+    `<div class="form-row">
+      <div class="form-group"><label>ครั้งที่</label><input class="form-control" id="f-no" type="number" value="${f.no}"></div>
+      <div class="form-group"><label>ปี (พ.ศ.)</label><input class="form-control" id="f-year" type="number" value="${f.year}"></div>
+    </div>
+    <div class="form-group"><label>วันที่ประชุม (ปี ค.ศ.)</label><input class="form-control" id="f-date" type="date" value="${toCEStr(f.date)}"></div>
+    <div class="form-row">
+      <div class="form-group"><label>ประเภท</label>
+        <select class="form-control" id="f-type">
+          <option value="ordinary" ${f.type==='ordinary'?'selected':''}>สามัญ</option>
+          <option value="special" ${f.type==='special'?'selected':''}>วิสามัญ</option>
+        </select>
+      </div>
+      <div class="form-group"><label>สถานะ</label>
+        <select class="form-control" id="f-status">
+          <option value="planned" ${f.status==='planned'?'selected':''}>กำหนดการ</option>
+          <option value="completed" ${f.status==='completed'?'selected':''}>สำเร็จแล้ว</option>
+        </select>
+      </div>
+    </div>
+    <div class="form-group"><label>หมายเหตุ</label><textarea class="form-control" id="f-note">${f.note||''}</textarea></div>`,
+    `<button class="btn btn-outline" onclick="closeModal()">ยกเลิก</button>
+     ${!isNew?`<button class="btn btn-red" onclick="closeModal();deleteMeeting('${f.id}')">&#128465; ลบ</button>`:''}
+     <button class="btn btn-primary" onclick="saveMeeting('${f.id}',${isNew})">บันทึก</button>`);
+}
+
+function saveMeeting(id, isNew) {
+  const no=parseInt(document.getElementById('f-no').value), year=parseInt(document.getElementById('f-year').value);
+  const dateCE=document.getElementById('f-date').value, type=document.getElementById('f-type').value;
+  const status=document.getElementById('f-status').value, note=document.getElementById('f-note').value;
+  if (!no||!dateCE) return alert('กรุณากรอกข้อมูลให้ครบ');
+  const date=toBEStr(dateCE); // convert CE picker → BE for storage
+  if (isNew) { DB.meetings.push({ id, year, no, date, type, status, agendaItems:[], agendaAttachments:[], momAttachments:[], actionItems:[], momFile:'', agendaFile:'', note }); }
+  else { const m=DB.meetings.find(x=>x.id===id); if (m) Object.assign(m,{ no, year, date, type, status, note }); }
+  saveData(); closeModal(); renderMeetings();
+}
+
+function deleteMeeting(id) {
+  if (!confirm('ลบการประชุมนี้และข้อมูลทั้งหมดที่เกี่ยวข้อง?')) return;
+  DB.meetings = DB.meetings.filter(x=>x.id!==id);
+  saveData(); renderMeetings();
+}
+
+function addAgendaItem(meetingId) { editAgendaItemForm(meetingId, null); }
+function editAgendaItem(meetingId, agendaId) { editAgendaItemForm(meetingId, agendaId); }
+
+function editAgendaItemForm(meetingId, agendaId) {
+  const m=DB.meetings.find(x=>x.id===meetingId); if (!m) return;
+  const a = agendaId ? (m.agendaItems||[]).find(x=>x.id===agendaId) : null;
+  const isNew=!a; const f=a||{ id:genId('a'), title:'', type:'approve', status:'pending', note:'' };
+  openModal(isNew?'เพิ่มวาระ':'แก้ไขวาระ',
+    `<div class="form-group"><label>ชื่อวาระ</label><input class="form-control" id="fa-title" value="${f.title}" placeholder="ระบุชื่อวาระ..."></div>
+     <div class="form-row">
+       <div class="form-group"><label>ประเภท</label><select class="form-control" id="fa-type">
+         <option value="approve" ${f.type==='approve'?'selected':''}>พิจารณาอนุมัติ</option>
+         <option value="inform" ${f.type==='inform'?'selected':''}>รับทราบ</option>
+         <option value="other" ${f.type==='other'?'selected':''}>อื่นๆ</option>
+       </select></div>
+       <div class="form-group"><label>สถานะ</label><select class="form-control" id="fa-status">
+         <option value="pending" ${f.status==='pending'?'selected':''}>รอดำเนินการ</option>
+         <option value="inprogress" ${f.status==='inprogress'?'selected':''}>กำลังดำเนินการ</option>
+         <option value="done" ${f.status==='done'?'selected':''}>เสร็จสิ้น</option>
+       </select></div>
+     </div>
+     <div class="form-group"><label>หมายเหตุ</label><textarea class="form-control" id="fa-note">${f.note||''}</textarea></div>`,
+    `<button class="btn btn-outline" onclick="closeModal()">ยกเลิก</button>
+     ${!isNew?`<button class="btn btn-red" onclick="deleteAgendaItem('${meetingId}','${f.id}')">&#128465; ลบ</button>`:''}
+     <button class="btn btn-primary" onclick="saveAgendaItem('${meetingId}','${f.id}',${isNew})">บันทึก</button>`);
+}
+
+function saveAgendaItem(meetingId, agendaId, isNew) {
+  const m=DB.meetings.find(x=>x.id===meetingId); if (!m) return;
+  if (!m.agendaItems) m.agendaItems=[];
+  const title=document.getElementById('fa-title').value.trim(), type=document.getElementById('fa-type').value;
+  const status=document.getElementById('fa-status').value, note=document.getElementById('fa-note').value;
+  if (!title) return alert('กรุณาระบุชื่อวาระ');
+  if (isNew) { m.agendaItems.push({ id:agendaId, title, type, status, note, attachments:[] }); }
+  else { const a=m.agendaItems.find(x=>x.id===agendaId); if (a) Object.assign(a,{ title, type, status, note }); }
+  saveData(); closeModal(); viewMeeting(meetingId);
+}
+
+function deleteAgendaItem(meetingId, agendaId) {
+  if (!confirm('ลบวาระนี้?')) return;
+  const m=DB.meetings.find(x=>x.id===meetingId);
+  if (m&&m.agendaItems) { m.agendaItems=m.agendaItems.filter(a=>a.id!==agendaId); saveData(); viewMeeting(meetingId); }
+}
+
+function editActionItem(id) {
+  const ai=id?DB.actionItems.find(x=>x.id===id):null; const isNew=!ai;
+  const f=ai||{ id:genId('ai'), title:'', owner:DB.company.secretary, dueDate:'', status:'pending', priority:'medium', meetingRef:'', note:'' };
+  const meetOpts=DB.meetings.map(m=>`<option value="${m.id}" ${f.meetingRef===m.id?'selected':''}>NRC ${m.no}/${m.year} — ${thDate(m.date)}</option>`).join('');
+  openModal(isNew?'เพิ่ม Action Item':'แก้ไข Action Item',
+    `<div class="form-group"><label>รายการ</label><input class="form-control" id="fai-title" value="${f.title}" placeholder="ระบุรายการ..."></div>
+     <div class="form-row">
+       <div class="form-group"><label>ผู้รับผิดชอบ</label><input class="form-control" id="fai-owner" value="${f.owner}"></div>
+       <div class="form-group"><label>กำหนดส่ง (ปี ค.ศ.)</label><input class="form-control" id="fai-due" type="date" value="${toCEStr(f.dueDate)}"></div>
+     </div>
+     <div class="form-row">
+       <div class="form-group"><label>ลำดับความสำคัญ</label><select class="form-control" id="fai-priority">
+         <option value="high" ${f.priority==='high'?'selected':''}>สูง</option>
+         <option value="medium" ${f.priority==='medium'?'selected':''}>กลาง</option>
+         <option value="low" ${f.priority==='low'?'selected':''}>ต่ำ</option>
+       </select></div>
+       <div class="form-group"><label>สถานะ</label><select class="form-control" id="fai-status">
+         <option value="pending" ${f.status==='pending'?'selected':''}>รอดำเนินการ</option>
+         <option value="inprogress" ${f.status==='inprogress'?'selected':''}>กำลังดำเนินการ</option>
+         <option value="done" ${f.status==='done'?'selected':''}>เสร็จสิ้น</option>
+       </select></div>
+     </div>
+     <div class="form-group"><label>การประชุมที่เกี่ยวข้อง</label>
+       <select class="form-control" id="fai-meetingRef"><option value="">-- ไม่ระบุ --</option>${meetOpts}</select></div>
+     <div class="form-group"><label>หมายเหตุ</label><textarea class="form-control" id="fai-note">${f.note||''}</textarea></div>`,
+    `<button class="btn btn-outline" onclick="closeModal()">ยกเลิก</button>
+     ${!isNew?`<button class="btn btn-red" onclick="deleteActionItem('${f.id}')">&#128465; ลบ</button>`:''}
+     <button class="btn btn-primary" onclick="saveActionItem('${f.id}',${isNew})">บันทึก</button>`);
+}
+
+function saveActionItem(id, isNew) {
+  const title=document.getElementById('fai-title').value.trim(); if (!title) return alert('กรุณาระบุรายการ');
+  const data = { id, title, owner:document.getElementById('fai-owner').value, dueDate:toBEStr(document.getElementById('fai-due').value), status:document.getElementById('fai-status').value, priority:document.getElementById('fai-priority').value, meetingRef:document.getElementById('fai-meetingRef').value, note:document.getElementById('fai-note').value };
+  if (isNew) { DB.actionItems.push(data); }
+  else { const ai=DB.actionItems.find(x=>x.id===id); if (ai) Object.assign(ai,data); }
+  saveData(); closeModal(); renderMeetings();
+}
+
+function toggleAIStatus(id) {
+  const ai=DB.actionItems.find(x=>x.id===id); if (!ai) return;
+  const cycle=['pending','inprogress','done'];
+  ai.status=cycle[(cycle.indexOf(ai.status)+1)%cycle.length];
+  saveData();
+  const p=document.getElementById('ai-panel'); if (p) p.innerHTML=renderActionItemsTable();
+}
+
+function deleteActionItem(id) {
+  if (!confirm('ลบ Action Item นี้?')) return;
+  DB.actionItems=DB.actionItems.filter(x=>x.id!==id);
+  saveData(); closeModal(); renderMeetings();
+}
+</script>
+<script>
+// ============================================================
+// DIRECTORS (Board of Directors - full board for CG measurement)
+// ============================================================
+const SKILLS_LIST = [
+  { key:'finance', label:'การเงิน/บัญชี' }, { key:'law', label:'กฎหมาย' },
+  { key:'strategy', label:'กลยุทธ์' }, { key:'it', label:'IT/ดิจิทัล' },
+  { key:'risk', label:'บริหารความเสี่ยง' }, { key:'hr', label:'HR/องค์กร' },
+  { key:'marketing', label:'การตลาด' }, { key:'industry', label:'พลังงาน/อุตสาหกรรม' }
+];
+
+function renderDirectors() {
+  const dirs = DB.directors;
+  const cg = getDirectorCGStats();
+  const typeLabel = { independent:'อิสระ', executive:'บริหาร', nonexecutive:'ไม่ใช่บริหาร' };
+  const rows = dirs.map(d=>{
+    const tenure = d.startDate ? calcTenureYears(d.startDate) : null;
+    const tenureWarn = tenure && parseFloat(tenure)>=9;
+    return `<tr>
+      <td><strong>${d.name}</strong><br><span class="text-muted">${d.position||''}</span></td>
+      <td><span class="tag">${typeLabel[d.type]||d.type}</span></td>
+      <td>${d.gender==='female'?'&#9792; หญิง':'&#9794; ชาย'}</td>
+      <td style="color:${tenureWarn?'var(--red)':'inherit'}">${tenure?tenure+' ปี'+(tenureWarn?' &#9888;':''):'-'}</td>
+      <td style="font-size:11px">
+        ${d.nrcRole==='chair'?'<span class="tag">&#11088; NRC</span>':d.nrcRole==='member'?'<span class="tag">NRC</span>':''}
+        ${d.acRole==='chair'?'<span class="tag">&#11088; AC</span>':d.acRole==='member'?'<span class="tag">AC</span>':''}
+        ${d.rmcRole==='chair'?'<span class="tag">&#11088; RMC</span>':d.rmcRole==='member'?'<span class="tag">RMC</span>':''}
+        ${d.gcgRole==='chair'?'<span class="tag">&#11088; GCG</span>':d.gcgRole==='member'?'<span class="tag">GCG</span>':''}
+        ${d.excoRole==='chair'?'<span class="tag">&#11088; ExCo</span>':d.excoRole==='member'?'<span class="tag">ExCo</span>':''}
+      </td>
+      <td>
+        <button class="btn btn-sm btn-orange" onclick="editDirector('${d.id}')">&#9998;</button>
+        <button class="btn btn-sm btn-red" onclick="deleteDirector('${d.id}')">&#128465;</button>
+      </td>
+    </tr>`;
+  }).join('');
+
+  document.getElementById('content').innerHTML = `
+    <div class="cards-row">
+      <div class="card"><div class="card-label">กรรมการบริษัทรวม</div><div class="card-value">${cg.total}</div><div class="card-sub">คน</div></div>
+      <div class="card ${cg.indepRatio>=50?'green':'red'}">
+        <div class="card-label">กรรมการอิสระ (Independent)</div>
+        <div class="card-value">${cg.indepRatio}%</div>
+        <div class="card-sub">${cg.independent}/${cg.total} คน ${cg.indepRatio>=50?'&#9989; ผ่านเกณฑ์ &gt;50%':'&#9888; ต่ำกว่าเกณฑ์ 50%'}</div>
+      </div>
+      <div class="card">
+        <div class="card-label">กรรมการบริหาร (Executive)</div>
+        <div class="card-value blue">${DB.directors.filter(d=>d.type==='executive').length}</div>
+        <div class="card-sub">${DB.directors.filter(d=>d.type==='executive').length}/${cg.total} คน</div>
+      </div>
+      <div class="card">
+        <div class="card-label">ไม่ใช่บริหาร (Non-Executive)</div>
+        <div class="card-value blue">${cg.nonexec}</div>
+        <div class="card-sub">${cg.nonexec}/${cg.total} คน</div>
+      </div>
+    </div>
+    <div class="panel" style="margin-bottom:16px">
+      <div class="panel-body" style="padding:14px 16px">
+        <div style="display:flex;align-items:center;gap:16px;flex-wrap:wrap">
+          <div style="flex:1;min-width:200px">
+            <div style="font-size:13px;font-weight:700;color:var(--navy);margin-bottom:6px">สัดส่วนกรรมการอิสระ — เกณฑ์ CG: &gt; 50%</div>
+            <div class="progress-bar" style="height:12px"><div class="progress-fill" style="width:${Math.min(cg.indepRatio,100)}%;background:${cg.indepRatio>=50?'var(--green)':'var(--red)'}"></div></div>
+            <div style="font-size:13px;margin-top:6px;color:${cg.indepRatio>=50?'var(--green)':'var(--red)'};font-weight:700">${cg.indepRatio}% ${cg.indepRatio>=50?'&#9989; ผ่านเกณฑ์':'&#10060; ต่ำกว่าเกณฑ์'}</div>
+          </div>
+          <div style="font-size:12px;color:var(--text-light);max-width:280px">
+            กรรมการอิสระ ${cg.independent} คน จากทั้งหมด ${cg.total} คน<br>
+            &#9733; ดาว = ประธานคณะกรรมการชุดย่อย
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="alert alert-info" style="margin-bottom:14px">
+      <strong>หมายเหตุ:</strong> ส่วนนี้บันทึกข้อมูลคณะกรรมการบริษัท (Board of Directors) ทั้งหมดของ PCC เพื่อคำนวณ CG Scorecard
+    </div>
+    <div class="flex-between mb-8">
+      <div class="section-title">&#128101; คณะกรรมการบริษัท PCC (12 คน)</div>
+      <button class="btn btn-primary" onclick="editDirector(null)">+ เพิ่มกรรมการ</button>
+    </div>
+    <div class="panel">
+      <div class="panel-body" style="padding:0">
+        <table class="tbl">
+          <thead><tr><th>ชื่อ-ตำแหน่ง</th><th>ประเภท</th><th>เพศ</th><th>วาระ</th><th>คณะกรรมการชุดย่อย</th><th>จัดการ</th></tr></thead>
+          <tbody>${rows||'<tr><td colspan="6" class="empty-state">ยังไม่มีข้อมูล</td></tr>'}</tbody>
+        </table>
+      </div>
+    </div>
+    <div class="section-title mt-16">&#128202; Board Skills Matrix</div>
+    <div class="panel"><div class="panel-body skills-matrix" id="skills-matrix-container">${buildSkillsMatrix()}</div></div>`;
+}
+
+function buildSkillsMatrix() {
+  const dirs = DB.directors;
+  if (!dirs.length) return '<p class="text-muted">ยังไม่มีข้อมูลกรรมการ</p>';
+  const headers = SKILLS_LIST.map(s=>`<th>${s.label}</th>`).join('');
+  const totals = {};
+  SKILLS_LIST.forEach(s=>{ totals[s.key]=dirs.filter(d=>d.skills&&d.skills[s.key]).length; });
+  const rows = dirs.map(d=>{
+    const cells = SKILLS_LIST.map(s=>{
+      const has=d.skills&&d.skills[s.key];
+      return `<td class="skill-cell ${has?'skill-1':'skill-0'}" onclick="toggleSkill('${d.id}','${s.key}')">${has?'&#9679;':'&#9675;'}</td>`;
+    }).join('');
+    const fullName = d.name.replace(/^(รศ\.ดร\.ภก\.|รศ\.ดร\.|ดร\.|นางสาว|นาง|นาย)\s*/,'').trim();
+    return `<tr><td class="dir-name">${fullName}</td>${cells}</tr>`;
+  }).join('');
+  const totalRow = SKILLS_LIST.map(s=>`<td style="font-weight:700;color:var(--navy)">${totals[s.key]}/${dirs.length}</td>`).join('');
+  return `<table>
+    <thead><tr><th class="dir-name">กรรมการ</th>${headers}</tr></thead>
+    <tbody>${rows}</tbody>
+    <tfoot><tr><td class="dir-name" style="font-weight:700;background:#f0f4fa">รวม</td>${totalRow}</tr></tfoot>
+  </table>
+  <p class="text-muted mt-8">&#9679; = มีทักษะ &nbsp; &#9675; = ไม่มี &nbsp; คลิกเซลล์เพื่อสลับ</p>`;
+}
+
+function toggleSkill(dirId, skillKey) {
+  const d=DB.directors.find(x=>x.id===dirId); if (!d) return;
+  if (!d.skills) d.skills={};
+  d.skills[skillKey]=d.skills[skillKey]?0:1;
+  saveData();
+  const container=document.getElementById('skills-matrix-container');
+  if (container) container.innerHTML=buildSkillsMatrix();
+}
+
+function editDirector(id) {
+  const d=id?DB.directors.find(x=>x.id===id):null; const isNew=!d;
+  const f=d||{ id:genId('d'), name:'', nameEn:'', type:'independent', gender:'male', startDate:'', position:'', nrcRole:'none', acRole:'none', rmcRole:'none', gcgRole:'none', excoRole:'none', skills:{}, note:'' };
+  const skillChecks = SKILLS_LIST.map(s=>`
+    <label style="display:inline-flex;align-items:center;gap:4px;margin:3px 8px 3px 0;font-size:12px">
+      <input type="checkbox" id="fsk-${s.key}" ${f.skills&&f.skills[s.key]?'checked':''}> ${s.label}
+    </label>`).join('');
+  const roleOpts = (val)=>`<option value="chair" ${val==='chair'?'selected':''}>ประธาน</option><option value="member" ${val==='member'?'selected':''}>กรรมการ</option><option value="none" ${val==='none'?'selected':''}>ไม่มี</option>`;
+
+  openModal(isNew?'เพิ่มกรรมการบริษัท':`แก้ไข — ${f.name}`,
+    `<div class="form-group"><label>ชื่อ-นามสกุล (ภาษาไทย)</label><input class="form-control" id="fd-name" value="${f.name}"></div>
+     <div class="form-group"><label>ชื่อ-นามสกุล (English)</label><input class="form-control" id="fd-nameEn" value="${f.nameEn||''}"></div>
+     <div class="form-group"><label>ตำแหน่ง</label><input class="form-control" id="fd-pos" value="${f.position||''}"></div>
+     <div class="form-row">
+       <div class="form-group"><label>ประเภทกรรมการ</label><select class="form-control" id="fd-type">
+         <option value="independent" ${f.type==='independent'?'selected':''}>อิสระ (Independent)</option>
+         <option value="nonexecutive" ${f.type==='nonexecutive'?'selected':''}>ไม่ใช่บริหาร (Non-Executive)</option>
+         <option value="executive" ${f.type==='executive'?'selected':''}>บริหาร (Executive)</option>
+       </select></div>
+       <div class="form-group"><label>เพศ</label><select class="form-control" id="fd-gender">
+         <option value="male" ${f.gender==='male'?'selected':''}>ชาย</option>
+         <option value="female" ${f.gender==='female'?'selected':''}>หญิง</option>
+       </select></div>
+     </div>
+     <div class="form-group"><label>วันที่เริ่มดำรงตำแหน่ง (ปี ค.ศ. ใช้คำนวณวาระ)</label><input class="form-control" id="fd-start" type="date" value="${toCEStr(f.startDate||'')}"></div>
+     <p style="font-size:12px;font-weight:700;color:var(--navy);margin-bottom:8px">บทบาทในคณะกรรมการชุดย่อย</p>
+     <div class="form-row">
+       <div class="form-group"><label>NRC</label><select class="form-control" id="fd-nrc">${roleOpts(f.nrcRole)}</select></div>
+       <div class="form-group"><label>AC</label><select class="form-control" id="fd-ac">${roleOpts(f.acRole)}</select></div>
+       <div class="form-group"><label>RMC</label><select class="form-control" id="fd-rmc">${roleOpts(f.rmcRole)}</select></div>
+     </div>
+     <div class="form-row">
+       <div class="form-group"><label>GCG</label><select class="form-control" id="fd-gcg">${roleOpts(f.gcgRole)}</select></div>
+       <div class="form-group"><label>ExCo</label><select class="form-control" id="fd-exco">${roleOpts(f.excoRole)}</select></div>
+     </div>
+     <div class="form-group"><label>ทักษะและความเชี่ยวชาญ</label>
+       <div style="border:1px solid var(--border);border-radius:5px;padding:10px">${skillChecks}</div>
+     </div>
+     <div class="form-group"><label>หมายเหตุ</label><textarea class="form-control" id="fd-note">${f.note||''}</textarea></div>`,
+    `<button class="btn btn-outline" onclick="closeModal()">ยกเลิก</button>
+     ${!isNew?`<button class="btn btn-red" onclick="deleteDirector('${f.id}')">&#128465; ลบ</button>`:''}
+     <button class="btn btn-primary" onclick="saveDirector('${f.id}',${isNew})">บันทึก</button>`);
+}
+
+function saveDirector(id, isNew) {
+  const name=document.getElementById('fd-name').value.trim(); if (!name) return alert('กรุณาระบุชื่อ');
+  const skills={};
+  SKILLS_LIST.forEach(s=>{ skills[s.key]=document.getElementById('fsk-'+s.key).checked?1:0; });
+  const data = { id, name, nameEn:document.getElementById('fd-nameEn').value, position:document.getElementById('fd-pos').value, type:document.getElementById('fd-type').value, gender:document.getElementById('fd-gender').value, startDate:toBEStr(document.getElementById('fd-start').value), nrcRole:document.getElementById('fd-nrc').value, acRole:document.getElementById('fd-ac').value, rmcRole:document.getElementById('fd-rmc').value, gcgRole:document.getElementById('fd-gcg').value, excoRole:document.getElementById('fd-exco').value, skills, note:document.getElementById('fd-note').value, training:[] };
+  if (isNew) { DB.directors.push(data); }
+  else { const i=DB.directors.findIndex(x=>x.id===id); if (i>=0) DB.directors[i]=data; }
+  saveData(); closeModal(); renderDirectors();
+}
+
+function deleteDirector(id) {
+  if (!confirm('ลบข้อมูลกรรมการนี้?')) return;
+  DB.directors=DB.directors.filter(x=>x.id!==id);
+  saveData(); closeModal(); renderDirectors();
+}
+
+// ============================================================
+// CONTROL LIST
+// ============================================================
+function renderControlList() {
+  document.getElementById('content').innerHTML = `
+    <div class="section-title">&#127970; Control List</div>
+    <div class="tabs" id="cl-tabs">
+      <button class="tab-btn active" onclick="switchCLTab('subcommittees',this)">คณะกรรมการชุดย่อย</button>
+      <button class="tab-btn" onclick="switchCLTab('subsidiaries',this)">บริษัทย่อย</button>
+    </div>
+    <div id="cl-content">${renderSubcommittees()}</div>`;
+}
+
+function switchCLTab(tab, btn) {
+  document.querySelectorAll('#cl-tabs .tab-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById('cl-content').innerHTML = tab==='subcommittees' ? renderSubcommittees() : renderSubsidiaries();
+}
+
+function renderSubcommittees() {
+  return DB.controlList.subcommittees.map(sc=>`
+    <div class="panel">
+      <div class="panel-header">
+        <h3>${sc.name}</h3>
+        <div class="btn-group">
+          <button class="btn btn-sm btn-light" onclick="addSCMember('${sc.id}')">+ เพิ่มสมาชิก</button>
+        </div>
+      </div>
+      <div class="panel-body" style="padding:0">
+        <table class="tbl">
+          <thead><tr><th>ชื่อกรรมการ</th><th>บทบาท</th><th>ประเภท</th><th>วาระ</th><th>จัดการ</th></tr></thead>
+          <tbody>${(sc.members||[]).map(mem=>`
+            <tr>
+              <td>${mem.name}</td><td>${mem.role}</td>
+              <td><span class="tag">${mem.type==='independent'?'อิสระ':mem.type==='executive'?'บริหาร':mem.type==='nonexecutive'?'ไม่ใช่บริหาร':mem.type}</span></td>
+              <td>${mem.term||'-'}</td>
+              <td>
+                <button class="btn btn-sm btn-orange" onclick="editSCMember('${sc.id}','${encodeURIComponent(mem.name)}')">&#9998;</button>
+                <button class="btn btn-sm btn-red" onclick="deleteSCMember('${sc.id}','${encodeURIComponent(mem.name)}')">&#128465;</button>
+              </td>
+            </tr>`).join('')||'<tr><td colspan="5" class="empty-state">ยังไม่มีสมาชิก</td></tr>'}
+          </tbody>
+        </table>
+      </div>
+    </div>`).join('');
+}
+
+function renderSubsidiaries() {
+  return `<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:14px">
+    ${DB.controlList.subsidiaries.map(sub=>`
+      <div class="panel">
+        <div class="panel-header" style="flex-wrap:wrap;gap:4px">
+          <div><h3>${sub.name}</h3><span style="font-size:10px;opacity:0.8">${sub.fullName||''}</span></div>
+          <button class="btn btn-sm btn-light" onclick="addSubDirector('${sub.id}')">+ เพิ่ม</button>
+        </div>
+        <div class="panel-body" style="padding:0">
+          <table class="tbl">
+            <thead><tr><th>ชื่อกรรมการ</th><th>บทบาท</th><th>ประเภท</th><th>จัดการ</th></tr></thead>
+            <tbody>${(sub.directors||[]).map((d,i)=>`
+              <tr>
+                <td>${d.name}</td><td>${d.role}</td>
+                <td><span class="tag">${d.type==='pcc-representative'?'ตัวแทน PCC':d.type==='independent'?'อิสระ':d.type==='executive'?'บริหาร':d.type}</span></td>
+                <td>
+                  <button class="btn btn-sm btn-orange" onclick="editSubDirector('${sub.id}',${i})">&#9998;</button>
+                  <button class="btn btn-sm btn-red" onclick="deleteSubDirector('${sub.id}',${i})">&#128465;</button>
+                </td>
+              </tr>`).join('')||'<tr><td colspan="4" class="empty-state">ยังไม่มีข้อมูล</td></tr>'}
+            </tbody>
+          </table>
+        </div>
+      </div>`).join('')}
+  </div>`;
+}
+
+function scMemberForm(f) {
+  return `<div class="form-group"><label>ชื่อ-นามสกุล</label><input class="form-control" id="fsm-name" value="${f.name||''}"></div>
+    <div class="form-row">
+      <div class="form-group"><label>บทบาท</label><select class="form-control" id="fsm-role">
+        <option ${(f.role||'')==='ประธาน'?'selected':''}>ประธาน</option>
+        <option ${(f.role||'')==='กรรมการ'?'selected':''}>กรรมการ</option>
+        <option ${(f.role||'')==='กรรมการและเลขานุการ'?'selected':''}>กรรมการและเลขานุการ</option>
+      </select></div>
+      <div class="form-group"><label>ประเภท</label><select class="form-control" id="fsm-type">
+        <option value="independent" ${f.type==='independent'?'selected':''}>อิสระ</option>
+        <option value="nonexecutive" ${f.type==='nonexecutive'?'selected':''}>ไม่ใช่บริหาร</option>
+        <option value="executive" ${f.type==='executive'?'selected':''}>บริหาร</option>
+      </select></div>
+    </div>
+    <div class="form-group"><label>วาระ</label><input class="form-control" id="fsm-term" value="${f.term||''}"></div>`;
+}
+
+function addSCMember(scId) {
+  const sc=DB.controlList.subcommittees.find(x=>x.id===scId);
+  openModal(`เพิ่มสมาชิก — ${sc?sc.name:''}`, scMemberForm({}),
+    `<button class="btn btn-outline" onclick="closeModal()">ยกเลิก</button>
+     <button class="btn btn-primary" onclick="saveSCMember('${scId}',null,true)">บันทึก</button>`);
+}
+
+function editSCMember(scId, encodedName) {
+  const sc=DB.controlList.subcommittees.find(x=>x.id===scId); if (!sc) return;
+  const name=decodeURIComponent(encodedName);
+  const mem=sc.members ? sc.members.find(m=>m.name===name) : null;
+  openModal(`แก้ไข — ${name}`, scMemberForm(mem||{}),
+    `<button class="btn btn-outline" onclick="closeModal()">ยกเลิก</button>
+     <button class="btn btn-red" onclick="deleteSCMember('${scId}','${encodedName}')">&#128465; ลบ</button>
+     <button class="btn btn-primary" onclick="saveSCMember('${scId}','${encodedName}',false)">บันทึก</button>`);
+}
+
+function saveSCMember(scId, encodedOldName, isNew) {
+  const sc=DB.controlList.subcommittees.find(x=>x.id===scId); if (!sc) return;
+  if (!sc.members) sc.members=[];
+  const name=document.getElementById('fsm-name').value.trim(); if (!name) return alert('กรุณาระบุชื่อ');
+  const role=document.getElementById('fsm-role').value, type=document.getElementById('fsm-type').value, term=document.getElementById('fsm-term').value;
+  if (isNew) { sc.members.push({ name, role, type, term }); }
+  else { const oldName=decodeURIComponent(encodedOldName); const m=sc.members.find(x=>x.name===oldName); if (m) Object.assign(m,{ name, role, type, term }); }
+  saveData(); closeModal(); renderControlList();
+}
+
+function deleteSCMember(scId, encodedName) {
+  if (!confirm('ลบสมาชิกนี้?')) return;
+  const sc=DB.controlList.subcommittees.find(x=>x.id===scId); if (!sc||!sc.members) return;
+  const name=decodeURIComponent(encodedName);
+  sc.members=sc.members.filter(m=>m.name!==name);
+  saveData(); renderControlList();
+}
+
+function subDirectorForm(f) {
+  return `<div class="form-group"><label>ชื่อ-นามสกุล</label><input class="form-control" id="fsd-name" value="${f?f.name:''}" placeholder="ระบุชื่อ..."></div>
+    <div class="form-row">
+      <div class="form-group"><label>บทบาท</label><select class="form-control" id="fsd-role">
+        <option ${f&&f.role==='ประธาน'?'selected':''}>ประธาน</option>
+        <option ${f&&f.role==='กรรมการ'?'selected':''}>กรรมการ</option>
+        <option ${f&&f.role==='กรรมการผู้จัดการ'?'selected':''}>กรรมการผู้จัดการ</option>
+        <option ${f&&f.role==='กรรมการและเลขานุการ'?'selected':''}>กรรมการและเลขานุการ</option>
+      </select></div>
+      <div class="form-group"><label>ประเภท</label><select class="form-control" id="fsd-type">
+        <option value="pcc-representative" ${f&&f.type==='pcc-representative'?'selected':''}>ตัวแทน PCC</option>
+        <option value="independent" ${f&&f.type==='independent'?'selected':''}>อิสระ</option>
+        <option value="executive" ${f&&f.type==='executive'?'selected':''}>บริหาร</option>
+      </select></div>
+    </div>`;
+}
+
+function addSubDirector(subId) {
+  const sub=DB.controlList.subsidiaries.find(x=>x.id===subId);
+  openModal(`เพิ่มกรรมการ — ${sub?sub.name:''}`, subDirectorForm(null),
+    `<button class="btn btn-outline" onclick="closeModal()">ยกเลิก</button>
+     <button class="btn btn-primary" onclick="saveSubDirector('${subId}',null,true)">บันทึก</button>`);
+}
+
+function editSubDirector(subId, idx) {
+  const sub=DB.controlList.subsidiaries.find(x=>x.id===subId); if (!sub) return;
+  const d=sub.directors&&sub.directors[idx];
+  openModal(`แก้ไข — ${d?d.name:''}`, subDirectorForm(d||{}),
+    `<button class="btn btn-outline" onclick="closeModal()">ยกเลิก</button>
+     <button class="btn btn-red" onclick="deleteSubDirector('${subId}',${idx})">&#128465; ลบ</button>
+     <button class="btn btn-primary" onclick="saveSubDirector('${subId}',${idx},false)">บันทึก</button>`);
+}
+
+function saveSubDirector(subId, idx, isNew) {
+  const sub=DB.controlList.subsidiaries.find(x=>x.id===subId); if (!sub) return;
+  if (!sub.directors) sub.directors=[];
+  const name=document.getElementById('fsd-name').value.trim(); if (!name) return alert('กรุณาระบุชื่อ');
+  const role=document.getElementById('fsd-role').value, type=document.getElementById('fsd-type').value;
+  if (isNew) { sub.directors.push({ name, role, type }); }
+  else { if (sub.directors[idx]) Object.assign(sub.directors[idx],{ name, role, type }); }
+  saveData(); closeModal(); renderControlList();
+}
+
+function deleteSubDirector(subId, idx) {
+  if (!confirm('ลบกรรมการนี้?')) return;
+  const sub=DB.controlList.subsidiaries.find(x=>x.id===subId); if (!sub||!sub.directors) return;
+  sub.directors.splice(idx,1);
+  saveData(); renderControlList();
+}
+
+// ============================================================
+// SUCCESSION
+// ============================================================
+const READINESS_MAP = {
+  'ready-now':['ready-now','Ready Now (พร้อมทันที)'],
+  'ready-1y':['ready-1y','Ready ใน 1 ปี'],
+  'ready-2y':['ready-2y','Ready ใน 2-3 ปี'],
+  'ready-not':['ready-not','ยังไม่พร้อม']
+};
+
+function renderSuccession() {
+  const plans = DB.succession;
+  const cards = plans.map(sp=>`
+    <div class="succession-card">
+      <div class="sc-header">
+        <h4>&#127919; ${sp.position}</h4>
+        <div class="btn-group">
+          <button class="btn btn-sm btn-light" onclick="editSuccession('${sp.id}')">&#9998;</button>
+          <button class="btn btn-sm btn-light-red" onclick="deleteSuccession('${sp.id}')">&#128465;</button>
+        </div>
+      </div>
+      <div class="sc-body">
+        <div class="text-muted" style="font-size:11px;margin-bottom:8px">ผู้ดำรงตำแหน่ง: <strong>${sp.incumbent}</strong></div>
+        ${(sp.successors||[]).map((s,i)=>`
+          <div class="sc-successor">
+            <div class="label">ผู้สืบทอด #${i+1}</div>
+            <div class="flex-between"><div class="name">${s.name}</div>
+              <span class="readiness ${s.readiness}">${READINESS_MAP[s.readiness]?READINESS_MAP[s.readiness][1]:s.readiness}</span>
+            </div>
+            ${s.idp?`<div class="text-muted" style="font-size:11px;margin-top:2px">IDP: ${s.idp}</div>`:''}
+          </div>`).join('')}
+        ${!sp.successors||!sp.successors.length?'<div class="text-muted">ยังไม่มีผู้สืบทอด</div>':''}
+        ${sp.note?`<div class="alert alert-info" style="padding:6px 10px;font-size:12px;margin-top:8px">${sp.note}</div>`:''}
+      </div>
+    </div>`).join('');
+
+  document.getElementById('content').innerHTML = `
+    <div class="flex-between mb-8">
+      <div class="section-title">&#127919; Succession Plan</div>
+      <button class="btn btn-primary" onclick="editSuccession(null)">+ เพิ่มตำแหน่ง</button>
+    </div>
+    <div class="alert alert-info">
+      <span class="readiness ready-now" style="margin-right:6px">Ready Now</span>
+      <span class="readiness ready-1y" style="margin-right:6px">Ready 1Y</span>
+      <span class="readiness ready-2y" style="margin-right:6px">Ready 2-3Y</span>
+      <span class="readiness ready-not">ยังไม่พร้อม</span>
+    </div>
+    <div class="succession-grid">${cards||'<p class="text-muted">ยังไม่มีข้อมูล</p>'}</div>`;
+}
+
+function editSuccession(id) {
+  const sp=id?DB.succession.find(x=>x.id===id):null; const isNew=!sp;
+  const f=sp||{ id:genId('sp'), position:'', incumbent:'', successors:[], note:'' };
+  const succForms=(f.successors||[]).map((s,i)=>buildSuccessorForm(i,s)).join('');
+  openModal(isNew?'เพิ่มตำแหน่ง Succession':`แก้ไข — ${f.position}`,
+    `<div class="form-row">
+       <div class="form-group"><label>ตำแหน่ง</label><input class="form-control" id="fsp-pos" value="${f.position}"></div>
+       <div class="form-group"><label>ผู้ดำรงตำแหน่งปัจจุบัน</label><input class="form-control" id="fsp-inc" value="${f.incumbent}"></div>
+     </div>
+     <div id="successor-forms">${succForms}</div>
+     <button class="btn btn-sm btn-outline mt-8" onclick="addSuccessorForm()">+ เพิ่มผู้สืบทอด</button>
+     <div class="form-group mt-16"><label>หมายเหตุ</label><textarea class="form-control" id="fsp-note">${f.note||''}</textarea></div>`,
+    `<button class="btn btn-outline" onclick="closeModal()">ยกเลิก</button>
+     ${!isNew?`<button class="btn btn-red" onclick="deleteSuccession('${f.id}')">&#128465; ลบ</button>`:''}
+     <button class="btn btn-primary" onclick="saveSuccession('${f.id}',${isNew})">บันทึก</button>`);
+}
+
+function buildSuccessorForm(i,s) {
+  s=s||{};
+  return `<div class="successor-form" style="border:1px solid var(--border);border-radius:6px;padding:10px;margin-bottom:8px">
+    <div style="font-weight:700;color:var(--navy);font-size:12px;margin-bottom:6px;display:flex;justify-content:space-between">
+      <span>ผู้สืบทอด #${i+1}</span>
+      <button type="button" class="btn btn-sm btn-red" style="padding:2px 7px" onclick="this.closest('.successor-form').remove()">&#10005;</button>
+    </div>
+    <div class="form-row">
+      <div class="form-group"><label>ชื่อ</label><input class="form-control sf-name" value="${s.name||''}"></div>
+      <div class="form-group"><label>ความพร้อม</label><select class="form-control sf-ready">
+        ${Object.entries(READINESS_MAP).map(([k,v])=>`<option value="${k}" ${s.readiness===k?'selected':''}>${v[1]}</option>`).join('')}
+      </select></div>
+    </div>
+    <div class="form-group mb-0"><label>IDP</label><input class="form-control sf-idp" value="${s.idp||''}"></div>
+  </div>`;
+}
+
+function addSuccessorForm() {
+  const container=document.getElementById('successor-forms'); if (!container) return;
+  const n=container.querySelectorAll('.successor-form').length;
+  const div=document.createElement('div'); div.innerHTML=buildSuccessorForm(n,{});
+  container.appendChild(div.firstElementChild);
+}
+
+function saveSuccession(id,isNew) {
+  const position=document.getElementById('fsp-pos').value.trim(); if (!position) return alert('กรุณาระบุตำแหน่ง');
+  const incumbent=document.getElementById('fsp-inc').value.trim(), note=document.getElementById('fsp-note').value;
+  const successors=[];
+  document.querySelectorAll('.successor-form').forEach(form=>{
+    const name=form.querySelector('.sf-name').value.trim();
+    if (name) successors.push({ name, readiness:form.querySelector('.sf-ready').value, idp:form.querySelector('.sf-idp').value.trim() });
+  });
+  if (isNew) { DB.succession.push({ id, position, incumbent, successors, note }); }
+  else { const sp=DB.succession.find(x=>x.id===id); if (sp) Object.assign(sp,{ position, incumbent, successors, note }); }
+  saveData(); closeModal(); renderSuccession();
+}
+
+function deleteSuccession(id) {
+  if (!confirm('ลบตำแหน่งนี้?')) return;
+  DB.succession=DB.succession.filter(x=>x.id!==id);
+  saveData(); closeModal(); renderSuccession();
+}
+
+// ============================================================
+// DIRECTOR CHANGELOG
+// ============================================================
+const CL_TYPES = {
+  appointed: { label:'แต่งตั้ง', cls:'cltype-appointed' },
+  resigned:  { label:'พ้นตำแหน่ง / ลาออก', cls:'cltype-resigned' },
+  role_change: { label:'เปลี่ยนบทบาท', cls:'cltype-role_change' },
+  committee_change: { label:'เปลี่ยนคณะย่อย', cls:'cltype-committee_change' },
+  position_change: { label:'เปลี่ยนตำแหน่ง', cls:'cltype-position_change' },
+  other: { label:'อื่นๆ', cls:'cltype-other' }
+};
+
+function renderChangelog() {
+  const logs = [...(DB.directorChangelog||[])].sort((a,b) => {
+    const da = toDateCE(a.effectiveDate)||new Date(0);
+    const db2 = toDateCE(b.effectiveDate)||new Date(0);
+    return db2 - da; // newest first
+  });
+  const filterDir = document.getElementById('cl-filter-dir') ? document.getElementById('cl-filter-dir').value : '';
+  const filterType = document.getElementById('cl-filter-type') ? document.getElementById('cl-filter-type').value : '';
+
+  const dirOptions = DB.directors.map(d => `<option value="${d.id}">${d.name.replace(/^(รศ\.ดร\.ภก\.|รศ\.ดร\.|ดร\.|นางสาว|นาง|นาย)\s*/,'')}</option>`).join('');
+  const typeOptions = Object.entries(CL_TYPES).map(([k,v]) => `<option value="${k}">${v.label}</option>`).join('');
+
+  const filtered = logs.filter(l => {
+    if (filterDir && l.directorId !== filterDir) return false;
+    if (filterType && l.changeType !== filterType) return false;
+    return true;
+  });
+
+  let timelineHtml = '';
+  if (filtered.length === 0) {
+    timelineHtml = `<div class="text-muted" style="text-align:center;padding:40px 0">ยังไม่มีรายการ — กด "+ บันทึกการเปลี่ยนแปลง" เพื่อเริ่มต้น</div>`;
+  } else {
+    filtered.forEach(l => {
+      const t = CL_TYPES[l.changeType] || CL_TYPES.other;
+      const refs = [];
+      if (l.nrcMeetingRef) refs.push(`<span class="cl-ref-tag nrc">📋 NRC: ${l.nrcMeetingRef}</span>`);
+      if (l.boardMeetingRef) refs.push(`<span class="cl-ref-tag board">🏛 Board: ${l.boardMeetingRef}</span>`);
+      if (l.agmRef) refs.push(`<span class="cl-ref-tag agm">🗳 AGM: ${l.agmRef}</span>`);
+      const approvedMap = { nrc:'อนุมัติโดย NRC', board:'อนุมัติโดย Board', agm:'อนุมัติโดย AGM', other:'' };
+      const prevNew = (l.previousValue||l.newValue) ? `
+        <div style="font-size:12px;color:var(--text-light);margin-top:4px;display:flex;gap:12px;flex-wrap:wrap">
+          ${l.previousValue ? `<span>เดิม: <strong>${l.previousValue}</strong></span>` : ''}
+          ${l.newValue ? `<span style="color:var(--green)">ใหม่: <strong>${l.newValue}</strong></span>` : ''}
+        </div>` : '';
+      timelineHtml += `
+      <div class="cl-entry type-${l.changeType}">
+        <div class="cl-header">
+          <div>
+            <span class="cl-type-badge ${t.cls}">${t.label}</span>
+            <div class="cl-title">${l.directorName||'—'}</div>
+          </div>
+          <div style="display:flex;align-items:center;gap:8px;flex-shrink:0">
+            <span class="cl-date">${thDate(l.effectiveDate)}</span>
+            <div class="cl-actions">
+              <button class="btn btn-outline btn-sm" onclick="editChangelogEntry('${l.id}')">✏️</button>
+              <button class="btn btn-outline btn-sm" style="color:var(--red)" onclick="deleteChangelogEntry('${l.id}')">🗑</button>
+            </div>
+          </div>
+        </div>
+        <div class="cl-detail">${l.changeDetail||'—'}</div>
+        ${prevNew}
+        ${refs.length ? `<div class="cl-refs">${refs.join('')}${approvedMap[l.approvedBy]?`<span class="cl-ref-tag">${approvedMap[l.approvedBy]}</span>`:''}</div>` : ''}
+        ${l.note ? `<div style="margin-top:6px;font-size:12px;color:var(--text-light);font-style:italic">หมายเหตุ: ${l.note}</div>` : ''}
+        <div style="margin-top:6px;font-size:10px;color:var(--text-light)">บันทึกโดย: ${l.recordedBy||'-'} เมื่อ ${thDate(l.recordedDate)}</div>
+      </div>`;
+    });
+  }
+
+  document.getElementById('content').innerHTML = `
+    <div class="section-title">📋 ประวัติการเปลี่ยนแปลงกรรมการ</div>
+    <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:16px">
+      <select id="cl-filter-dir" class="form-control" style="width:200px" onchange="renderChangelog()">
+        <option value="">— กรองตามกรรมการ —</option>
+        ${dirOptions}
+      </select>
+      <select id="cl-filter-type" class="form-control" style="width:180px" onchange="renderChangelog()">
+        <option value="">— กรองตามประเภท —</option>
+        ${typeOptions}
+      </select>
+      <button class="btn btn-green" onclick="openChangelogModal(null)">+ บันทึกการเปลี่ยนแปลง</button>
+      <span style="margin-left:auto;font-size:12px;color:var(--text-light)">${filtered.length} รายการ</span>
+    </div>
+    <div class="alert alert-info" style="margin-bottom:16px;font-size:12px">
+      <strong>วิธีใช้:</strong> บันทึกทุกครั้งที่มีการแต่งตั้ง / พ้นตำแหน่ง / เปลี่ยนบทบาทกรรมการ พร้อมระบุการประชุม NRC / Board / AGM ที่อ้างอิง
+    </div>
+    <div class="changelog-timeline">${timelineHtml}</div>`;
+
+  // restore filter values after re-render
+  if (filterDir) document.getElementById('cl-filter-dir').value = filterDir;
+  if (filterType) document.getElementById('cl-filter-type').value = filterType;
+}
+
+function openChangelogModal(id) {
+  const l = id ? DB.directorChangelog.find(x=>x.id===id) : null;
+  const isEdit = !!l;
+  const dirOptions = DB.directors.map(d => {
+    const sel = l && l.directorId === d.id ? 'selected' : '';
+    return `<option value="${d.id}" ${sel}>${d.name}</option>`;
+  }).join('');
+  const typeOptions = Object.entries(CL_TYPES).map(([k,v]) => {
+    const sel = l && l.changeType === k ? 'selected' : '';
+    return `<option value="${k}" ${sel}>${v.label}</option>`;
+  }).join('');
+  const approvedOptions = [['nrc','อนุมัติโดย NRC'],['board','อนุมัติโดย Board'],['agm','อนุมัติโดย AGM'],['other','อื่นๆ']].map(([k,v]) => {
+    const sel = l && l.approvedBy === k ? 'selected' : '';
+    return `<option value="${k}" ${sel}>${v}</option>`;
+  }).join('');
+
+  // Build meeting ref options from existing meetings
+  const meetingOptions = DB.meetings.map(m => {
+    const label = `NRC ${m.no}/${m.year} (${thDate(m.date)})`;
+    const sel = l && l.nrcMeetingRef === label ? 'selected' : '';
+    return `<option value="${label}" ${sel}>${label}</option>`;
+  }).join('');
+
+  document.getElementById('modal-title').textContent = isEdit ? '✏️ แก้ไขรายการเปลี่ยนแปลง' : '+ บันทึกการเปลี่ยนแปลงกรรมการ';
+  document.getElementById('modal-body').innerHTML = `
+    <div class="form-row">
+      <div class="form-group" style="flex:1.2">
+        <label>กรรมการ *</label>
+        <select class="form-control" id="cl-dir" onchange="clSyncName()">
+          <option value="">— เลือกกรรมการ —</option>
+          ${dirOptions}
+        </select>
+      </div>
+      <div class="form-group" style="flex:0.8">
+        <label>ประเภทการเปลี่ยนแปลง *</label>
+        <select class="form-control" id="cl-type">${typeOptions}</select>
+      </div>
+    </div>
+    <div class="form-group">
+      <label>ชื่อกรรมการ (กรอกเองถ้าไม่อยู่ในรายการ)</label>
+      <input class="form-control" id="cl-dirname" value="${l?l.directorName:''}" placeholder="ชื่อ-นามสกุลกรรมการ">
+    </div>
+    <div class="form-group">
+      <label>วันที่มีผลบังคับ *</label>
+      <input type="date" class="form-control" id="cl-date" value="${l?toCEStr(l.effectiveDate):''}">
+    </div>
+    <div class="form-group">
+      <label>รายละเอียดการเปลี่ยนแปลง *</label>
+      <textarea class="form-control" id="cl-detail" rows="2" placeholder="เช่น: แต่งตั้งเป็นประธานคณะกรรมการ NRC แทน นาย ก.">${l?l.changeDetail:''}</textarea>
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label>ตำแหน่ง/บทบาทเดิม</label>
+        <input class="form-control" id="cl-prev" value="${l?l.previousValue:''}" placeholder="บทบาทก่อนเปลี่ยน">
+      </div>
+      <div class="form-group">
+        <label>ตำแหน่ง/บทบาทใหม่</label>
+        <input class="form-control" id="cl-new" value="${l?l.newValue:''}" placeholder="บทบาทหลังเปลี่ยน">
+      </div>
+    </div>
+    <hr class="divider">
+    <div style="font-weight:600;color:var(--navy);margin-bottom:10px;font-size:13px">📎 อ้างอิงการประชุม</div>
+    <div class="form-row">
+      <div class="form-group">
+        <label>การประชุม NRC</label>
+        <select class="form-control" id="cl-nrc-sel" onchange="clSyncNrcRef()">
+          <option value="">— เลือกการประชุม NRC —</option>
+          ${meetingOptions}
+          <option value="__manual">ระบุเอง...</option>
+        </select>
+        <input class="form-control" id="cl-nrc" value="${l?l.nrcMeetingRef:''}" placeholder="เช่น NRC 2/2569" style="margin-top:6px">
+      </div>
+      <div class="form-group">
+        <label>การประชุม Board</label>
+        <input class="form-control" id="cl-board" value="${l?l.boardMeetingRef:''}" placeholder="เช่น Board 3/2569">
+      </div>
+      <div class="form-group">
+        <label>AGM / การประชุมผู้ถือหุ้น</label>
+        <input class="form-control" id="cl-agm" value="${l?l.agmRef:''}" placeholder="เช่น AGM 2569">
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label>อนุมัติโดย</label>
+        <select class="form-control" id="cl-approvedby">${approvedOptions}</select>
+      </div>
+      <div class="form-group">
+        <label>บันทึกโดย</label>
+        <input class="form-control" id="cl-recby" value="${l?l.recordedBy:(DB.company.secretary||'')}" placeholder="ชื่อผู้บันทึก">
+      </div>
+    </div>
+    <div class="form-group">
+      <label>หมายเหตุ</label>
+      <textarea class="form-control" id="cl-note" rows="2" placeholder="ข้อมูลเพิ่มเติม">${l?l.note:''}</textarea>
+    </div>`;
+  document.getElementById('modal-footer').innerHTML = `
+    <button class="btn btn-outline" onclick="closeModal()">ยกเลิก</button>
+    <button class="btn btn-primary" onclick="saveChangelogEntry('${id||''}')">💾 บันทึก</button>`;
+  document.getElementById('modal-overlay').classList.add('show');
+}
+
+function clSyncName() {
+  const sel = document.getElementById('cl-dir').value;
+  if (sel) {
+    const d = DB.directors.find(x=>x.id===sel);
+    if (d) document.getElementById('cl-dirname').value = d.name;
+  }
+}
+function clSyncNrcRef() {
+  const sel = document.getElementById('cl-nrc-sel').value;
+  if (sel && sel !== '__manual') {
+    document.getElementById('cl-nrc').value = sel;
+  }
+}
+
+function saveChangelogEntry(id) {
+  const dirId = document.getElementById('cl-dir').value;
+  const dirName = document.getElementById('cl-dirname').value.trim();
+  const detail = document.getElementById('cl-detail').value.trim();
+  const dateVal = document.getElementById('cl-date').value;
+  if (!dirName) { alert('กรุณาระบุชื่อกรรมการ'); return; }
+  if (!detail) { alert('กรุณาระบุรายละเอียดการเปลี่ยนแปลง'); return; }
+  if (!dateVal) { alert('กรุณาระบุวันที่มีผลบังคับ'); return; }
+
+  const today = new Date();
+  const todayBE = `${today.getFullYear()+543}-${String(today.getMonth()+1).padStart(2,'0')}-${String(today.getDate()).padStart(2,'0')}`;
+  const entry = {
+    id: id || genId('dcl'),
+    effectiveDate: toBEStr(dateVal),
+    directorId: dirId,
+    directorName: dirName,
+    changeType: document.getElementById('cl-type').value,
+    changeDetail: detail,
+    previousValue: document.getElementById('cl-prev').value.trim(),
+    newValue: document.getElementById('cl-new').value.trim(),
+    nrcMeetingRef: document.getElementById('cl-nrc').value.trim(),
+    boardMeetingRef: document.getElementById('cl-board').value.trim(),
+    agmRef: document.getElementById('cl-agm').value.trim(),
+    approvedBy: document.getElementById('cl-approvedby').value,
+    note: document.getElementById('cl-note').value.trim(),
+    recordedDate: todayBE,
+    recordedBy: document.getElementById('cl-recby').value.trim()
+  };
+  if (id) {
+    const idx = DB.directorChangelog.findIndex(x=>x.id===id);
+    if (idx >= 0) DB.directorChangelog[idx] = entry;
+  } else {
+    DB.directorChangelog.push(entry);
+  }
+  saveData();
+  closeModal();
+  renderChangelog();
+  // Offer committee sync if change affects membership
+  if (['appointed','resigned','committee_change','role_change','position_change'].includes(entry.changeType)) {
+    setTimeout(()=>{
+      if (confirm('ต้องการอัพเดทรายชื่อกรรมการในคณะย่อยด้วยหรือไม่?\n(เพื่อให้ตรงกับการเปลี่ยนแปลงที่บันทึกไว้)')) {
+        openCommitteeSyncModal(entry.directorName, CL_TYPES[entry.changeType]?.label||entry.changeType);
+      }
+    }, 100);
+  }
+}
+
+function editChangelogEntry(id) { openChangelogModal(id); }
+function deleteChangelogEntry(id) {
+  if (!confirm('ลบรายการนี้?')) return;
+  DB.directorChangelog = DB.directorChangelog.filter(x=>x.id!==id);
+  saveData();
+  renderChangelog();
+}
+
+
+// ============================================================
+// REMUNERATION — ค่าตอบแทนกรรมการ
+// ============================================================
+const REMUN_FIELDS = ['retainer','boardFee','nrcFee','otherFee'];
+const REMUN_LABELS = ['ค่าตอบแทนรายปี (บาท)','เบี้ยประชุม Board','เบี้ยประชุม NRC','อื่นๆ'];
+
+function fmtBaht(n) { return Number(n||0).toLocaleString('th-TH'); }
+
+function renderRemuneration() {
+  const years = [...new Set(DB.remuneration.map(r=>r.year).concat([DB.company.fiscalYear]))].sort().reverse();
+  const selYear = parseInt(document.getElementById('rem-year-sel')?.value || years[0]);
+  const rows = DB.remuneration.filter(r=>r.year===selYear);
+  const yearOpts = years.map(y=>`<option value="${y}" ${y===selYear?'selected':''}>${y}</option>`).join('');
+  let grandTotal = 0;
+  const tRows = DB.directors.map(d=>{
+    const r = rows.find(x=>x.directorId===d.id)||{retainer:0,boardFee:0,nrcFee:0,otherFee:0};
+    const tot = (r.retainer||0)+(r.boardFee||0)+(r.nrcFee||0)+(r.otherFee||0);
+    grandTotal += tot;
+    const shortName = d.name.replace(/^(รศ\.ดร\.ภก\.|รศ\.ดร\.|ดร\.|นางสาว|นาง|นาย)\s*/,'');
+    return `<tr>
+      <td><strong>${shortName}</strong><div class="text-muted" style="font-size:11px">${d.position||''}</div></td>
+      <td class="text-right">${fmtBaht(r.retainer)}</td>
+      <td class="text-right">${fmtBaht(r.boardFee)}</td>
+      <td class="text-right">${fmtBaht(r.nrcFee)}</td>
+      <td class="text-right">${fmtBaht(r.otherFee)}</td>
+      <td class="text-right"><strong>${fmtBaht(tot)}</strong></td>
+      <td><button class="btn btn-sm btn-orange" onclick="editRemun('${d.id}',${selYear})">✏️ แก้ไข</button></td>
+    </tr>`;
+  }).join('');
+
+  document.getElementById('content').innerHTML = `
+    <div class="flex-between mb-8">
+      <div class="section-title">💰 ค่าตอบแทนกรรมการ</div>
+      <div style="display:flex;gap:8px;align-items:center">
+        <label style="font-size:13px">ปี:</label>
+        <select id="rem-year-sel" class="form-control" style="width:100px" onchange="renderRemuneration()">${yearOpts}</select>
+        <button class="btn btn-green btn-sm" onclick="addRemunerationYear()">+ เพิ่มปี</button>
+        <button class="btn btn-primary btn-sm" onclick="bulkEditRemun(${selYear})">✏️ แก้ไขทั้งหมด</button>
+      </div>
+    </div>
+    <div style="display:flex;gap:14px;flex-wrap:wrap;margin-bottom:16px">
+      <div class="remun-total-card"><div class="rtval">${fmtBaht(grandTotal)}</div><div class="rtlbl">ค่าตอบแทนรวม (บาท) ปี ${selYear}</div></div>
+      <div class="remun-total-card" style="background:var(--blue)"><div class="rtval">${DB.directors.length}</div><div class="rtlbl">กรรมการทั้งหมด</div></div>
+      <div class="remun-total-card" style="background:var(--green)"><div class="rtval">${grandTotal>0?fmtBaht(Math.round(grandTotal/DB.directors.length)):'-'}</div><div class="rtlbl">เฉลี่ยต่อคน</div></div>
+    </div>
+    <div class="panel"><div class="panel-body" style="padding:0">
+      <table class="tbl">
+        <thead><tr><th>กรรมการ</th><th class="text-right">ค่าตอบแทนรายปี</th><th class="text-right">เบี้ยประชุม Board</th><th class="text-right">เบี้ยประชุม NRC</th><th class="text-right">อื่นๆ</th><th class="text-right">รวม (บาท)</th><th></th></tr></thead>
+        <tbody>${tRows}</tbody>
+        <tfoot><tr style="background:#f0f4fa"><td colspan="5"><strong>รวมทั้งหมด</strong></td><td class="text-right"><strong>${fmtBaht(grandTotal)}</strong></td><td></td></tr></tfoot>
+      </table>
+    </div></div>
+    <div class="alert alert-info mt-16" style="font-size:12px">💡 ข้อมูลนี้ใช้สำหรับรายงาน 56-1 One Report และการเปิดเผยค่าตอบแทนกรรมการในรายงานประจำปี</div>`;
+}
+
+function addRemunerationYear() {
+  const yr = parseInt(prompt('ระบุปี พ.ศ. ที่ต้องการเพิ่ม:', DB.company.fiscalYear));
+  if (!yr) return;
+  if (!document.getElementById('rem-year-sel')) return;
+  renderRemuneration();
+}
+
+function editRemun(dirId, year) {
+  const d = DB.directors.find(x=>x.id===dirId);
+  if (!d) return;
+  const r = DB.remuneration.find(x=>x.directorId===dirId && x.year===year)||{retainer:0,boardFee:0,nrcFee:0,otherFee:0,note:''};
+  const shortName = d.name.replace(/^(รศ\.ดร\.ภก\.|รศ\.ดร\.|ดร\.|นางสาว|นาง|นาย)\s*/,'');
+  document.getElementById('modal-title').textContent = `ค่าตอบแทน — ${shortName} ปี ${year}`;
+  document.getElementById('modal-body').innerHTML = `
+    <div class="form-row">
+      <div class="form-group"><label>ค่าตอบแทนรายปี (บาท)</label><input class="form-control" id="remu-retainer" type="number" value="${r.retainer||0}"></div>
+      <div class="form-group"><label>เบี้ยประชุม Board (บาท)</label><input class="form-control" id="remu-board" type="number" value="${r.boardFee||0}"></div>
+    </div>
+    <div class="form-row">
+      <div class="form-group"><label>เบี้ยประชุม NRC (บาท)</label><input class="form-control" id="remu-nrc" type="number" value="${r.nrcFee||0}"></div>
+      <div class="form-group"><label>อื่นๆ (บาท)</label><input class="form-control" id="remu-other" type="number" value="${r.otherFee||0}"></div>
+    </div>
+    <div class="form-group"><label>หมายเหตุ</label><input class="form-control" id="remu-note" value="${r.note||''}"></div>`;
+  document.getElementById('modal-footer').innerHTML = `
+    <button class="btn btn-outline" onclick="closeModal()">ยกเลิก</button>
+    <button class="btn btn-primary" onclick="saveRemun('${dirId}',${year})">💾 บันทึก</button>`;
+  document.getElementById('modal-overlay').classList.add('show');
+}
+
+function bulkEditRemun(year) {
+  const rows = DB.directors.map(d=>{
+    const r = DB.remuneration.find(x=>x.directorId===d.id && x.year===year)||{};
+    const sn = d.name.replace(/^(รศ\.ดร\.ภก\.|รศ\.ดร\.|ดร\.|นางสาว|นาง|นาย)\s*/,'');
+    return `<tr><td style="font-size:12px">${sn}</td>
+      <td><input class="form-control" style="width:110px;padding:4px 6px;font-size:12px" data-did="${d.id}" data-f="retainer" type="number" value="${r.retainer||0}"></td>
+      <td><input class="form-control" style="width:110px;padding:4px 6px;font-size:12px" data-did="${d.id}" data-f="boardFee" type="number" value="${r.boardFee||0}"></td>
+      <td><input class="form-control" style="width:110px;padding:4px 6px;font-size:12px" data-did="${d.id}" data-f="nrcFee" type="number" value="${r.nrcFee||0}"></td>
+      <td><input class="form-control" style="width:110px;padding:4px 6px;font-size:12px" data-did="${d.id}" data-f="otherFee" type="number" value="${r.otherFee||0}"></td>
+    </tr>`;
+  }).join('');
+  document.getElementById('modal-title').textContent = `✏️ แก้ไขค่าตอบแทนทั้งหมด ปี ${year}`;
+  document.getElementById('modal-body').innerHTML = `<div style="overflow-x:auto"><table class="tbl"><thead><tr><th>กรรมการ</th><th>ค่าตอบแทนรายปี</th><th>เบี้ยประชุม Board</th><th>เบี้ยประชุม NRC</th><th>อื่นๆ</th></tr></thead><tbody>${rows}</tbody></table></div>`;
+  document.getElementById('modal-footer').innerHTML = `<button class="btn btn-outline" onclick="closeModal()">ยกเลิก</button><button class="btn btn-primary" onclick="saveBulkRemun(${year})">💾 บันทึกทั้งหมด</button>`;
+  document.getElementById('modal-overlay').classList.add('show');
+}
+
+function saveBulkRemun(year) {
+  document.querySelectorAll('#modal-body input[data-did]').forEach(inp=>{
+    const did = inp.dataset.did, field = inp.dataset.f, val = parseInt(inp.value)||0;
+    let r = DB.remuneration.find(x=>x.directorId===did && x.year===year);
+    if (!r) { r = {id:genId('rem'),year,directorId:did,retainer:0,boardFee:0,nrcFee:0,otherFee:0,note:''}; DB.remuneration.push(r); }
+    r[field] = val;
+  });
+  saveData(); closeModal(); renderRemuneration();
+}
+
+function saveRemun(dirId, year) {
+  let r = DB.remuneration.find(x=>x.directorId===dirId && x.year===year);
+  if (!r) { r = {id:genId('rem'),year,directorId:dirId,retainer:0,boardFee:0,nrcFee:0,otherFee:0,note:''}; DB.remuneration.push(r); }
+  r.retainer = parseInt(document.getElementById('remu-retainer').value)||0;
+  r.boardFee = parseInt(document.getElementById('remu-board').value)||0;
+  r.nrcFee = parseInt(document.getElementById('remu-nrc').value)||0;
+  r.otherFee = parseInt(document.getElementById('remu-other').value)||0;
+  r.note = document.getElementById('remu-note').value;
+  saveData(); closeModal(); renderRemuneration();
+}
+
+// ============================================================
+// DIRECTOR TRAINING — แผนพัฒนากรรมการ
+// ============================================================
+const TRAIN_CATS = { governance:'การกำกับดูแล', finance:'การเงิน/บัญชี', strategy:'กลยุทธ์', risk:'บริหารความเสี่ยง', it:'เทคโนโลยี', hr:'HR/Sustainability', other:'อื่นๆ' };
+
+function renderTraining() {
+  const filterDir = document.getElementById('tr-fdir')?.value || '';
+  const filterCat = document.getElementById('tr-fcat')?.value || '';
+  const filterYr  = document.getElementById('tr-fyr')?.value  || '';
+  const dirOpts = DB.directors.map(d=>`<option value="${d.id}" ${d.id===filterDir?'selected':''}>${d.name.replace(/^(รศ\.ดร\.ภก\.|รศ\.ดร\.|ดร\.|นางสาว|นาง|นาย)\s*/,'')}</option>`).join('');
+  const catOpts = Object.entries(TRAIN_CATS).map(([k,v])=>`<option value="${k}" ${k===filterCat?'selected':''}>${v}</option>`).join('');
+  const allYrs = [...new Set(DB.directorTraining.map(t=>t.date?.substr(0,4)).filter(Boolean))].sort().reverse();
+  const yrOpts = allYrs.map(y=>`<option value="${y}" ${y===filterYr?'selected':''}>${y}</option>`).join('');
+
+  let rows = DB.directorTraining;
+  if (filterDir) rows = rows.filter(r=>r.directorId===filterDir);
+  if (filterCat) rows = rows.filter(r=>r.category===filterCat);
+  if (filterYr)  rows = rows.filter(r=>r.date?.startsWith(filterYr));
+  rows = [...rows].sort((a,b)=>(b.date||'').localeCompare(a.date||''));
+
+  // Summary: hours per director
+  const hrMap = {};
+  DB.directorTraining.forEach(t=>{ hrMap[t.directorId]=(hrMap[t.directorId]||0)+(t.hours||0); });
+  const summaryBars = DB.directors.map(d=>{
+    const hrs = hrMap[d.id]||0;
+    const sn = d.name.replace(/^(รศ\.ดร\.ภก\.|รศ\.ดร\.|ดร\.|นางสาว|นาง|นาย)\s*/,'').split(' ')[0];
+    const pct = Math.min(hrs/24*100,100);
+    const color = hrs>=24?'var(--green)':hrs>=12?'var(--blue)':'var(--orange)';
+    return `<div class="training-bar-wrap"><span style="font-size:11px;min-width:80px">${sn}</span><div class="training-bar-bg"><div class="training-bar-fill" style="width:${pct}%;background:${color}"></div></div><span style="font-size:11px;min-width:50px;text-align:right">${hrs} ชม.</span></div>`;
+  }).join('');
+
+  const tRows = rows.map(t=>{
+    const d = DB.directors.find(x=>x.id===t.directorId);
+    const sn = d ? d.name.replace(/^(รศ\.ดร\.ภก\.|รศ\.ดร\.|ดร\.|นางสาว|นาง|นาย)\s*/,'') : t.directorName;
+    return `<tr>
+      <td>${sn}</td>
+      <td><strong>${t.course||'-'}</strong></td>
+      <td>${t.organizer||'-'}</td>
+      <td>${thDate(t.date)}</td>
+      <td class="text-right">${t.hours||0}</td>
+      <td><span class="badge-status status-inprogress">${TRAIN_CATS[t.category]||t.category}</span></td>
+      <td>
+        <button class="btn btn-sm btn-orange" onclick="editTraining('${t.id}')">✏️</button>
+        <button class="btn btn-sm btn-red" onclick="deleteTraining('${t.id}')">🗑</button>
+      </td>
+    </tr>`;
+  }).join('');
+
+  document.getElementById('content').innerHTML = `
+    <div class="flex-between mb-8">
+      <div class="section-title">📚 แผนพัฒนากรรมการ (Director Training)</div>
+      <button class="btn btn-primary" onclick="editTraining(null)">+ บันทึกการอบรม</button>
+    </div>
+    <div class="panel"><div class="panel-header"><h3>📊 สรุปชั่วโมงอบรมสะสม (เป้า 24 ชม./ปี)</h3></div>
+    <div class="panel-body">${summaryBars||'<p class="text-muted">ยังไม่มีข้อมูล</p>'}</div></div>
+    <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin:12px 0">
+      <select id="tr-fdir" class="form-control" style="width:180px" onchange="renderTraining()"><option value="">— กรรมการทั้งหมด —</option>${dirOpts}</select>
+      <select id="tr-fcat" class="form-control" style="width:160px" onchange="renderTraining()"><option value="">— หมวดทั้งหมด —</option>${catOpts}</select>
+      <select id="tr-fyr"  class="form-control" style="width:110px" onchange="renderTraining()"><option value="">— ปีทั้งหมด —</option>${yrOpts}</select>
+      <span style="margin-left:auto;font-size:12px;color:var(--text-light)">${rows.length} รายการ</span>
+    </div>
+    <div class="panel"><div class="panel-body" style="padding:0">
+      <table class="tbl">
+        <thead><tr><th>กรรมการ</th><th>หลักสูตร</th><th>สถาบัน/ผู้จัด</th><th>วันที่</th><th class="text-right">ชม.</th><th>หมวด</th><th></th></tr></thead>
+        <tbody>${tRows||'<tr><td colspan="7" class="text-muted" style="text-align:center;padding:30px">ยังไม่มีข้อมูลการอบรม</td></tr>'}</tbody>
+      </table>
+    </div></div>`;
+}
+
+function editTraining(id) {
+  const t = id ? DB.directorTraining.find(x=>x.id===id) : null;
+  const dirOpts = DB.directors.map(d=>{
+    const sn = d.name.replace(/^(รศ\.ดร\.ภก\.|รศ\.ดร\.|ดร\.|นางสาว|นาง|นาย)\s*/,'');
+    const sel = t && t.directorId===d.id ? 'selected' : '';
+    return `<option value="${d.id}" ${sel}>${sn}</option>`;
+  }).join('');
+  const catOpts = Object.entries(TRAIN_CATS).map(([k,v])=>`<option value="${k}" ${t&&t.category===k?'selected':''}>${v}</option>`).join('');
+  document.getElementById('modal-title').textContent = id ? '✏️ แก้ไขการอบรม' : '+ บันทึกการอบรม';
+  document.getElementById('modal-body').innerHTML = `
+    <div class="form-row">
+      <div class="form-group" style="flex:1.5"><label>กรรมการ *</label><select class="form-control" id="tr-dir"><option value="">—</option>${dirOpts}</select></div>
+      <div class="form-group"><label>วันที่อบรม *</label><input type="date" class="form-control" id="tr-date" value="${t?toCEStr(t.date):''}"></div>
+    </div>
+    <div class="form-group"><label>ชื่อหลักสูตร *</label><input class="form-control" id="tr-course" value="${t?t.course:''}" placeholder="เช่น Director Certification Program (DCP)"></div>
+    <div class="form-row">
+      <div class="form-group"><label>สถาบัน/ผู้จัด</label><input class="form-control" id="tr-org" value="${t?t.organizer:''}" placeholder="เช่น IOD, ก.ล.ต."></div>
+      <div class="form-group"><label>จำนวนชั่วโมง</label><input type="number" class="form-control" id="tr-hrs" value="${t?t.hours:0}" min="0"></div>
+      <div class="form-group"><label>หมวด</label><select class="form-control" id="tr-cat">${catOpts}</select></div>
+    </div>
+    <div class="form-group"><label>หมายเหตุ</label><input class="form-control" id="tr-note" value="${t?t.note:''}"></div>`;
+  document.getElementById('modal-footer').innerHTML = `<button class="btn btn-outline" onclick="closeModal()">ยกเลิก</button><button class="btn btn-primary" onclick="saveTraining('${id||''}')">💾 บันทึก</button>`;
+  document.getElementById('modal-overlay').classList.add('show');
+}
+
+function saveTraining(id) {
+  const dirId = document.getElementById('tr-dir').value;
+  const course = document.getElementById('tr-course').value.trim();
+  const dateVal = document.getElementById('tr-date').value;
+  if (!dirId || !course || !dateVal) { alert('กรุณากรอกข้อมูลให้ครบ'); return; }
+  const d = DB.directors.find(x=>x.id===dirId);
+  const entry = {
+    id: id||genId('tr'), directorId:dirId, directorName:d?d.name:'',
+    date:toBEStr(dateVal), course, organizer:document.getElementById('tr-org').value,
+    hours:parseInt(document.getElementById('tr-hrs').value)||0,
+    category:document.getElementById('tr-cat').value,
+    note:document.getElementById('tr-note').value
+  };
+  if (id) { const i=DB.directorTraining.findIndex(x=>x.id===id); if(i>=0) DB.directorTraining[i]=entry; }
+  else DB.directorTraining.push(entry);
+  saveData(); closeModal(); renderTraining();
+}
+
+function deleteTraining(id) {
+  if (!confirm('ลบรายการนี้?')) return;
+  DB.directorTraining = DB.directorTraining.filter(x=>x.id!==id);
+  saveData(); renderTraining();
+}
+
+// ============================================================
+// SELF-ASSESSMENT — ประเมินผลกรรมการ
+// ============================================================
+const ASSESS_COMMITTEES = { board:'คณะกรรมการบริษัท', nrc:'NRC', ac:'AC', rmc:'RMC', gcg:'GCG' };
+const ASSESS_ASPECTS = [
+  'โครงสร้างและองค์ประกอบของคณะกรรมการ',
+  'บทบาท หน้าที่ และความรับผิดชอบ',
+  'การประชุมคณะกรรมการ',
+  'การปฏิบัติหน้าที่ของกรรมการ',
+  'ความสัมพันธ์กับฝ่ายจัดการ',
+  'การพัฒนาตนเองของกรรมการและการพัฒนาองค์กร'
+];
+
+function renderAssessment() {
+  const filter = document.getElementById('as-fcom')?.value || '';
+  const comOpts = Object.entries(ASSESS_COMMITTEES).map(([k,v])=>`<option value="${k}" ${k===filter?'selected':''}>${v}</option>`).join('');
+  let list = DB.selfAssessments;
+  if (filter) list = list.filter(x=>x.committee===filter);
+  list = [...list].sort((a,b)=>(b.year||0)-(a.year||0));
+
+  const cards = list.map(a=>{
+    const pct = a.maxScore ? Math.round(a.totalScore/a.maxScore*100) : 0;
+    const col = pct>=80?'var(--green)':pct>=60?'var(--blue)':'var(--orange)';
+    const comLabel = ASSESS_COMMITTEES[a.committee]||a.committee;
+    return `<div class="assess-card">
+      <div style="display:flex;justify-content:space-between;align-items:flex-start">
+        <div><span class="badge-status status-inprogress" style="margin-bottom:6px">${comLabel}</span>
+          <div class="section-title" style="font-size:15px;margin:0">ปี ${a.year}</div>
+          <div class="text-muted">${thDate(a.assessDate)}</div>
+        </div>
+        <div style="text-align:center">
+          <div class="assess-score" style="color:${col}">${pct}%</div>
+          <div class="text-muted">${a.totalScore}/${a.maxScore}</div>
+        </div>
+      </div>
+      ${a.note?`<div style="margin-top:8px;font-size:12px;color:var(--text-light);font-style:italic">${a.note}</div>`:''}
+      <div style="margin-top:10px;display:flex;gap:6px">
+        <button class="btn btn-sm btn-orange" onclick="editAssessment('${a.id}')">✏️ แก้ไข</button>
+        <button class="btn btn-sm btn-red" onclick="deleteAssessment('${a.id}')">🗑</button>
+      </div>
+    </div>`;
+  }).join('');
+
+  document.getElementById('content').innerHTML = `
+    <div class="flex-between mb-8">
+      <div class="section-title">📊 ประเมินผลกรรมการ (Self-Assessment)</div>
+      <button class="btn btn-primary" onclick="editAssessment(null)">+ บันทึกผลประเมิน</button>
+    </div>
+    <div style="display:flex;gap:8px;margin-bottom:14px">
+      <select id="as-fcom" class="form-control" style="width:200px" onchange="renderAssessment()">
+        <option value="">— คณะกรรมการทั้งหมด —</option>${comOpts}
+      </select>
+    </div>
+    <div class="alert alert-info" style="font-size:12px;margin-bottom:14px">📋 การประเมินตนเองของคณะกรรมการต้องดำเนินการอย่างน้อยปีละครั้ง และนำเสนอผลต่อที่ประชุมคณะกรรมการ</div>
+    ${list.length===0?'<p class="text-muted" style="text-align:center;padding:30px">ยังไม่มีผลการประเมิน</p>':`<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:14px">${cards}</div>`}`;
+}
+
+function editAssessment(id) {
+  const a = id ? DB.selfAssessments.find(x=>x.id===id) : null;
+  const comOpts = Object.entries(ASSESS_COMMITTEES).map(([k,v])=>`<option value="${k}" ${a&&a.committee===k?'selected':''}>${v}</option>`).join('');
+  const aspectRows = ASSESS_ASPECTS.map((asp,i)=>{
+    const score = a&&a.scores ? (a.scores[i]||0) : 0;
+    return `<div style="display:flex;align-items:center;gap:10px;padding:6px 0;border-bottom:1px solid var(--border)">
+      <span style="flex:1;font-size:12px">${i+1}. ${asp}</span>
+      <input type="number" min="0" max="5" class="form-control" style="width:70px;font-size:13px" id="as-s${i}" value="${score}" placeholder="0-5">
+    </div>`;
+  }).join('');
+  document.getElementById('modal-title').textContent = id?'✏️ แก้ไขผลประเมิน':'+ บันทึกผลประเมิน';
+  document.getElementById('modal-body').innerHTML = `
+    <div class="form-row">
+      <div class="form-group"><label>คณะกรรมการ *</label><select class="form-control" id="as-com">${comOpts}</select></div>
+      <div class="form-group"><label>ปี พ.ศ. *</label><input type="number" class="form-control" id="as-year" value="${a?a.year:DB.company.fiscalYear}"></div>
+      <div class="form-group"><label>วันที่ประเมิน</label><input type="date" class="form-control" id="as-date" value="${a?toCEStr(a.assessDate):''}"></div>
+    </div>
+    <div style="font-weight:600;color:var(--navy);margin:10px 0 6px;font-size:13px">คะแนนรายด้าน (0=ต่ำสุด, 5=สูงสุด)</div>
+    ${aspectRows}
+    <div class="form-row" style="margin-top:10px">
+      <div class="form-group"><label>คะแนนรวมทั้งหมด</label><input type="number" class="form-control" id="as-total" value="${a?a.totalScore:0}" placeholder="คะแนนที่ได้"></div>
+      <div class="form-group"><label>คะแนนเต็ม</label><input type="number" class="form-control" id="as-max" value="${a?a.maxScore:30}"></div>
+    </div>
+    <div class="form-group"><label>สรุปผล / ข้อสังเกต</label><textarea class="form-control" id="as-note" rows="2">${a?a.note:''}</textarea></div>`;
+  document.getElementById('modal-footer').innerHTML = `<button class="btn btn-outline" onclick="closeModal()">ยกเลิก</button><button class="btn btn-primary" onclick="saveAssessment('${id||''}')">💾 บันทึก</button>`;
+  document.getElementById('modal-overlay').classList.add('show');
+}
+
+function saveAssessment(id) {
+  const year = parseInt(document.getElementById('as-year').value);
+  const committee = document.getElementById('as-com').value;
+  const dateVal = document.getElementById('as-date').value;
+  const scores = ASSESS_ASPECTS.map((_,i)=>parseInt(document.getElementById('as-s'+i).value)||0);
+  const autoTotal = scores.reduce((a,b)=>a+b,0);
+  const manualTotal = parseInt(document.getElementById('as-total').value)||autoTotal;
+  if (!year || !committee) { alert('กรุณากรอกข้อมูลให้ครบ'); return; }
+  const entry = {
+    id: id||genId('as'), year, committee,
+    assessDate: dateVal?toBEStr(dateVal):'',
+    scores, totalScore:manualTotal,
+    maxScore:parseInt(document.getElementById('as-max').value)||30,
+    note:document.getElementById('as-note').value
+  };
+  if (id) { const i=DB.selfAssessments.findIndex(x=>x.id===id); if(i>=0) DB.selfAssessments[i]=entry; }
+  else DB.selfAssessments.push(entry);
+  saveData(); closeModal(); renderAssessment();
+}
+
+function deleteAssessment(id) {
+  if (!confirm('ลบรายการนี้?')) return;
+  DB.selfAssessments = DB.selfAssessments.filter(x=>x.id!==id);
+  saveData(); renderAssessment();
+}
+
+// ============================================================
+// DOCUMENT LIBRARY — คลังเอกสาร
+// ============================================================
+const DOC_TYPES = { charter:'กฏบัตร', policy:'นโยบาย', procedure:'ระเบียบปฏิบัติ', form:'แบบฟอร์ม', report:'รายงาน', other:'อื่นๆ' };
+
+function renderDocuments() {
+  const filter = document.getElementById('doc-ftype')?.value || '';
+  const typeOpts = Object.entries(DOC_TYPES).map(([k,v])=>`<option value="${k}" ${k===filter?'selected':''}>${v}</option>`).join('');
+  let docs = DB.documents;
+  if (filter) docs = docs.filter(d=>d.docType===filter);
+  docs = [...docs].sort((a,b)=>(b.effectiveDate||'').localeCompare(a.effectiveDate||''));
+
+  const cards = docs.map(doc=>{
+    const typeCls = `doc-type-${doc.docType==='charter'?'charter':doc.docType==='policy'?'policy':doc.docType==='procedure'?'procedure':doc.docType==='form'?'form':'other'}`;
+    const typeLabel = DOC_TYPES[doc.docType]||doc.docType;
+    return `<div class="doc-card">
+      <div><span class="doc-type-badge ${typeCls}">${typeLabel}</span>${doc.version?`<span style="font-size:10px;color:var(--text-light);margin-left:6px">v${doc.version}</span>`:''}</div>
+      <div style="font-weight:700;font-size:13px;color:var(--navy);margin-bottom:4px">${doc.title}</div>
+      <div style="font-size:11px;color:var(--text-light)">มีผล: ${thDate(doc.effectiveDate)} | อนุมัติโดย: ${doc.approvedBy||'-'}</div>
+      ${doc.note?`<div style="font-size:11px;color:var(--text-light);margin-top:4px;font-style:italic">${doc.note}</div>`:''}
+      ${doc.file&&doc.file.data?`<div style="margin-top:8px"><a href="${doc.file.data}" download="${doc.file.name}" class="btn btn-sm btn-outline">⬇ ${doc.file.name}</a></div>`:''}
+      ${doc.file&&!doc.file.data?`<div style="margin-top:8px;font-size:11px;color:var(--text-light)">📎 ${doc.file.name}</div>`:''}
+      <div style="margin-top:10px;display:flex;gap:6px">
+        <button class="btn btn-sm btn-orange" onclick="editDocument('${doc.id}')">✏️</button>
+        <button class="btn btn-sm btn-red" onclick="deleteDocument('${doc.id}')">🗑</button>
+      </div>
+    </div>`;
+  }).join('');
+
+  document.getElementById('content').innerHTML = `
+    <div class="flex-between mb-8">
+      <div class="section-title">📁 คลังเอกสาร (Document Library)</div>
+      <button class="btn btn-primary" onclick="editDocument(null)">+ เพิ่มเอกสาร</button>
+    </div>
+    <div style="display:flex;gap:8px;margin-bottom:14px">
+      <select id="doc-ftype" class="form-control" style="width:180px" onchange="renderDocuments()">
+        <option value="">— ประเภทเอกสารทั้งหมด —</option>${typeOpts}
+      </select>
+      <span style="margin-left:auto;font-size:12px;color:var(--text-light)">${docs.length} เอกสาร</span>
+    </div>
+    ${docs.length===0?'<p class="text-muted" style="text-align:center;padding:30px">ยังไม่มีเอกสาร — กด "+ เพิ่มเอกสาร" เพื่อเริ่มต้น</p>':`<div class="doc-grid">${cards}</div>`}`;
+}
+
+function editDocument(id) {
+  const doc = id ? DB.documents.find(x=>x.id===id) : null;
+  const typeOpts = Object.entries(DOC_TYPES).map(([k,v])=>`<option value="${k}" ${doc&&doc.docType===k?'selected':''}>${v}</option>`).join('');
+  document.getElementById('modal-title').textContent = id?'✏️ แก้ไขเอกสาร':'+ เพิ่มเอกสาร';
+  document.getElementById('modal-body').innerHTML = `
+    <div class="form-group"><label>ชื่อเอกสาร *</label><input class="form-control" id="doc-title" value="${doc?doc.title:''}" placeholder="เช่น กฏบัตรคณะกรรมการสรรหาฯ"></div>
+    <div class="form-row">
+      <div class="form-group"><label>ประเภท</label><select class="form-control" id="doc-type">${typeOpts}</select></div>
+      <div class="form-group"><label>Version</label><input class="form-control" id="doc-ver" value="${doc?doc.version:''}" placeholder="เช่น 2.0"></div>
+    </div>
+    <div class="form-row">
+      <div class="form-group"><label>วันที่มีผลบังคับ</label><input type="date" class="form-control" id="doc-eff" value="${doc?toCEStr(doc.effectiveDate):''}"></div>
+      <div class="form-group"><label>อนุมัติโดย</label><input class="form-control" id="doc-apby" value="${doc?doc.approvedBy:''}" placeholder="เช่น Board 2/2569"></div>
+    </div>
+    <div class="form-group"><label>แนบไฟล์ (ไม่เกิน 5MB)</label><input type="file" id="doc-file" class="form-control" accept=".pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx">${doc&&doc.file?`<div style="font-size:11px;margin-top:4px;color:var(--text-light)">ไฟล์ปัจจุบัน: ${doc.file.name}</div>`:''}</div>
+    <div class="form-group"><label>หมายเหตุ</label><textarea class="form-control" id="doc-note" rows="2">${doc?doc.note:''}</textarea></div>`;
+  document.getElementById('modal-footer').innerHTML = `<button class="btn btn-outline" onclick="closeModal()">ยกเลิก</button><button class="btn btn-primary" onclick="saveDocument('${id||''}')">💾 บันทึก</button>`;
+  document.getElementById('modal-overlay').classList.add('show');
+}
+
+async function saveDocument(id) {
+  const title = document.getElementById('doc-title').value.trim();
+  if (!title) { alert('กรุณาระบุชื่อเอกสาร'); return; }
+  const fileInput = document.getElementById('doc-file');
+  let fileData = id ? (DB.documents.find(x=>x.id===id)||{}).file : null;
+  if (fileInput.files.length > 0) {
+    fileData = await readFileAsBase64(fileInput.files[0]);
+  }
+  const entry = {
+    id:id||genId('doc'), title,
+    docType:document.getElementById('doc-type').value,
+    version:document.getElementById('doc-ver').value,
+    effectiveDate:toBEStr(document.getElementById('doc-eff').value),
+    approvedBy:document.getElementById('doc-apby').value,
+    file:fileData, note:document.getElementById('doc-note').value
+  };
+  if (id) { const i=DB.documents.findIndex(x=>x.id===id); if(i>=0) DB.documents[i]=entry; }
+  else DB.documents.push(entry);
+  saveData(); closeModal(); renderDocuments();
+}
+
+function deleteDocument(id) {
+  if (!confirm('ลบเอกสารนี้?')) return;
+  DB.documents = DB.documents.filter(x=>x.id!==id);
+  saveData(); renderDocuments();
+}
+
+// ============================================================
+// AGM TRACKER
+// ============================================================
+const AGM_TEMPLATE = [
+  { title:'ปิดสมุดทะเบียนผู้ถือหุ้น', responsible:'บริษัทฯ (ฝ่ายเลขานุการ)' },
+  { title:'ประกาศนัดประชุม AGM ใน SET Portal', responsible:'เลขานุการบริษัท' },
+  { title:'จัดส่งหนังสือเชิญประชุม AGM พร้อม Proxy Form', responsible:'เลขานุการบริษัท' },
+  { title:'NRC: เสนอชื่อกรรมการออกตามวาระ', responsible:'เลขา NRC' },
+  { title:'NRC: พิจารณาค่าตอบแทนกรรมการ เสนอ AGM', responsible:'เลขา NRC' },
+  { title:'จัดทำรายงานประจำปี / 56-1 One Report', responsible:'ฝ่ายนักลงทุนสัมพันธ์' },
+  { title:'วันประชุมสามัญผู้ถือหุ้น (AGM)', responsible:'เลขานุการบริษัท' },
+  { title:'จดรายงานการประชุม AGM และแจ้ง SET', responsible:'เลขานุการบริษัท' }
+];
+
+function renderAGM() {
+  const years = [...new Set(DB.agmItems.map(a=>a.year).concat([DB.company.fiscalYear]))].sort().reverse();
+  const selYear = parseInt(document.getElementById('agm-yr-sel')?.value||years[0]);
+  const yrOpts = years.map(y=>`<option value="${y}" ${y===selYear?'selected':''}>${y}</option>`).join('');
+  const items = DB.agmItems.filter(a=>a.year===selYear).sort((a,b)=>(a.dueDate||'').localeCompare(b.dueDate||''));
+  const today = new Date();
+  const done = items.filter(i=>i.status==='done').length;
+
+  const rows = items.map(item=>{
+    const due = toDateCE(item.dueDate);
+    const isOverdue = due && due < today && item.status !== 'done';
+    const rowBg = item.status==='done'?'background:#f0fdf4':'';
+    const sts = item.status==='done'?'<span class="badge-status status-completed">✅ เสร็จแล้ว</span>':isOverdue?'<span class="badge-status status-overdue">⚠️ เกินกำหนด</span>':'<span class="badge-status status-planned">⏳ รอดำเนินการ</span>';
+    return `<div class="agm-item-row" style="${rowBg}">
+      <input type="checkbox" ${item.status==='done'?'checked':''} onchange="toggleAGMItem('${item.id}',this.checked)" style="width:16px;height:16px">
+      <div style="flex:1">
+        <div style="font-size:13px;font-weight:600;color:var(--navy)">${item.title}</div>
+        <div style="font-size:11px;color:var(--text-light)">${item.responsible} | กำหนด: ${thDate(item.dueDate)}</div>
+        ${item.note?`<div style="font-size:11px;font-style:italic;color:var(--text-light)">${item.note}</div>`:''}
+      </div>
+      ${sts}
+      <div style="display:flex;gap:4px">
+        <button class="btn btn-sm btn-orange" onclick="editAGMItem('${item.id}',${selYear})">✏️</button>
+        <button class="btn btn-sm btn-red" onclick="deleteAGMItem('${item.id}')">🗑</button>
+      </div>
+    </div>`;
+  }).join('');
+
+  const pct = items.length ? Math.round(done/items.length*100) : 0;
+  document.getElementById('content').innerHTML = `
+    <div class="flex-between mb-8">
+      <div class="section-title">🗳 AGM Tracker</div>
+      <div style="display:flex;gap:8px;align-items:center">
+        <select id="agm-yr-sel" class="form-control" style="width:100px" onchange="renderAGM()">${yrOpts}</select>
+        <button class="btn btn-outline btn-sm" onclick="initAGMYear(${selYear})">🔧 สร้างรายการ AGM ${selYear}</button>
+        <button class="btn btn-primary btn-sm" onclick="editAGMItem(null,${selYear})">+ เพิ่มรายการ</button>
+      </div>
+    </div>
+    <div style="display:flex;gap:14px;margin-bottom:16px;align-items:center">
+      <div class="remun-total-card" style="background:var(--blue)"><div class="rtval">${items.length}</div><div class="rtlbl">รายการทั้งหมด</div></div>
+      <div class="remun-total-card" style="background:var(--green)"><div class="rtval">${done}</div><div class="rtlbl">เสร็จแล้ว</div></div>
+      <div class="remun-total-card" style="background:${pct===100?'var(--green)':'var(--orange)'}"><div class="rtval">${pct}%</div><div class="rtlbl">ความคืบหน้า</div></div>
+    </div>
+    ${items.length===0?`<div class="alert alert-info">กด "สร้างรายการ AGM ${selYear}" เพื่อสร้าง Checklist มาตรฐาน หรือกด "+ เพิ่มรายการ" เพื่อเพิ่มเอง</div>`:
+    `<div class="panel"><div class="panel-body">${rows}</div></div>`}`;
+}
+
+function initAGMYear(year) {
+  if (!confirm(`สร้าง Checklist AGM ปี ${year} (${AGM_TEMPLATE.length} รายการ)?`)) return;
+  const existing = DB.agmItems.filter(a=>a.year===year);
+  if (existing.length > 0 && !confirm('มีรายการของปีนี้อยู่แล้ว ต้องการเพิ่มเติมหรือไม่?')) return;
+  AGM_TEMPLATE.forEach(t=>{
+    DB.agmItems.push({ id:genId('agm'), year, title:t.title, dueDate:'', status:'pending', responsible:t.responsible, note:'' });
+  });
+  saveData(); renderAGM();
+}
+
+function toggleAGMItem(id, checked) {
+  const item = DB.agmItems.find(x=>x.id===id);
+  if (item) { item.status = checked?'done':'pending'; saveData(); }
+}
+
+function editAGMItem(id, year) {
+  const item = id ? DB.agmItems.find(x=>x.id===id) : null;
+  document.getElementById('modal-title').textContent = id?'✏️ แก้ไขรายการ AGM':'+ เพิ่มรายการ AGM';
+  document.getElementById('modal-body').innerHTML = `
+    <div class="form-group"><label>รายการ *</label><input class="form-control" id="agm-title" value="${item?item.title:''}" placeholder="รายละเอียดรายการ"></div>
+    <div class="form-row">
+      <div class="form-group"><label>กำหนดเสร็จ</label><input type="date" class="form-control" id="agm-due" value="${item?toCEStr(item.dueDate):''}"></div>
+      <div class="form-group"><label>ผู้รับผิดชอบ</label><input class="form-control" id="agm-resp" value="${item?item.responsible:''}" placeholder="ชื่อหรือตำแหน่ง"></div>
+    </div>
+    <div class="form-group"><label>สถานะ</label>
+      <select class="form-control" id="agm-status">
+        <option value="pending" ${!item||item.status==='pending'?'selected':''}>⏳ รอดำเนินการ</option>
+        <option value="done" ${item&&item.status==='done'?'selected':''}>✅ เสร็จแล้ว</option>
+      </select>
+    </div>
+    <div class="form-group"><label>หมายเหตุ</label><input class="form-control" id="agm-note" value="${item?item.note:''}"></div>`;
+  document.getElementById('modal-footer').innerHTML = `<button class="btn btn-outline" onclick="closeModal()">ยกเลิก</button><button class="btn btn-primary" onclick="saveAGMItem('${id||''}',${year})">💾 บันทึก</button>`;
+  document.getElementById('modal-overlay').classList.add('show');
+}
+
+function saveAGMItem(id, year) {
+  const title = document.getElementById('agm-title').value.trim();
+  if (!title) { alert('กรุณาระบุรายการ'); return; }
+  const entry = { id:id||genId('agm'), year, title, dueDate:toBEStr(document.getElementById('agm-due').value), status:document.getElementById('agm-status').value, responsible:document.getElementById('agm-resp').value, note:document.getElementById('agm-note').value };
+  if (id) { const i=DB.agmItems.findIndex(x=>x.id===id); if(i>=0) DB.agmItems[i]=entry; }
+  else DB.agmItems.push(entry);
+  saveData(); closeModal(); renderAGM();
+}
+
+function deleteAGMItem(id) {
+  if (!confirm('ลบรายการนี้?')) return;
+  DB.agmItems = DB.agmItems.filter(x=>x.id!==id);
+  saveData(); renderAGM();
+}
+
+// ============================================================
+// CONFLICT OF INTEREST — ผลประโยชน์ทับซ้อน
+// ============================================================
+function renderConflict() {
+  const filterDir = document.getElementById('coi-fdir')?.value || '';
+  const filterMtg = document.getElementById('coi-fmtg')?.value || '';
+  const dirOpts = DB.directors.map(d=>`<option value="${d.id}" ${d.id===filterDir?'selected':''}>${d.name.replace(/^(รศ\.ดร\.ภก\.|รศ\.ดร\.|ดร\.|นางสาว|นาง|นาย)\s*/,'')}</option>`).join('');
+  const mtgOpts = DB.meetings.map(m=>`<option value="${m.id}" ${m.id===filterMtg?'selected':''}>${'NRC '+m.no+'/'+m.year}</option>`).join('');
+
+  let rows = DB.conflictLog;
+  if (filterDir) rows = rows.filter(r=>r.directorId===filterDir);
+  if (filterMtg) rows = rows.filter(r=>r.meetingId===filterMtg);
+  rows = [...rows].sort((a,b)=>(b.date||'').localeCompare(a.date||''));
+
+  const tRows = rows.map(c=>{
+    const d = DB.directors.find(x=>x.id===c.directorId);
+    const sn = d ? d.name.replace(/^(รศ\.ดร\.ภก\.|รศ\.ดร\.|ดร\.|นางสาว|นาง|นาย)\s*/,'') : c.directorName;
+    return `<tr>
+      <td>${thDate(c.date)}</td>
+      <td><strong>${sn}</strong></td>
+      <td>${c.meetingRef||'-'}</td>
+      <td style="max-width:200px;white-space:normal">${c.agenda||'-'}</td>
+      <td style="text-align:center">${c.declared?'<span class="badge-status status-completed">✅ แจ้ง</span>':'<span class="badge-status status-overdue">❌</span>'}</td>
+      <td style="text-align:center">${c.abstained?'<span class="badge-status status-completed">✅ งด</span>':'<span class="badge-status status-planned">ไม่งด</span>'}</td>
+      <td style="font-size:11px">${c.note||''}</td>
+      <td>
+        <button class="btn btn-sm btn-orange" onclick="editConflict('${c.id}')">✏️</button>
+        <button class="btn btn-sm btn-red" onclick="deleteConflict('${c.id}')">🗑</button>
+      </td>
+    </tr>`;
+  }).join('');
+
+  document.getElementById('content').innerHTML = `
+    <div class="flex-between mb-8">
+      <div class="section-title">⚠️ บันทึกผลประโยชน์ทับซ้อน (COI Log)</div>
+      <button class="btn btn-primary" onclick="editConflict(null)">+ บันทึก COI</button>
+    </div>
+    <div class="alert alert-warn" style="font-size:12px;margin-bottom:12px">กรรมการที่มีส่วนได้เสียในวาระใดต้องแจ้ง และงดออกเสียง/ออกจากห้องประชุมในวาระนั้น</div>
+    <div style="display:flex;gap:8px;margin-bottom:14px;flex-wrap:wrap">
+      <select id="coi-fdir" class="form-control" style="width:180px" onchange="renderConflict()"><option value="">— กรรมการทั้งหมด —</option>${dirOpts}</select>
+      <select id="coi-fmtg" class="form-control" style="width:160px" onchange="renderConflict()"><option value="">— ทุกการประชุม —</option>${mtgOpts}</select>
+      <span style="margin-left:auto;font-size:12px;color:var(--text-light)">${rows.length} รายการ</span>
+    </div>
+    <div class="panel"><div class="panel-body" style="padding:0">
+      <table class="tbl">
+        <thead><tr><th>วันที่</th><th>กรรมการ</th><th>การประชุม</th><th>วาระ</th><th>แจ้ง COI</th><th>งดออกเสียง</th><th>หมายเหตุ</th><th></th></tr></thead>
+        <tbody>${tRows||'<tr><td colspan="8" class="text-muted" style="text-align:center;padding:30px">ยังไม่มีบันทึก COI</td></tr>'}</tbody>
+      </table>
+    </div></div>`;
+}
+
+function editConflict(id) {
+  const c = id ? DB.conflictLog.find(x=>x.id===id) : null;
+  const dirOpts = DB.directors.map(d=>{
+    const sn = d.name.replace(/^(รศ\.ดร\.ภก\.|รศ\.ดร\.|ดร\.|นางสาว|นาง|นาย)\s*/,'');
+    return `<option value="${d.id}" ${c&&c.directorId===d.id?'selected':''}>${sn}</option>`;
+  }).join('');
+  const mtgOpts = DB.meetings.map(m=>`<option value="${m.id}" ${c&&c.meetingId===m.id?'selected':''}>${'NRC '+m.no+'/'+m.year}</option>`).join('');
+  document.getElementById('modal-title').textContent = id?'✏️ แก้ไข COI':'+ บันทึก COI';
+  document.getElementById('modal-body').innerHTML = `
+    <div class="form-row">
+      <div class="form-group" style="flex:1.5"><label>กรรมการ *</label>
+        <select class="form-control" id="coi-dir" onchange="coiSyncName()"><option value="">—</option>${dirOpts}</select>
+      </div>
+      <div class="form-group"><label>วันที่ *</label><input type="date" class="form-control" id="coi-date" value="${c?toCEStr(c.date):''}"></div>
+    </div>
+    <div class="form-group"><label>การประชุม</label>
+      <select class="form-control" id="coi-mtg" onchange="coiSyncMtg()"><option value="">—</option>${mtgOpts}</select>
+    </div>
+    <div class="form-group"><label>Ref. การประชุม</label><input class="form-control" id="coi-ref" value="${c?c.meetingRef:''}" placeholder="เช่น NRC 2/2569"></div>
+    <div class="form-group"><label>วาระที่มีส่วนได้เสีย *</label><textarea class="form-control" id="coi-agenda" rows="2" placeholder="ระบุชื่อวาระ">${c?c.agenda:''}</textarea></div>
+    <div class="form-row">
+      <div class="form-group"><label>แจ้งผลประโยชน์ทับซ้อน?</label>
+        <select class="form-control" id="coi-declared">
+          <option value="1" ${!c||c.declared?'selected':''}>✅ แจ้งแล้ว</option>
+          <option value="0" ${c&&!c.declared?'selected':''}>❌ ไม่ได้แจ้ง</option>
+        </select>
+      </div>
+      <div class="form-group"><label>งดออกเสียง/ออกห้อง?</label>
+        <select class="form-control" id="coi-abstained">
+          <option value="1" ${!c||c.abstained?'selected':''}>✅ งดออกเสียง</option>
+          <option value="0" ${c&&!c.abstained?'selected':''}>ไม่งด</option>
+        </select>
+      </div>
+    </div>
+    <div class="form-group"><label>หมายเหตุ</label><input class="form-control" id="coi-note" value="${c?c.note:''}"></div>`;
+  document.getElementById('modal-footer').innerHTML = `<button class="btn btn-outline" onclick="closeModal()">ยกเลิก</button><button class="btn btn-primary" onclick="saveConflict('${id||''}')">💾 บันทึก</button>`;
+  document.getElementById('modal-overlay').classList.add('show');
+}
+
+function coiSyncName() {
+  const sel = document.getElementById('coi-dir').value;
+  // (name synced via directorId)
+}
+function coiSyncMtg() {
+  const mtgId = document.getElementById('coi-mtg').value;
+  const m = DB.meetings.find(x=>x.id===mtgId);
+  if (m) {
+    document.getElementById('coi-ref').value = 'NRC '+m.no+'/'+m.year;
+    document.getElementById('coi-date').value = toCEStr(m.date);
+  }
+}
+
+function saveConflict(id) {
+  const dirId = document.getElementById('coi-dir').value;
+  const agenda = document.getElementById('coi-agenda').value.trim();
+  const dateVal = document.getElementById('coi-date').value;
+  if (!dirId || !agenda || !dateVal) { alert('กรุณากรอกข้อมูลให้ครบ'); return; }
+  const d = DB.directors.find(x=>x.id===dirId);
+  const entry = {
+    id:id||genId('coi'), directorId:dirId, directorName:d?d.name:'',
+    meetingId:document.getElementById('coi-mtg').value,
+    meetingRef:document.getElementById('coi-ref').value,
+    agenda, date:toBEStr(dateVal),
+    declared:document.getElementById('coi-declared').value==='1',
+    abstained:document.getElementById('coi-abstained').value==='1',
+    note:document.getElementById('coi-note').value
+  };
+  if (id) { const i=DB.conflictLog.findIndex(x=>x.id===id); if(i>=0) DB.conflictLog[i]=entry; }
+  else DB.conflictLog.push(entry);
+  saveData(); closeModal(); renderConflict();
+}
+
+function deleteConflict(id) {
+  if (!confirm('ลบรายการนี้?')) return;
+  DB.conflictLog = DB.conflictLog.filter(x=>x.id!==id);
+  saveData(); renderConflict();
+}
+
+// ============================================================
+// COMMITTEE SYNC — จาก Changelog ไปยังรายชื่อคณะย่อย
+// ============================================================
+function openCommitteeSyncModal(dirName, changeType) {
+  const scOpts = DB.board.subcommittees.map((sc,si)=>{
+    const rows = sc.members.map((m,mi)=>`
+      <div style="display:flex;align-items:center;gap:8px;padding:4px 0">
+        <input type="text" class="form-control" style="flex:1;font-size:12px" value="${m.name}" id="sc-${si}-n${mi}" placeholder="ชื่อกรรมการ">
+        <input type="text" class="form-control" style="width:100px;font-size:12px" value="${m.role}" id="sc-${si}-r${mi}" placeholder="บทบาท">
+        <button class="btn btn-sm" style="color:var(--red);background:none;border:none;font-size:16px;padding:0 4px" onclick="removeSCMember(${si},${mi})">✕</button>
+      </div>`).join('');
+    return `<div style="margin-bottom:14px"><div style="font-weight:700;font-size:13px;color:var(--navy);margin-bottom:6px">${sc.name}</div>
+      <div id="sc-members-${si}">${rows}</div>
+      <button class="btn btn-sm btn-outline" style="margin-top:6px" onclick="addSCMember(${si})">+ เพิ่มสมาชิก</button>
+    </div>`;
+  }).join('');
+  document.getElementById('modal-title').textContent = '🔄 อัพเดทรายชื่อในคณะย่อย';
+  document.getElementById('modal-body').innerHTML = `
+    <div class="sync-highlight">
+      <strong>การเปลี่ยนแปลง:</strong> ${changeType} — ${dirName}<br>
+      <span style="font-size:12px">แก้ไขรายชื่อในแต่ละคณะย่อยให้ตรงกับสถานะปัจจุบัน</span>
+    </div>
+    <div id="sc-edit-wrap">${scOpts}</div>`;
+  document.getElementById('modal-footer').innerHTML = `<button class="btn btn-outline" onclick="closeModal()">ข้าม</button><button class="btn btn-primary" onclick="saveCommitteeSync()">💾 บันทึกรายชื่อคณะย่อย</button>`;
+  document.getElementById('modal-overlay').classList.add('show');
+}
+
+function addSCMember(si) {
+  const wrap = document.getElementById('sc-members-'+si);
+  const mi = wrap.children.length;
+  const div = document.createElement('div');
+  div.style.cssText = 'display:flex;align-items:center;gap:8px;padding:4px 0';
+  div.innerHTML = `<input type="text" class="form-control" style="flex:1;font-size:12px" id="sc-${si}-n${mi}" placeholder="ชื่อกรรมการ"><input type="text" class="form-control" style="width:100px;font-size:12px" id="sc-${si}-r${mi}" placeholder="บทบาท"><button class="btn btn-sm" style="color:var(--red);background:none;border:none;font-size:16px;padding:0 4px" onclick="this.parentElement.remove()">✕</button>`;
+  wrap.appendChild(div);
+}
+
+function removeSCMember(si, mi) {
+  const el = document.getElementById('sc-'+si+'-n'+mi)?.parentElement;
+  if (el) el.remove();
+}
+
+function saveCommitteeSync() {
+  DB.board.subcommittees.forEach((sc, si) => {
+    const wrap = document.getElementById('sc-members-'+si);
+    if (!wrap) return;
+    const newMembers = [];
+    wrap.querySelectorAll('[id^="sc-'+si+'-n"]').forEach((inp, idx) => {
+      const name = inp.value.trim();
+      const roleEl = document.getElementById('sc-'+si+'-r'+idx);
+      const role = roleEl ? roleEl.value.trim() : '';
+      if (name) newMembers.push({ name, role, type:'independent', term:'' });
+    });
+    sc.members = newMembers;
+  });
+  saveData();
+  closeModal();
+  alert('✅ อัพเดทรายชื่อคณะย่อยเรียบร้อยแล้ว');
+}
+
+// ============================================================
+// SETTINGS
+// ============================================================
+function renderSettings() {
+  const c=DB.company;
+  document.getElementById('content').innerHTML = `
+    <div class="section-title">&#9881; ตั้งค่าระบบ</div>
+    <div class="panel" style="margin-bottom:16px">
+      <div class="panel-header"><h3>&#128196; สร้างข้อความเปิดเผย (Disclosure Generator)</h3></div>
+      <div class="panel-body">
+        <div class="form-group"><label>เลือกปี พ.ศ.</label>
+          <select class="form-control" id="dis-year" style="width:150px">
+            ${[DB.company.fiscalYear,DB.company.fiscalYear-1].map(y=>`<option value="${y}">${y}</option>`).join('')}
+          </select>
+        </div>
+        <button class="btn btn-primary" onclick="generateDisclosure()">&#128196; สร้างข้อความ</button>
+        <div id="disclosure-output" style="margin-top:14px"></div>
+      </div>
+    </div>
+    <div class="panel">
+      <div class="panel-header"><h3>&#127970; ข้อมูลบริษัท</h3></div>
+      <div class="panel-body">
+        <div class="form-group"><label>ชื่อบริษัท</label><input class="form-control" id="set-name" value="${c.name}"></div>
+        <div class="form-row">
+          <div class="form-group"><label>ชื่อย่อ</label><input class="form-control" id="set-abbr" value="${c.abbr}"></div>
+          <div class="form-group"><label>ปีงบประมาณ (พ.ศ.)</label><input class="form-control" id="set-year" type="number" value="${c.fiscalYear}"></div>
+        </div>
+        <div class="form-group"><label>เลขานุการ NRC</label><input class="form-control" id="set-sec" value="${c.secretary}"></div>
+        <button class="btn btn-primary" onclick="saveCompanySettings()">&#128190; บันทึก</button>
+      </div>
+    </div>
+    <div class="panel">
+      <div class="panel-header"><h3>&#128190; Export / Import ข้อมูล</h3></div>
+      <div class="panel-body">
+        <p class="text-muted mb-8">สำรองหรือโอนย้ายข้อมูลทั้งหมดในรูปแบบ JSON</p>
+        <div class="btn-group">
+          <button class="btn btn-navy" onclick="exportData()">&#11015; Export JSON</button>
+          <button class="btn btn-outline" onclick="document.getElementById('import-file').click()">&#11014; Import JSON</button>
+          <input type="file" id="import-file" accept=".json" style="display:none" onchange="importData(this)">
+        </div>
+        <hr class="divider">
+        <div class="cards-row">
+          <div class="card"><div class="card-label">กรรมการบริษัท</div><div class="card-value blue">${DB.directors.length}</div></div>
+          <div class="card"><div class="card-label">การประชุม</div><div class="card-value blue">${DB.meetings.length}</div></div>
+          <div class="card"><div class="card-label">Action Items</div><div class="card-value blue">${DB.actionItems.length}</div></div>
+          <div class="card"><div class="card-label">Succession Plans</div><div class="card-value blue">${DB.succession.length}</div></div>
+        </div>
+        <hr class="divider">
+        <p class="text-muted mb-8" style="color:var(--red)">&#9888; ล้างข้อมูลทั้งหมดและคืนค่าเริ่มต้น (ไม่สามารถย้อนกลับ)</p>
+        <button class="btn btn-red" onclick="resetData()">&#128465; Reset ข้อมูลทั้งหมด</button>
+      </div>
+    </div>
+    <div class="panel" style="margin-bottom:16px">
+      <div class="panel-header"><h3>&#9729; GitHub Gist Sync</h3></div>
+      <div class="panel-body">
+        <p class="text-muted mb-8">เชื่อมต่อข้อมูลกับ <strong>Private GitHub Gist</strong> — sync ข้ามเครื่องและ browser ได้ ไม่ต้องพึ่ง server</p>
+        <div class="form-group">
+          <label>GitHub Personal Access Token <span class="text-muted">(scope: <code>gist</code>)</span></label>
+          <input class="form-control" id="gist-token" type="password" placeholder="ghp_xxxxxxxxxxxxxxxxxxxxxxxxx" autocomplete="off">
+          <small class="text-muted">สร้างที่ GitHub &#8594; Settings &#8594; Developer settings &#8594; Personal access tokens &#8594; scope: <strong>gist</strong></small>
+        </div>
+        <div class="form-group" style="margin-top:10px">
+          <label>Gist ID <span class="text-muted">(เว้นว่างเพื่อสร้าง Gist ใหม่อัตโนมัติ)</span></label>
+          <input class="form-control" id="gist-id" placeholder="จะแสดงหลัง Connect สำเร็จ">
+        </div>
+        <div class="btn-group" style="margin-top:12px">
+          <button class="btn btn-navy" onclick="connectGist()">&#128279; Connect</button>
+          <button class="btn btn-outline" onclick="syncNow()">&#128260; Sync Now</button>
+          <button class="btn btn-outline" style="color:var(--red)" onclick="disconnectGist()">&times; Disconnect</button>
+        </div>
+        <div id="gist-panel-status" style="margin-top:12px; font-size:13px; line-height:1.8"></div>
+        <hr class="divider" style="margin:14px 0">
+        <p class="text-muted" style="font-size:12px; margin:0">
+          &#128274; Token เก็บใน localStorage ของ browser เท่านั้น ไม่ส่งไปที่อื่นนอกจาก GitHub API โดยตรง<br>
+          &#9729; Gist ที่สร้างจะเป็น <strong>Private</strong> — มองเห็นได้เฉพาะเจ้าของ Token เท่านั้น
+        </p>
+      </div>
+    </div>
+    <div class="panel">
+      <div class="panel-header"><h3>&#128203; เกี่ยวกับระบบ</h3></div>
+      <div class="panel-body">
+        <p>NRC Management System <strong>v2.0</strong></p>
+        <p class="text-muted">บริษัท: ${c.name}</p>
+        <p class="text-muted">เลขานุการ NRC: ${c.secretary}</p>
+        <p class="text-muted">ข้อมูลกรรมการจาก: precise.co.th (อัปเดต พ.ค. 2569)</p>
+        <p class="text-muted">จัดเก็บข้อมูลใน localStorage ของเบราว์เซอร์ (รองรับไฟล์แนบสูงสุด 5MB/ไฟล์)</p>
+      </div>
+    </div>`;
+}
+
+function saveCompanySettings() {
+  DB.company.name=document.getElementById('set-name').value;
+  DB.company.abbr=document.getElementById('set-abbr').value;
+  DB.company.fiscalYear=parseInt(document.getElementById('set-year').value);
+  DB.company.secretary=document.getElementById('set-sec').value;
+  saveData(); alert('บันทึกเรียบร้อยแล้ว');
+}
+
+function exportData() {
+  const json=JSON.stringify(DB,null,2);
+  const blob=new Blob([json],{type:'application/json'});
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement('a'); a.href=url;
+  a.download=`NRC_PCC_Data_${new Date().toISOString().slice(0,10)}.json`;
+  a.click(); URL.revokeObjectURL(url);
+}
+
+function importData(input) {
+  const file=input.files[0]; if (!file) return;
+  const reader=new FileReader();
+  reader.onload=function(e) {
+    try {
+      const imported=JSON.parse(e.target.result);
+      if (confirm('นำเข้าข้อมูลจะแทนที่ข้อมูลปัจจุบันทั้งหมด ยืนยัน?')) {
+        DB=imported; saveData(); alert('นำเข้าสำเร็จ'); renderSettings();
+      }
+    } catch(err) { alert('ไฟล์ JSON ไม่ถูกต้อง: '+err.message); }
+  };
+  reader.readAsText(file);
+}
+
+function resetData() {
+  if (!confirm('ยืนยันการล้างข้อมูลทั้งหมด?')) return;
+  if (!confirm('ยืนยันอีกครั้ง — ข้อมูลทั้งหมดจะถูกลบถาวร')) return;
+  DB=JSON.parse(JSON.stringify(DEFAULT_DATA)); saveData();
+  alert('ล้างข้อมูลเรียบร้อยแล้ว'); showSection('dashboard');
+}
+
+// INIT
+// ── Gist Settings UI functions ───────────────────────────────────────────────
+function loadGistSettingsUI() {
+  const { token, gistId } = getGistSettings();
+  const tokenEl = document.getElementById('gist-token');
+  const idEl = document.getElementById('gist-id');
+  if (tokenEl) tokenEl.value = token || '';
+  if (idEl) idEl.value = gistId || '';
+  const statusEl = document.getElementById('gist-panel-status');
+  if (statusEl) {
+    if (token && gistId) {
+      statusEl.innerHTML = '<span style="color:var(--green)">&#10003; Connected</span> &mdash; Gist ID: <code style="font-size:11px">' + gistId + '</code>';
+    } else {
+      statusEl.innerHTML = '<span style="color:var(--muted)">&#128394; ยังไม่ได้ connect — ใส่ Token แล้วกด Connect</span>';
+    }
+  }
+}
+async function connectGist() {
+  const token = (document.getElementById('gist-token').value||'').trim();
+  if (!token) { alert('กรุณาใส่ GitHub Personal Access Token'); return; }
+  const statusEl = document.getElementById('gist-panel-status');
+  statusEl.innerHTML = '&#9203; กำลัง connect...';
+  let gistId = (document.getElementById('gist-id').value||'').trim();
+  try {
+    if (!gistId) {
+      statusEl.innerHTML = '&#9203; กำลังสร้าง Private Gist ใหม่...';
+      gistId = await createNewGist(token, DB);
+      document.getElementById('gist-id').value = gistId;
+    } else {
+      statusEl.innerHTML = '&#9203; กำลังตรวจสอบ Gist...';
+      await fetchFromGist(token, gistId);
+    }
+    localStorage.setItem(GIST_SETTINGS_KEY, JSON.stringify({ token, gistId }));
+    updateSyncStatus('syncing', 'กำลัง upload...');
+    statusEl.innerHTML = '&#9203; กำลัง upload ข้อมูลปัจจุบัน...';
+    await pushToGist(token, gistId, DB);
+    const t = new Date().toLocaleTimeString('th-TH', { hour:'2-digit', minute:'2-digit' });
+    updateSyncStatus('ok', 'Sync ' + t);
+    statusEl.innerHTML = '<span style="color:var(--green)">&#10003; Connected!</span><br>Gist ID: <code style="font-size:11px">' + gistId + '</code><br><small class="text-muted">ข้อมูลปัจจุบัน sync แล้ว ' + t + '</small>';
+  } catch(e) {
+    statusEl.innerHTML = '<span style="color:var(--red)">&#10007; Error: ' + e.message + '</span>';
+    updateSyncStatus('error', 'Connect ไม่สำเร็จ');
+  }
+}
+async function syncNow() {
+  const { token, gistId } = getGistSettings();
+  if (!token || !gistId) { alert('ยังไม่ได้ connect Gist\nกรุณาไปที่ตั้งค่า > GitHub Gist Sync'); return; }
+  const statusEl = document.getElementById('gist-panel-status');
+  updateSyncStatus('syncing', 'กำลัง sync...');
+  if (statusEl) statusEl.innerHTML = '&#9203; กำลัง sync...';
+  try {
+    await pushToGist(token, gistId, DB);
+    const t = new Date().toLocaleTimeString('th-TH', { hour:'2-digit', minute:'2-digit' });
+    updateSyncStatus('ok', 'Sync ' + t);
+    if (statusEl) statusEl.innerHTML = '<span style="color:var(--green)">&#10003; Sync สำเร็จ ' + t + '</span><br>Gist ID: <code style="font-size:11px">' + gistId + '</code>';
+  } catch(e) {
+    updateSyncStatus('error', 'Sync ไม่สำเร็จ');
+    if (statusEl) statusEl.innerHTML = '<span style="color:var(--red)">&#10007; ' + e.message + '</span>';
+  }
+}
+function disconnectGist() {
+  if (!confirm('ยืนยันการ Disconnect Gist?\nข้อมูลใน localStorage จะยังคงอยู่')) return;
+  localStorage.removeItem(GIST_SETTINGS_KEY);
+  const tokenEl = document.getElementById('gist-token');
+  const idEl = document.getElementById('gist-id');
+  const statusEl = document.getElementById('gist-panel-status');
+  if (tokenEl) tokenEl.value = '';
+  if (idEl) idEl.value = '';
+  if (statusEl) statusEl.innerHTML = '<span style="color:var(--muted)">&#128394; Disconnected — ข้อมูลยังอยู่ใน localStorage</span>';
+  updateSyncStatus('idle', 'ไม่ได้ connect');
+}
+// ─────────────────────────────────────────────────────────────────────────────
+function generateDisclosure() {
+  const yr = parseInt(document.getElementById('dis-year').value)||DB.company.fiscalYear;
+  const mtgs = DB.meetings.filter(m=>m.year===yr);
+  const completed = mtgs.filter(m=>m.status==='completed').length;
+  const total = mtgs.length;
+  const cg = getDirectorCGStats();
+  const stripPrefix = n => n.replace(/^(รศ\.ดร\.ภก\.|รศ\.ดร\.|ดร\.|นางสาว|นาง|นาย)\s*/,'').trim();
+  const indepList = DB.directors.filter(d=>d.type==='independent').map(d=>stripPrefix(d.name));
+  const nrcMembers = DB.directors.filter(d=>d.nrcRole&&d.nrcRole!=='none').map(d=>{
+    const role = d.nrcRole==='chair'?'ประธาน':'กรรมการ';
+    return `${d.name} (${role})`;
+  }).join(' / ');
+  const trainYr = DB.directorTraining.filter(t=>t.date&&t.date.startsWith(String(yr)));
+  const trainHrs = trainYr.reduce((a,b)=>a+(b.hours||0),0);
+  const remunYr = DB.remuneration.filter(r=>r.year===yr);
+  const totalRemun = remunYr.reduce((a,b)=>a+(b.retainer||0)+(b.boardFee||0)+(b.nrcFee||0)+(b.otherFee||0),0);
+  const text = `คณะกรรมการสรรหาและพิจารณาค่าตอบแทน (NRC) ประกอบด้วย ${nrcMembers}
+
+ในรอบปีบัญชี ${yr} คณะกรรมการ NRC มีการประชุมรวมทั้งสิ้น ${total} ครั้ง โดยสำเร็จแล้ว ${completed} ครั้ง
+
+โครงสร้างคณะกรรมการบริษัท มีกรรมการรวม ${cg.total} คน แบ่งเป็น กรรมการอิสระ ${cg.independent} คน (${cg.indepRatio}%) กรรมการหญิง ${cg.female} คน (${cg.femaleRatio}%) และกรรมการที่ไม่เป็นผู้บริหาร ${cg.nonexec} คน (${cg.nonexecRatio}%)
+
+กรรมการอิสระ ได้แก่ ${indepList.join(', ')}
+
+${trainHrs>0?`ในปี ${yr} คณะกรรมการได้รับการพัฒนาความรู้และทักษะรวม ${trainHrs} ชั่วโมง`:''}
+${totalRemun>0?`ค่าตอบแทนกรรมการรวมทั้งหมดในปี ${yr}: ${totalRemun.toLocaleString('th-TH')} บาท`:''}`;
+  const out = document.getElementById('disclosure-output');
+  if (out) out.innerHTML = `<div style="background:#f9f9f9;border:1px solid var(--border);border-radius:6px;padding:14px;font-size:13px;line-height:1.8;white-space:pre-wrap">${text}</div><button class="btn btn-outline btn-sm" style="margin-top:8px" onclick="navigator.clipboard.writeText(document.getElementById('disclosure-output').querySelector('div').textContent)">📋 คัดลอก</button>`;
+}
+
+document.addEventListener('DOMContentLoaded', async function() {
+  loadData();
+  showSection('dashboard');
+  initDataFromGist(); // sync from Gist in background
+});
+</script>
+</body>
+</html>
