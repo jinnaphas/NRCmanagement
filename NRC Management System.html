@@ -207,7 +207,7 @@ textarea.form-control { resize: vertical; min-height: 80px; }
     <a onclick="showSection('conflict')" id="nav-conflict"><span class="icon">&#9888;</span> ผลประโยชน์ฯ</a>
     <a onclick="showSection('settings')" id="nav-settings"><span class="icon">&#9881;</span> ตั้งค่า</a>
   </nav>
-  <div class="sidebar-footer">PCC &copy; 2569 | v2.1 &#9729;</div>
+  <div class="sidebar-footer">PCC &copy; 2569 | v2.2 &#9729;</div>
 </div>
 <div id="main">
   <div id="topbar">
@@ -232,6 +232,7 @@ textarea.form-control { resize: vertical; min-height: 80px; }
 const STORAGE_KEY = 'nrc_pcc_data_v2';
 const GIST_SETTINGS_KEY = 'nrc_gist_settings_v1';
 let gistSyncInProgress = false;
+let knownBlobFiles = new Set(); // ชื่อไฟล์ blob ที่มีอยู่แล้วใน Gist (เพื่อไม่ upload ซ้ำ)
 
 const DEFAULT_DATA = {
   company: {
@@ -448,18 +449,68 @@ function getGistSettings() {
   try { const s = localStorage.getItem(GIST_SETTINGS_KEY); return s ? JSON.parse(s) : { token:'', gistId:'' }; }
   catch(e) { return { token:'', gistId:'' }; }
 }
-// ลบ base64 ขนาดใหญ่ออกก่อน push Gist (photos/attachments เก็บไว้ใน localStorage เท่านั้น)
-function stripBinaryForGist(data) {
-  const d = JSON.parse(JSON.stringify(data));
-  if (d.directors) d.directors.forEach(dir => { if (dir.photo && dir.photo.startsWith('data:')) dir.photo = '__LOCAL__'; });
-  if (d.documents) d.documents.forEach(doc => { if (doc.fileData && doc.fileData.startsWith('data:')) doc.fileData = '__LOCAL__'; });
-  if (d.meetings) d.meetings.forEach(m => {
-    if (m.agendaAttachments) m.agendaAttachments.forEach(a => { if (a.data) a.data = '__LOCAL__'; });
-    if (m.momAttachments) m.momAttachments.forEach(a => { if (a.data) a.data = '__LOCAL__'; });
-  });
-  return d;
+// ─────────────────────────────────────────────────────────────────────────────
+// ── Shared attachment storage via Gist blob files ─────────────────────────────
+// ไฟล์แนบ/รูป (base64) ถูกแยกเก็บเป็นไฟล์ "nrc-blob-<hash>.txt" ใน Gist เดียวกัน
+// ทำให้ทีมงานทุกคนที่ sync เห็นไฟล์แนบครบ และ nrc-data.json ไม่บวม (เก็บแค่ reference)
+const BLOB_PREFIX = 'nrc-blob-';
+const BLOB_REF_PREFIX = 'gistblob:';
+// hash เร็วแบบ deterministic (cyrb53) — ใช้ทำ content-addressed id เพื่อ dedupe ไฟล์ซ้ำ
+function cyrb53(str, seed = 0) {
+  let h1 = 0xdeadbeef ^ seed, h2 = 0x41c6ce57 ^ seed;
+  for (let i = 0, ch; i < str.length; i++) {
+    ch = str.charCodeAt(i);
+    h1 = Math.imul(h1 ^ ch, 2654435761);
+    h2 = Math.imul(h2 ^ ch, 1597334677);
+  }
+  h1 = Math.imul(h1 ^ (h1 >>> 16), 2246822507) ^ Math.imul(h2 ^ (h2 >>> 13), 3266489909);
+  h2 = Math.imul(h2 ^ (h2 >>> 16), 2246822507) ^ Math.imul(h1 ^ (h1 >>> 13), 3266489909);
+  return (4294967296 * (2097151 & h2) + (h1 >>> 0)).toString(36);
 }
-// รวม binary กลับจาก localStorage หลัง fetch Gist
+function blobIdFor(dataUrl) { return cyrb53(dataUrl) + '_' + dataUrl.length; }
+function blobFileName(id) { return BLOB_PREFIX + id + '.txt'; }
+function isDataUrl(v) { return typeof v === 'string' && v.startsWith('data:'); }
+// แทนที่ base64 ทุกตำแหน่งในข้อมูลด้วย reference + เก็บ blob ไว้ใน map (deep clone, ไม่แตะ DB เดิม)
+function externalizeBlobs(node, blobs) {
+  if (Array.isArray(node)) return node.map(n => externalizeBlobs(n, blobs));
+  if (node && typeof node === 'object') {
+    const o = {};
+    for (const k in node) o[k] = externalizeBlobs(node[k], blobs);
+    return o;
+  }
+  if (isDataUrl(node)) { const id = blobIdFor(node); blobs[id] = node; return BLOB_REF_PREFIX + id; }
+  return node;
+}
+// เก็บ id ของ blob ที่ถูกอ้างถึงทั้งหมด
+function collectBlobRefs(node, set) {
+  if (Array.isArray(node)) { node.forEach(n => collectBlobRefs(n, set)); return; }
+  if (node && typeof node === 'object') { for (const k in node) collectBlobRefs(node[k], set); return; }
+  if (typeof node === 'string' && node.startsWith(BLOB_REF_PREFIX)) set.add(node.slice(BLOB_REF_PREFIX.length));
+}
+// ใส่ base64 กลับเข้าข้อมูลจาก content map
+function inlineBlobs(node, map) {
+  if (Array.isArray(node)) return node.map(n => inlineBlobs(n, map));
+  if (node && typeof node === 'object') {
+    const o = {};
+    for (const k in node) o[k] = inlineBlobs(node[k], map);
+    return o;
+  }
+  if (typeof node === 'string' && node.startsWith(BLOB_REF_PREFIX)) {
+    const id = node.slice(BLOB_REF_PREFIX.length);
+    return map[id] !== undefined ? map[id] : '';
+  }
+  return node;
+}
+// อ่านเนื้อหาไฟล์ใน Gist (รองรับกรณี truncated → ดึงจาก raw_url)
+async function gistFileContent(file, token) {
+  if (file.truncated || file.content == null) {
+    const r = await fetch(file.raw_url, { headers: { 'Authorization': `token ${token}` } });
+    if (!r.ok) throw new Error(`Raw fetch ${r.status}`);
+    return await r.text();
+  }
+  return file.content;
+}
+// รองรับข้อมูลเก่า (format __LOCAL__) — ดึง binary กลับจาก localStorage ถ้ามี
 function mergeBinaryFromLocal(gistData) {
   try {
     const local = JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}');
@@ -467,15 +518,7 @@ function mergeBinaryFromLocal(gistData) {
       gistData.directors.forEach(gd => {
         if (gd.photo === '__LOCAL__') {
           const ld = local.directors.find(x => x.id === gd.id);
-          if (ld) gd.photo = ld.photo || '';
-        }
-      });
-    }
-    if (local.documents && gistData.documents) {
-      gistData.documents.forEach(gd => {
-        if (gd.fileData === '__LOCAL__') {
-          const ld = local.documents.find(x => x.id === gd.id);
-          if (ld) gd.fileData = ld.fileData || '';
+          gd.photo = (ld && ld.photo) ? ld.photo : '';
         }
       });
     }
@@ -488,40 +531,57 @@ async function fetchFromGist(token, gistId) {
   });
   if (!res.ok) throw new Error(`Gist API ${res.status}: ${res.statusText}`);
   const gist = await res.json();
-  const file = gist.files['nrc-data.json'];
-  if (!file) throw new Error('ไม่พบไฟล์ nrc-data.json ใน Gist');
-  let parsed;
-  if (file.truncated) {
-    const rawRes = await fetch(file.raw_url, { headers: { 'Authorization': `token ${token}` } });
-    if (!rawRes.ok) throw new Error(`Raw fetch ${rawRes.status}`);
-    parsed = await rawRes.json();
-  } else {
-    parsed = JSON.parse(file.content);
-  }
+  const files = gist.files || {};
+  const dataFile = files['nrc-data.json'];
+  if (!dataFile) throw new Error('ไม่พบไฟล์ nrc-data.json ใน Gist');
+  let parsed = JSON.parse(await gistFileContent(dataFile, token));
+  // จดจำ blob files ที่มีอยู่แล้ว เพื่อไม่ upload ซ้ำตอน push
+  knownBlobFiles = new Set(Object.keys(files).filter(n => n.startsWith(BLOB_PREFIX)));
+  // ดึงเนื้อหา blob ที่ถูกอ้างถึงแล้วใส่กลับเข้าข้อมูล
+  const refs = new Set();
+  collectBlobRefs(parsed, refs);
+  const contentMap = {};
+  await Promise.all([...refs].map(async id => {
+    const f = files[blobFileName(id)];
+    contentMap[id] = f ? await gistFileContent(f, token) : '';
+  }));
+  parsed = inlineBlobs(parsed, contentMap);
   return mergeBinaryFromLocal(parsed);
 }
 async function pushToGist(token, gistId, data) {
-  const lean = stripBinaryForGist(data);
+  const blobs = {};
+  const lean = externalizeBlobs(data, blobs);
+  const files = { 'nrc-data.json': { content: JSON.stringify(lean) } };
+  // upload เฉพาะ blob ที่ Gist ยังไม่มี (content-addressed → id เดียวกัน = ไฟล์เดียวกัน)
+  for (const id in blobs) {
+    const fname = blobFileName(id);
+    if (!knownBlobFiles.has(fname)) files[fname] = { content: blobs[id] };
+  }
   const res = await fetch(`https://api.github.com/gists/${gistId}`, {
     method: 'PATCH',
     headers: { 'Authorization': `token ${token}`, 'Content-Type': 'application/json', 'Accept': 'application/vnd.github.v3+json' },
-    body: JSON.stringify({ files: { 'nrc-data.json': { content: JSON.stringify(lean) } } })
+    body: JSON.stringify({ files })
   });
   if (!res.ok) throw new Error(`Gist save ${res.status}: ${res.statusText}`);
+  for (const id in blobs) knownBlobFiles.add(blobFileName(id));
 }
 async function createNewGist(token, data) {
-  const lean = stripBinaryForGist(data);
+  const blobs = {};
+  const lean = externalizeBlobs(data, blobs);
+  const files = { 'nrc-data.json': { content: JSON.stringify(lean) } };
+  for (const id in blobs) files[blobFileName(id)] = { content: blobs[id] };
   const res = await fetch('https://api.github.com/gists', {
     method: 'POST',
     headers: { 'Authorization': `token ${token}`, 'Content-Type': 'application/json', 'Accept': 'application/vnd.github.v3+json' },
     body: JSON.stringify({
       description: 'NRC Management System Data — PCC',
       public: false,
-      files: { 'nrc-data.json': { content: JSON.stringify(lean) } }
+      files
     })
   });
   if (!res.ok) throw new Error(`Create Gist ${res.status}: ${res.statusText}`);
   const gist = await res.json();
+  knownBlobFiles = new Set(Object.keys(blobs).map(blobFileName));
   return gist.id;
 }
 function updateSyncStatus(state, msg) {
@@ -2745,6 +2805,7 @@ function renderSettings() {
       <div class="panel-header"><h3>&#9729; GitHub Gist Sync</h3></div>
       <div class="panel-body">
         <p class="text-muted mb-8">เชื่อมต่อข้อมูลกับ <strong>Private GitHub Gist</strong> — sync ข้ามเครื่องและ browser ได้ ไม่ต้องพึ่ง server</p>
+        <div class="alert alert-success" style="margin-bottom:12px">&#128206; <strong>ไฟล์แนบ &amp; รูปกรรมการ sync ให้ทีมเห็นแล้ว</strong> — เมื่อ Connect Gist แล้ว ทุกคนในทีมที่ใช้ Gist เดียวกันจะเห็นไฟล์แนบ (เอกสาร, MOM, วาระ) และรูปกรรมการครบ ไม่ค้างอยู่แค่เครื่องเดียวอีกต่อไป</div>
         <div class="form-group">
           <label>GitHub Personal Access Token <span class="text-muted">(scope: <code>gist</code>)</span></label>
           <input class="form-control" id="gist-token" type="password" placeholder="ghp_xxxxxxxxxxxxxxxxxxxxxxxxx" autocomplete="off">
@@ -2763,18 +2824,19 @@ function renderSettings() {
         <hr class="divider" style="margin:14px 0">
         <p class="text-muted" style="font-size:12px; margin:0">
           &#128274; Token เก็บใน localStorage ของ browser เท่านั้น ไม่ส่งไปที่อื่นนอกจาก GitHub API โดยตรง<br>
-          &#9729; Gist ที่สร้างจะเป็น <strong>Private</strong> — มองเห็นได้เฉพาะเจ้าของ Token เท่านั้น
+          &#9729; Gist ที่สร้างจะเป็น <strong>Private</strong> — แชร์กับทีมโดยใช้ Token ที่เข้าถึง Gist เดียวกัน<br>
+          &#128206; ไฟล์แนบเก็บเป็นไฟล์ <code>nrc-blob-*.txt</code> แยกใน Gist (รองรับสูงสุด 5MB/ไฟล์) — sync อัตโนมัติพร้อมข้อมูล
         </p>
       </div>
     </div>
     <div class="panel">
       <div class="panel-header"><h3>&#128203; เกี่ยวกับระบบ</h3></div>
       <div class="panel-body">
-        <p>NRC Management System <strong>v2.0</strong></p>
+        <p>NRC Management System <strong>v2.2</strong></p>
         <p class="text-muted">บริษัท: ${c.name}</p>
         <p class="text-muted">เลขานุการ NRC: ${c.secretary}</p>
         <p class="text-muted">ข้อมูลกรรมการจาก: precise.co.th (อัปเดต พ.ค. 2569)</p>
-        <p class="text-muted">จัดเก็บข้อมูลใน localStorage ของเบราว์เซอร์ (รองรับไฟล์แนบสูงสุด 5MB/ไฟล์)</p>
+        <p class="text-muted">จัดเก็บใน localStorage + sync ผ่าน GitHub Gist (ข้อมูล + ไฟล์แนบ/รูป แชร์ทั้งทีม, รองรับไฟล์แนบสูงสุด 5MB/ไฟล์)</p>
       </div>
     </div>`;
 }
