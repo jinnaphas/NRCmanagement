@@ -523,6 +523,14 @@ function migrateDB() {
   if (!DB.agmItems) DB.agmItems = [];
   if (!DB.independenceChecks) DB.independenceChecks = [];
   if (!DB.conflictLog) DB.conflictLog = [];
+  if (!DB.skillsList || !DB.skillsList.length) DB.skillsList = JSON.parse(JSON.stringify(DEFAULT_SKILLS));
+  if (!DB.company) DB.company = {};
+  if (!DB.company.signatoryIds) DB.company.signatoryIds = [];
+  if (DB.company.signCondition === undefined) DB.company.signCondition = '';
+  if (DB.controlList && DB.controlList.subsidiaries) DB.controlList.subsidiaries.forEach(s => {
+    if (!s.signatories) s.signatories = [];
+    if (s.signCondition === undefined) s.signCondition = '';
+  });
   if (DB.directors) DB.directors.forEach(d => { if (!d.photo) d.photo = ''; });
 }
 // บันทึกการแก้ไข = ทำเครื่องหมายว่ามีข้อมูลค้าง (เก็บใน memory; เผยแพร่ด้วยการ Export)
@@ -1068,12 +1076,13 @@ function deleteActionItem(id) {
 // ============================================================
 // DIRECTORS (Board of Directors - full board for CG measurement)
 // ============================================================
-const SKILLS_LIST = [
+const DEFAULT_SKILLS = [
   { key:'finance', label:'การเงิน/บัญชี' }, { key:'law', label:'กฎหมาย' },
   { key:'strategy', label:'กลยุทธ์' }, { key:'it', label:'IT/ดิจิทัล' },
   { key:'risk', label:'บริหารความเสี่ยง' }, { key:'hr', label:'HR/องค์กร' },
   { key:'marketing', label:'การตลาด' }, { key:'industry', label:'พลังงาน/อุตสาหกรรม' }
 ];
+function getSkillsList() { return (DB.skillsList && DB.skillsList.length) ? DB.skillsList : DEFAULT_SKILLS; }
 
 // การวิเคราะห์ตามหลัก CG (ใช้ในแท็บคณะกรรมการบริษัท ของ Control List)
 function cgAnalysisHtml() {
@@ -1150,18 +1159,18 @@ function renderDirectors() {
 function buildSkillsMatrix() {
   const dirs = DB.directors;
   if (!dirs.length) return '<p class="text-muted">ยังไม่มีข้อมูลกรรมการ</p>';
-  const headers = SKILLS_LIST.map(s=>`<th>${s.label}</th>`).join('');
+  const headers = getSkillsList().map(s=>`<th>${s.label}<br><span onclick="removeSkill('${s.key}')" title="ลบทักษะนี้" style="cursor:pointer;color:#ffaaaa;font-weight:400">&#10005;</span></th>`).join('');
   const totals = {};
-  SKILLS_LIST.forEach(s=>{ totals[s.key]=dirs.filter(d=>d.skills&&d.skills[s.key]).length; });
+  getSkillsList().forEach(s=>{ totals[s.key]=dirs.filter(d=>d.skills&&d.skills[s.key]).length; });
   const rows = dirs.map(d=>{
-    const cells = SKILLS_LIST.map(s=>{
+    const cells = getSkillsList().map(s=>{
       const has=d.skills&&d.skills[s.key];
       return `<td class="skill-cell ${has?'skill-1':'skill-0'}" onclick="toggleSkill('${d.id}','${s.key}')">${has?'&#9679;':'&#9675;'}</td>`;
     }).join('');
     const fullName = d.name.replace(/^(รศ\.ดร\.ภก\.|รศ\.ดร\.|ดร\.|นางสาว|นาง|นาย)\s*/,'').trim();
     return `<tr><td class="dir-name">${directorAvatar(d.name,24)} ${fullName}</td>${cells}</tr>`;
   }).join('');
-  const totalRow = SKILLS_LIST.map(s=>`<td style="font-weight:700;color:var(--navy)">${totals[s.key]}/${dirs.length}</td>`).join('');
+  const totalRow = getSkillsList().map(s=>`<td style="font-weight:700;color:var(--navy)">${totals[s.key]}/${dirs.length}</td>`).join('');
   return `<table>
     <thead><tr><th class="dir-name">กรรมการ</th>${headers}</tr></thead>
     <tbody>${rows}</tbody>
@@ -1170,6 +1179,24 @@ function buildSkillsMatrix() {
   <p class="text-muted mt-8">&#9679; = มีทักษะ &nbsp; &#9675; = ไม่มี &nbsp; คลิกเซลล์เพื่อสลับ</p>`;
 }
 
+function refreshSkillsMatrix() {
+  const container=document.getElementById('skills-matrix-container');
+  if (container) container.innerHTML=buildSkillsMatrix();
+}
+function addSkill() {
+  const label=(prompt('ชื่อทักษะใหม่ (เช่น ESG/ความยั่งยืน)')||'').trim();
+  if (!label) return;
+  if (!DB.skillsList || !DB.skillsList.length) DB.skillsList = JSON.parse(JSON.stringify(DEFAULT_SKILLS));
+  DB.skillsList.push({ key:'sk'+Date.now().toString(36), label });
+  saveData(); refreshSkillsMatrix();
+}
+function removeSkill(key) {
+  if (!confirm('ลบทักษะนี้ออกจาก Matrix? (ข้อมูลทักษะนี้ของกรรมการจะถูกนำออกด้วย)')) return;
+  if (!DB.skillsList || !DB.skillsList.length) DB.skillsList = JSON.parse(JSON.stringify(DEFAULT_SKILLS));
+  DB.skillsList = DB.skillsList.filter(s=>s.key!==key);
+  DB.directors.forEach(d=>{ if (d.skills) delete d.skills[key]; });
+  saveData(); refreshSkillsMatrix();
+}
 function toggleSkill(dirId, skillKey) {
   const d=DB.directors.find(x=>x.id===dirId); if (!d) return;
   if (!d.skills) d.skills={};
@@ -1182,7 +1209,7 @@ function toggleSkill(dirId, skillKey) {
 function editDirector(id) {
   const d=id?DB.directors.find(x=>x.id===id):null; const isNew=!d;
   const f=d||{ id:genId('d'), name:'', nameEn:'', type:'independent', gender:'male', startDate:'', position:'', nrcRole:'none', acRole:'none', rmcRole:'none', gcgRole:'none', excoRole:'none', skills:{}, note:'' };
-  const skillChecks = SKILLS_LIST.map(s=>`
+  const skillChecks = getSkillsList().map(s=>`
     <label style="display:inline-flex;align-items:center;gap:4px;margin:3px 8px 3px 0;font-size:12px">
       <input type="checkbox" id="fsk-${s.key}" ${f.skills&&f.skills[s.key]?'checked':''}> ${s.label}
     </label>`).join('');
@@ -1238,7 +1265,7 @@ function editDirector(id) {
 async function saveDirector(id, isNew) {
   const name=document.getElementById('fd-name').value.trim(); if (!name) return alert('กรุณาระบุชื่อ');
   const skills={};
-  SKILLS_LIST.forEach(s=>{ skills[s.key]=document.getElementById('fsk-'+s.key).checked?1:0; });
+  getSkillsList().forEach(s=>{ skills[s.key]=document.getElementById('fsk-'+s.key).checked?1:0; });
   const photo = (document.getElementById('fd-photo').value||'').trim();
   const data = { id, name, nameEn:document.getElementById('fd-nameEn').value, position:document.getElementById('fd-pos').value, type:document.getElementById('fd-type').value, gender:document.getElementById('fd-gender').value, startDate:toBEStr(document.getElementById('fd-start').value), nrcRole:document.getElementById('fd-nrc').value, acRole:document.getElementById('fd-ac').value, rmcRole:document.getElementById('fd-rmc').value, gcgRole:document.getElementById('fd-gcg').value, excoRole:document.getElementById('fd-exco').value, skills, note:document.getElementById('fd-note').value, training:[], photo };
   if (isNew) { DB.directors.push(data); }
@@ -1303,9 +1330,46 @@ function renderBoardList() {
       <thead><tr><th>ชื่อกรรมการ</th><th>ตำแหน่ง</th><th>ประเภท</th><th>คณะย่อย</th></tr></thead>
       <tbody>${rows||'<tr><td colspan="4" class="empty-state">ยังไม่มีกรรมการ</td></tr>'}</tbody>
     </table></div></div>
+    ${signatoryPanelHtml('อำนาจลงนามตามกฎหมาย — บมจ. พรีไซซ คอร์ปอเรชั่น (PCC)', pccSignatoryNames(), DB.company.signCondition, "editPccSignatories()")}
     ${cgAnalysisHtml()}
-    <div class="section-title mt-16">&#128202; Board Skills Matrix</div>
+    <div class="flex-between mt-16 mb-8">
+      <div class="section-title" style="margin:0">&#128202; Board Skills Matrix</div>
+      <button class="btn btn-sm btn-primary" onclick="addSkill()">+ เพิ่มทักษะ</button>
+    </div>
     <div class="panel"><div class="panel-body skills-matrix" id="skills-matrix-container">${buildSkillsMatrix()}</div></div>`;
+}
+// แผงแสดงอำนาจลงนาม (ใช้ร่วมทั้ง PCC และบริษัทย่อย)
+function signatoryPanelHtml(title, names, condition, onEdit) {
+  return `<div class="panel">
+    <div class="panel-header"><h3>&#9997;&#65039; ${title}</h3>
+      <button class="btn btn-sm btn-light" onclick="${onEdit}">&#9998; แก้ไข</button></div>
+    <div class="panel-body">
+      <div style="margin-bottom:8px">${names.length?names.map(n=>`<span class="tag">${n}</span>`).join(''):'<span class="text-muted">ยังไม่ได้เลือกผู้มีอำนาจลงนาม</span>'}</div>
+      ${condition?`<div class="alert alert-info" style="margin:0;white-space:pre-wrap">${condition}</div>`:'<p class="text-muted" style="margin:0;font-size:12px">— ยังไม่ได้ระบุเงื่อนไขการลงนาม —</p>'}
+    </div></div>`;
+}
+function pccSignatoryNames() {
+  return (DB.company.signatoryIds||[]).map(id=>{ const d=DB.directors.find(x=>x.id===id); return d?d.name:null; }).filter(Boolean);
+}
+function editPccSignatories() {
+  const checks = DB.directors.map(d=>`
+    <label style="display:flex;align-items:center;gap:8px;padding:4px 0;font-size:13px">
+      <input type="checkbox" class="pcc-sig" value="${d.id}" ${(DB.company.signatoryIds||[]).includes(d.id)?'checked':''}>
+      ${directorAvatar(d.name,24)} <span>${d.name}</span>
+    </label>`).join('');
+  openModal('อำนาจลงนาม — PCC',
+    `<div class="form-group"><label>ผู้มีอำนาจลงนาม (ติ๊กเลือก)</label>
+      <div style="border:1px solid var(--border);border-radius:5px;padding:10px;max-height:240px;overflow:auto">${checks}</div></div>
+     <div class="form-group"><label>เงื่อนไขการลงนาม (ข้อความตามหนังสือรับรอง)</label>
+      <textarea class="form-control" id="pcc-sigcond" rows="4" placeholder="เช่น กรรมการสองในสามคนนี้ลงลายมือชื่อร่วมกันและประทับตราสำคัญของบริษัท...">${DB.company.signCondition||''}</textarea></div>`,
+    `<button class="btn btn-outline" onclick="closeModal()">ยกเลิก</button>
+     <button class="btn btn-primary" onclick="savePccSignatories()">บันทึก</button>`);
+}
+function savePccSignatories() {
+  DB.company.signatoryIds = Array.from(document.querySelectorAll('.pcc-sig:checked')).map(c=>c.value);
+  DB.company.signCondition = document.getElementById('pcc-sigcond').value;
+  saveData(); closeModal();
+  document.getElementById('cl-content').innerHTML = renderBoardList();
 }
 
 // คณะกรรมการชุดย่อย — derive จากบทบาทในทะเบียนกลาง
@@ -1357,12 +1421,20 @@ function saveCommitteeMembers(key) {
 }
 
 function renderSubsidiaries() {
-  return `<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:14px">
-    ${DB.controlList.subsidiaries.map(sub=>`
-      <div class="panel">
+  return `<div class="flex-between mb-8">
+      <span class="text-muted" style="font-size:12px">บริษัทย่อยทั้งหมด ${DB.controlList.subsidiaries.length} บริษัท</span>
+      <button class="btn btn-primary btn-sm" onclick="editSubsidiary(null)">+ เพิ่มบริษัทย่อย</button>
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(340px,1fr));gap:14px">
+    ${DB.controlList.subsidiaries.map(sub=>{
+      const sigNames = (sub.signatories||[]);
+      return `<div class="panel">
         <div class="panel-header" style="flex-wrap:wrap;gap:4px">
           <div><h3>${sub.name}</h3><span style="font-size:10px;opacity:0.8">${sub.fullName||''}</span></div>
-          <button class="btn btn-sm btn-light" onclick="addSubDirector('${sub.id}')">+ เพิ่ม</button>
+          <div class="btn-group">
+            <button class="btn btn-sm btn-light" onclick="editSubsidiary('${sub.id}')" title="แก้ชื่อบริษัท">&#9998;</button>
+            <button class="btn btn-sm btn-light-red" onclick="deleteSubsidiary('${sub.id}')" title="ลบบริษัท">&#128465;</button>
+          </div>
         </div>
         <div class="panel-body" style="padding:0">
           <table class="tbl">
@@ -1378,9 +1450,64 @@ function renderSubsidiaries() {
               </tr>`).join('')||'<tr><td colspan="4" class="empty-state">ยังไม่มีข้อมูล</td></tr>'}
             </tbody>
           </table>
+          <div style="padding:10px 12px;border-top:1px solid var(--border)">
+            <div class="flex-between" style="margin-bottom:6px"><strong style="font-size:12px;color:var(--navy)">&#9997;&#65039; อำนาจลงนาม</strong>
+              <button class="btn btn-sm btn-outline" onclick="addSubDirector('${sub.id}')">+ เพิ่มกรรมการ</button></div>
+            <div style="margin-bottom:6px">${sigNames.length?sigNames.map(n=>`<span class="tag">${n}</span>`).join(''):'<span class="text-muted" style="font-size:11px">ยังไม่ได้เลือก</span>'}</div>
+            ${sub.signCondition?`<div style="font-size:11px;color:var(--text-light);white-space:pre-wrap;margin-bottom:6px">${sub.signCondition}</div>`:''}
+            <button class="btn btn-sm btn-outline" onclick="editSubSignatories('${sub.id}')">&#9998; แก้อำนาจลงนาม</button>
+          </div>
         </div>
-      </div>`).join('')}
+      </div>`;}).join('')}
   </div>`;
+}
+// เพิ่ม/แก้ชื่อบริษัทย่อย
+function editSubsidiary(subId) {
+  const sub = subId ? DB.controlList.subsidiaries.find(x=>x.id===subId) : null;
+  openModal(sub?'แก้ไขบริษัทย่อย':'+ เพิ่มบริษัทย่อย',
+    `<div class="form-group"><label>ชื่อย่อ/ชื่อบริษัท *</label><input class="form-control" id="fsub-name" value="${sub?(sub.name||'').replace(/"/g,'&quot;'):''}" placeholder="เช่น PPP"></div>
+     <div class="form-group"><label>ชื่อเต็มบริษัท</label><input class="form-control" id="fsub-full" value="${sub?(sub.fullName||'').replace(/"/g,'&quot;'):''}" placeholder="เช่น บริษัท พรีไซซ พาวเวอร์ฯ จำกัด"></div>`,
+    `<button class="btn btn-outline" onclick="closeModal()">ยกเลิก</button>
+     ${sub?`<button class="btn btn-red" onclick="deleteSubsidiary('${sub.id}')">&#128465; ลบ</button>`:''}
+     <button class="btn btn-primary" onclick="saveSubsidiary('${subId||''}')">บันทึก</button>`);
+}
+function saveSubsidiary(subId) {
+  const name=(document.getElementById('fsub-name').value||'').trim(); if (!name) return alert('กรุณาระบุชื่อบริษัท');
+  const fullName=(document.getElementById('fsub-full').value||'').trim();
+  if (subId) { const s=DB.controlList.subsidiaries.find(x=>x.id===subId); if (s) { s.name=name; s.fullName=fullName; } }
+  else { DB.controlList.subsidiaries.push({ id:genId('sub'), name, fullName, directors:[], signatories:[], signCondition:'' }); }
+  saveData(); closeModal(); renderControlList(); switchToSubsidiariesTab();
+}
+function deleteSubsidiary(subId) {
+  if (!confirm('ลบบริษัทย่อยนี้ทั้งหมด?')) return;
+  DB.controlList.subsidiaries = DB.controlList.subsidiaries.filter(x=>x.id!==subId);
+  saveData(); closeModal(); renderControlList(); switchToSubsidiariesTab();
+}
+function switchToSubsidiariesTab() {
+  const el=document.getElementById('cl-content'); if (el) el.innerHTML=renderSubsidiaries();
+  document.querySelectorAll('#cl-tabs .tab-btn').forEach((b,i)=>b.classList.toggle('active', i===2));
+}
+// อำนาจลงนามของบริษัทย่อย (ติ๊กจากกรรมการในบริษัทย่อยนั้น)
+function editSubSignatories(subId) {
+  const sub=DB.controlList.subsidiaries.find(x=>x.id===subId); if (!sub) return;
+  const checks=(sub.directors||[]).map(d=>`
+    <label style="display:flex;align-items:center;gap:8px;padding:4px 0;font-size:13px">
+      <input type="checkbox" class="sub-sig" value="${(d.name||'').replace(/"/g,'&quot;')}" ${(sub.signatories||[]).includes(d.name)?'checked':''}>
+      ${directorAvatar(d.name,24)} <span>${d.name}</span>
+    </label>`).join('') || '<p class="text-muted" style="font-size:12px">ยังไม่มีกรรมการ — เพิ่มกรรมการก่อน</p>';
+  openModal('อำนาจลงนาม — ' + sub.name,
+    `<div class="form-group"><label>ผู้มีอำนาจลงนาม (ติ๊กเลือก)</label>
+      <div style="border:1px solid var(--border);border-radius:5px;padding:10px;max-height:220px;overflow:auto">${checks}</div></div>
+     <div class="form-group"><label>เงื่อนไขการลงนาม</label>
+      <textarea class="form-control" id="sub-sigcond" rows="4" placeholder="ระบุเงื่อนไขการลงนามตามหนังสือรับรอง">${sub.signCondition||''}</textarea></div>`,
+    `<button class="btn btn-outline" onclick="closeModal()">ยกเลิก</button>
+     <button class="btn btn-primary" onclick="saveSubSignatories('${subId}')">บันทึก</button>`);
+}
+function saveSubSignatories(subId) {
+  const sub=DB.controlList.subsidiaries.find(x=>x.id===subId); if (!sub) return;
+  sub.signatories = Array.from(document.querySelectorAll('.sub-sig:checked')).map(c=>c.value);
+  sub.signCondition = document.getElementById('sub-sigcond').value;
+  saveData(); closeModal(); switchToSubsidiariesTab();
 }
 
 function scMemberForm(f) {
@@ -1475,14 +1602,14 @@ function saveSubDirector(subId, idx, isNew) {
   const role=document.getElementById('fsd-role').value, type=document.getElementById('fsd-type').value;
   if (isNew) { sub.directors.push({ name, role, type }); }
   else { if (sub.directors[idx]) Object.assign(sub.directors[idx],{ name, role, type }); }
-  saveData(); closeModal(); renderControlList();
+  saveData(); closeModal(); switchToSubsidiariesTab();
 }
 
 function deleteSubDirector(subId, idx) {
   if (!confirm('ลบกรรมการนี้?')) return;
   const sub=DB.controlList.subsidiaries.find(x=>x.id===subId); if (!sub||!sub.directors) return;
   sub.directors.splice(idx,1);
-  saveData(); renderControlList();
+  saveData(); switchToSubsidiariesTab();
 }
 
 // ============================================================
@@ -1991,7 +2118,7 @@ function renderTraining() {
   const filterDir = document.getElementById('tr-fdir')?.value || '';
   const filterCat = document.getElementById('tr-fcat')?.value || '';
   const filterYr  = document.getElementById('tr-fyr')?.value  || '';
-  const dirOpts = DB.directors.map(d=>`<option value="${d.id}" ${d.id===filterDir?'selected':''}>${d.name.replace(/^(รศ\.ดร\.ภก\.|รศ\.ดร\.|ดร\.|นางสาว|นาง|นาย)\s*/,'')}</option>`).join('');
+  const dirOpts = DB.directors.map(d=>`<option value="${d.id}" ${d.id===filterDir?'selected':''}>${d.name}</option>`).join('');
   const catOpts = Object.entries(TRAIN_CATS).map(([k,v])=>`<option value="${k}" ${k===filterCat?'selected':''}>${v}</option>`).join('');
   const allYrs = [...new Set(DB.directorTraining.map(t=>t.date?.substr(0,4)).filter(Boolean))].sort().reverse();
   const yrOpts = allYrs.map(y=>`<option value="${y}" ${y===filterYr?'selected':''}>${y}</option>`).join('');
@@ -2007,17 +2134,16 @@ function renderTraining() {
   DB.directorTraining.forEach(t=>{ hrMap[t.directorId]=(hrMap[t.directorId]||0)+(t.hours||0); });
   const summaryBars = DB.directors.map(d=>{
     const hrs = hrMap[d.id]||0;
-    const sn = d.name.replace(/^(รศ\.ดร\.ภก\.|รศ\.ดร\.|ดร\.|นางสาว|นาง|นาย)\s*/,'').split(' ')[0];
     const pct = Math.min(hrs/24*100,100);
     const color = hrs>=24?'var(--green)':hrs>=12?'var(--blue)':'var(--orange)';
-    return `<div class="training-bar-wrap">${directorAvatar(d.name,26)}<span style="font-size:11px;min-width:80px">${sn}</span><div class="training-bar-bg"><div class="training-bar-fill" style="width:${pct}%;background:${color}"></div></div><span style="font-size:11px;min-width:50px;text-align:right">${hrs} ชม.</span></div>`;
+    return `<div class="training-bar-wrap">${directorAvatar(d.name,26)}<span style="font-size:11px;min-width:200px">${d.name}</span><div class="training-bar-bg"><div class="training-bar-fill" style="width:${pct}%;background:${color}"></div></div><span style="font-size:11px;min-width:50px;text-align:right">${hrs} ชม.</span></div>`;
   }).join('');
 
   const tRows = rows.map(t=>{
     const d = DB.directors.find(x=>x.id===t.directorId);
-    const sn = d ? d.name.replace(/^(รศ\.ดร\.ภก\.|รศ\.ดร\.|ดร\.|นางสาว|นาง|นาย)\s*/,'') : t.directorName;
+    const fullName = d ? d.name : (t.directorName||'-');
     return `<tr>
-      <td><div class="dir-avatar-wrap" style="gap:8px">${directorAvatar(d?d.name:sn,28)}<span>${sn}</span></div></td>
+      <td><div class="dir-avatar-wrap" style="gap:8px">${directorAvatar(fullName,28)}<span>${fullName}</span></div></td>
       <td><strong>${t.course||'-'}</strong></td>
       <td>${t.organizer||'-'}</td>
       <td>${thDate(t.date)}</td>
@@ -2054,9 +2180,8 @@ function renderTraining() {
 function editTraining(id) {
   const t = id ? DB.directorTraining.find(x=>x.id===id) : null;
   const dirOpts = DB.directors.map(d=>{
-    const sn = d.name.replace(/^(รศ\.ดร\.ภก\.|รศ\.ดร\.|ดร\.|นางสาว|นาง|นาย)\s*/,'');
     const sel = t && t.directorId===d.id ? 'selected' : '';
-    return `<option value="${d.id}" ${sel}>${sn}</option>`;
+    return `<option value="${d.id}" ${sel}>${d.name}</option>`;
   }).join('');
   const catOpts = Object.entries(TRAIN_CATS).map(([k,v])=>`<option value="${k}" ${t&&t.category===k?'selected':''}>${v}</option>`).join('');
   document.getElementById('modal-title').textContent = id ? '✏️ แก้ไขการอบรม' : '+ บันทึกการอบรม';
