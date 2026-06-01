@@ -195,7 +195,7 @@ textarea.form-control { resize: vertical; min-height: 80px; }
   <nav id="nav">
     <a onclick="showSection('dashboard')" class="active" id="nav-dashboard"><span class="icon">&#128202;</span> Dashboard</a>
     <a onclick="showSection('meetings')" id="nav-meetings"><span class="icon">&#128197;</span> การประชุม</a>
-    <a onclick="showSection('directors')" id="nav-directors"><span class="icon">&#128101;</span> คณะกรรมการ</a>
+    <a onclick="showSection('directors')" id="nav-directors"><span class="icon">&#128101;</span> ทะเบียนคณะกรรมการทั้งหมด</a>
     <a onclick="showSection('controllist')" id="nav-controllist"><span class="icon">&#127970;</span> Control List</a>
     <a onclick="showSection('succession')" id="nav-succession"><span class="icon">&#127919;</span> Succession Plan</a>
     <a onclick="showSection('changelog')" id="nav-changelog"><span class="icon">&#128221;</span> ประวัติกรรมการ</a>
@@ -533,7 +533,7 @@ function showSection(section) {
   document.querySelectorAll('#nav a').forEach(a => a.classList.remove('active'));
   const navEl = document.getElementById('nav-'+section);
   if (navEl) navEl.classList.add('active');
-  const titles = { dashboard:'Dashboard', meetings:'การประชุม NRC', directors:'คณะกรรมการบริษัท (Board)', controllist:'Control List', succession:'Succession Plan', changelog:'ประวัติการเปลี่ยนแปลงกรรมการ', remuneration:'ค่าตอบแทนกรรมการ', training:'แผนพัฒนากรรมการ', assessment:'ประเมินผลกรรมการ', documents:'คลังเอกสาร', agm:'AGM Tracker', conflict:'ผลประโยชน์ทับซ้อน', settings:'ตั้งค่าระบบ' };
+  const titles = { dashboard:'Dashboard', meetings:'การประชุม NRC', directors:'ทะเบียนคณะกรรมการทั้งหมด', controllist:'Control List', succession:'Succession Plan', changelog:'ประวัติการเปลี่ยนแปลงกรรมการ', remuneration:'ค่าตอบแทนกรรมการ', training:'แผนพัฒนากรรมการ', assessment:'ประเมินผลกรรมการ', documents:'คลังเอกสาร', agm:'AGM Tracker', conflict:'ผลประโยชน์ทับซ้อน', settings:'ตั้งค่าระบบ' };
   document.getElementById('page-title').textContent = titles[section]||section;
   const renders = { dashboard:renderDashboard, meetings:renderMeetings, directors:renderDirectors, controllist:renderControlList, succession:renderSuccession, changelog:renderChangelog, remuneration:renderRemuneration, training:renderTraining, assessment:renderAssessment, documents:renderDocuments, agm:renderAGM, conflict:renderConflict, settings:renderSettings };
   document.getElementById('content').innerHTML = '';
@@ -1075,9 +1075,37 @@ const SKILLS_LIST = [
   { key:'marketing', label:'การตลาด' }, { key:'industry', label:'พลังงาน/อุตสาหกรรม' }
 ];
 
+// การวิเคราะห์ตามหลัก CG (ใช้ในแท็บคณะกรรมการบริษัท ของ Control List)
+function cgAnalysisHtml() {
+  const cg = getDirectorCGStats();
+  return `
+    <div class="cards-row">
+      <div class="card"><div class="card-label">กรรมการบริษัทรวม</div><div class="card-value">${cg.total}</div><div class="card-sub">คน</div></div>
+      <div class="card ${cg.indepRatio>=50?'green':'red'}">
+        <div class="card-label">กรรมการอิสระ</div><div class="card-value">${cg.indepRatio}%</div>
+        <div class="card-sub">${cg.independent}/${cg.total} คน ${cg.indepRatio>=50?'&#9989; ผ่านเกณฑ์ &gt;50%':'&#9888; ต่ำกว่า 50%'}</div>
+      </div>
+      <div class="card ${cg.femaleRatio>=30?'green':'orange'}">
+        <div class="card-label">สัดส่วนหญิง</div><div class="card-value">${cg.femaleRatio}%</div>
+        <div class="card-sub">${cg.female}/${cg.total} คน ${cg.femaleRatio>=30?'&#9989;':'&#9888; &lt;30%'}</div>
+      </div>
+      <div class="card"><div class="card-label">ไม่ใช่บริหาร</div><div class="card-value blue">${cg.nonexec}</div><div class="card-sub">${cg.nonexec}/${cg.total} คน</div></div>
+    </div>
+    <div class="panel" style="margin-bottom:16px">
+      <div class="panel-header"><h3>&#128202; การวิเคราะห์ตามหลัก CG</h3></div>
+      <div class="panel-body">
+        <div style="font-size:13px;font-weight:700;color:var(--navy);margin-bottom:6px">สัดส่วนกรรมการอิสระ — เกณฑ์ CG: &gt; 50%</div>
+        <div class="progress-bar" style="height:12px"><div class="progress-fill" style="width:${Math.min(cg.indepRatio,100)}%;background:${cg.indepRatio>=50?'var(--green)':'var(--red)'}"></div></div>
+        <div style="font-size:13px;margin-top:6px;color:${cg.indepRatio>=50?'var(--green)':'var(--red)'};font-weight:700">${cg.indepRatio}% ${cg.indepRatio>=50?'&#9989; ผ่านเกณฑ์':'&#10060; ต่ำกว่าเกณฑ์'}</div>
+        <div style="font-size:13px;font-weight:700;color:var(--navy);margin:14px 0 6px">สัดส่วนกรรมการหญิง — เกณฑ์ CG: &ge; 30%</div>
+        <div class="progress-bar" style="height:12px"><div class="progress-fill" style="width:${Math.min(cg.femaleRatio,100)}%;background:${cg.femaleRatio>=30?'var(--green)':'var(--orange)'}"></div></div>
+        <div style="font-size:13px;margin-top:6px;color:${cg.femaleRatio>=30?'var(--green)':'var(--orange)'};font-weight:700">${cg.femaleRatio}% ${cg.femaleRatio>=30?'&#9989; ผ่านเกณฑ์':'&#9888; ต่ำกว่าเกณฑ์'}</div>
+      </div>
+    </div>`;
+}
+
 function renderDirectors() {
   const dirs = DB.directors;
-  const cg = getDirectorCGStats();
   const typeLabel = { independent:'อิสระ', executive:'บริหาร', nonexecutive:'ไม่ใช่บริหาร' };
   const rows = dirs.map(d=>{
     const tenure = d.startDate ? calcTenureYears(d.startDate) : null;
@@ -1102,44 +1130,11 @@ function renderDirectors() {
   }).join('');
 
   document.getElementById('content').innerHTML = `
-    <div class="cards-row">
-      <div class="card"><div class="card-label">กรรมการบริษัทรวม</div><div class="card-value">${cg.total}</div><div class="card-sub">คน</div></div>
-      <div class="card ${cg.indepRatio>=50?'green':'red'}">
-        <div class="card-label">กรรมการอิสระ (Independent)</div>
-        <div class="card-value">${cg.indepRatio}%</div>
-        <div class="card-sub">${cg.independent}/${cg.total} คน ${cg.indepRatio>=50?'&#9989; ผ่านเกณฑ์ &gt;50%':'&#9888; ต่ำกว่าเกณฑ์ 50%'}</div>
-      </div>
-      <div class="card">
-        <div class="card-label">กรรมการบริหาร (Executive)</div>
-        <div class="card-value blue">${DB.directors.filter(d=>d.type==='executive').length}</div>
-        <div class="card-sub">${DB.directors.filter(d=>d.type==='executive').length}/${cg.total} คน</div>
-      </div>
-      <div class="card">
-        <div class="card-label">ไม่ใช่บริหาร (Non-Executive)</div>
-        <div class="card-value blue">${cg.nonexec}</div>
-        <div class="card-sub">${cg.nonexec}/${cg.total} คน</div>
-      </div>
-    </div>
-    <div class="panel" style="margin-bottom:16px">
-      <div class="panel-body" style="padding:14px 16px">
-        <div style="display:flex;align-items:center;gap:16px;flex-wrap:wrap">
-          <div style="flex:1;min-width:200px">
-            <div style="font-size:13px;font-weight:700;color:var(--navy);margin-bottom:6px">สัดส่วนกรรมการอิสระ — เกณฑ์ CG: &gt; 50%</div>
-            <div class="progress-bar" style="height:12px"><div class="progress-fill" style="width:${Math.min(cg.indepRatio,100)}%;background:${cg.indepRatio>=50?'var(--green)':'var(--red)'}"></div></div>
-            <div style="font-size:13px;margin-top:6px;color:${cg.indepRatio>=50?'var(--green)':'var(--red)'};font-weight:700">${cg.indepRatio}% ${cg.indepRatio>=50?'&#9989; ผ่านเกณฑ์':'&#10060; ต่ำกว่าเกณฑ์'}</div>
-          </div>
-          <div style="font-size:12px;color:var(--text-light);max-width:280px">
-            กรรมการอิสระ ${cg.independent} คน จากทั้งหมด ${cg.total} คน<br>
-            &#9733; ดาว = ประธานคณะกรรมการชุดย่อย
-          </div>
-        </div>
-      </div>
-    </div>
     <div class="alert alert-info" style="margin-bottom:14px">
-      <strong>หมายเหตุ:</strong> ส่วนนี้บันทึกข้อมูลคณะกรรมการบริษัท (Board of Directors) ทั้งหมดของ PCC เพื่อคำนวณ CG Scorecard
+      <strong>ทะเบียนคณะกรรมการทั้งหมด</strong> — แหล่งข้อมูลกลาง (Master List) ของกรรมการ PCC ทุกคน คณะกรรมการชุดต่าง ๆ ใน Control List ดึงรายชื่อจากที่นี่ &middot; การวิเคราะห์ CG และ Board Skills Matrix อยู่ที่ <strong>Control List &rarr; คณะกรรมการบริษัท</strong>
     </div>
     <div class="flex-between mb-8">
-      <div class="section-title">&#128101; คณะกรรมการบริษัท PCC (12 คน)</div>
+      <div class="section-title">&#128101; ทะเบียนคณะกรรมการทั้งหมด (${dirs.length} คน)</div>
       <button class="btn btn-primary" onclick="editDirector(null)">+ เพิ่มกรรมการ</button>
     </div>
     <div class="panel">
@@ -1149,9 +1144,7 @@ function renderDirectors() {
           <tbody>${rows||'<tr><td colspan="6" class="empty-state">ยังไม่มีข้อมูล</td></tr>'}</tbody>
         </table>
       </div>
-    </div>
-    <div class="section-title mt-16">&#128202; Board Skills Matrix</div>
-    <div class="panel"><div class="panel-body skills-matrix" id="skills-matrix-container">${buildSkillsMatrix()}</div></div>`;
+    </div>`;
 }
 
 function buildSkillsMatrix() {
@@ -1309,7 +1302,10 @@ function renderBoardList() {
     <div class="panel-body" style="padding:0"><table class="tbl">
       <thead><tr><th>ชื่อกรรมการ</th><th>ตำแหน่ง</th><th>ประเภท</th><th>คณะย่อย</th></tr></thead>
       <tbody>${rows||'<tr><td colspan="4" class="empty-state">ยังไม่มีกรรมการ</td></tr>'}</tbody>
-    </table></div></div>`;
+    </table></div></div>
+    ${cgAnalysisHtml()}
+    <div class="section-title mt-16">&#128202; Board Skills Matrix</div>
+    <div class="panel"><div class="panel-body skills-matrix" id="skills-matrix-container">${buildSkillsMatrix()}</div></div>`;
 }
 
 // คณะกรรมการชุดย่อย — derive จากบทบาทในทะเบียนกลาง
