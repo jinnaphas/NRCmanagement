@@ -505,24 +505,30 @@ async function publishToGitHub() {
   if (!token) { alert('กรุณาใส่ GitHub Token ก่อน'); return; }
   updateSyncStatus('syncing', 'กำลังเผยแพร่...'); setStat('&#9203; กำลังเผยแพร่ขึ้น GitHub...');
   const api = `https://api.github.com/repos/${owner}/${repo}/contents/${path}`;
-  const headers = { 'Authorization': 'Bearer ' + token, 'Accept': 'application/vnd.github+json' };
-  try {
-    // 1) หา sha ของไฟล์เดิม (ถ้ามี)
-    let sha = undefined;
-    const getRes = await fetch(`${api}?ref=${encodeURIComponent(branch)}`, { headers });
-    if (getRes.ok) { const j = await getRes.json(); sha = j.sha; }
-    else if (getRes.status !== 404) throw new Error('อ่านไฟล์เดิมไม่ได้: ' + getRes.status);
-    // 2) PUT เนื้อหาใหม่
-    const body = {
-      message: 'Update data.json — NRC system ' + nowT(),
-      content: utf8ToBase64(JSON.stringify(DB, null, 2)),
-      branch
-    };
+  const headers = { 'Authorization': 'Bearer ' + token, 'Accept': 'application/vnd.github+json', 'X-GitHub-Api-Version':'2022-11-28' };
+  // ดึง sha สดใหม่ของไฟล์ (กัน cache ด้วย no-store + ?t=)
+  async function currentSha() {
+    const r = await fetch(`${api}?ref=${encodeURIComponent(branch)}&t=${Date.now()}`, { headers, cache:'no-store' });
+    if (r.ok) { const j = await r.json(); return j.sha; }
+    if (r.status === 404) return undefined;   // ยังไม่มีไฟล์ → สร้างใหม่
+    throw new Error('อ่านไฟล์เดิมไม่ได้: ' + r.status);
+  }
+  async function putOnce(sha) {
+    const body = { message: 'Update data.json — NRC system ' + nowT(), content: utf8ToBase64(JSON.stringify(DB, null, 2)), branch };
     if (sha) body.sha = sha;
-    const putRes = await fetch(api, { method:'PUT', headers:{...headers,'Content-Type':'application/json'}, body: JSON.stringify(body) });
+    return fetch(api, { method:'PUT', headers:{...headers,'Content-Type':'application/json'}, cache:'no-store', body: JSON.stringify(body) });
+  }
+  try {
+    let putRes = await putOnce(await currentSha());
+    // ถ้าชน 409 (sha ไม่ตรง) → ดึง sha สดอีกครั้งแล้วลองใหม่
+    if (putRes.status === 409) putRes = await putOnce(await currentSha());
     if (!putRes.ok) {
       const err = await putRes.json().catch(()=>({}));
-      throw new Error((err.message||putRes.status) + (putRes.status===403?' (ตรวจสิทธิ์ token: Contents Read & Write)':''));
+      let hint = '';
+      if (putRes.status===403) hint=' (ตรวจสิทธิ์ token: Contents = Read and write)';
+      else if (putRes.status===404) hint=' (ตรวจ Owner/Repo/Branch หรือ token ไม่ได้เลือก repo นี้)';
+      else if (putRes.status===409) hint=' (sha ชนกัน ลองกดใหม่อีกครั้ง)';
+      throw new Error((err.message||putRes.status) + hint);
     }
     dataDirty = false;
     updateSyncStatus('ok', 'เผยแพร่แล้ว ' + nowT());
