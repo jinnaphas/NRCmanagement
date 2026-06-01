@@ -280,11 +280,11 @@
     },
     {
       "id": "d11",
-      "name": "นางสาวเกตินาท สัมฤทธิ์",
+      "name": "นายเกตินาท สัมฤทธิ์",
       "nameEn": "Ketinart Sumrit",
       "position": "กรรมการบริษัท",
       "type": "executive",
-      "gender": "female",
+      "gender": "male",
       "startDate": "",
       "nrcRole": "none",
       "acRole": "none",
@@ -296,14 +296,14 @@
         "law": 0,
         "strategy": 1,
         "it": 1,
-        "risk": 0,
-        "hr": 1,
+        "risk": 1,
+        "hr": 0,
         "marketing": 1,
         "industry": 1
       },
-      "photo": "",
+      "note": "กรรมการบริษัท / กรรมการ GCG / กรรมการบริหาร (ExCo)",
       "training": [],
-      "note": "กรรมการบริษัท / กรรมการ GCG / กรรมการบริหาร (ExCo)"
+      "photo": ""
     },
     {
       "id": "d12",
