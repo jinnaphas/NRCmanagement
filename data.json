@@ -1,0 +1,1109 @@
+{
+  "company": {
+    "name": "บริษัท พรีไซซ คอร์ปอเรชั่น จำกัด (มหาชน)",
+    "abbr": "PCC",
+    "secretary": "นายจิณนภัสฐ์ ภัสฐาพงษ์",
+    "fiscalYear": 2569
+  },
+  "directors": [
+    {
+      "id": "d1",
+      "name": "นายอชิตศักดิ์ บรรจงโพธิ์กลาง",
+      "nameEn": "Achitsak Bunjongpotiklang",
+      "position": "ประธานกรรมการบริษัท",
+      "type": "independent",
+      "gender": "male",
+      "startDate": "",
+      "nrcRole": "none",
+      "acRole": "none",
+      "rmcRole": "none",
+      "gcgRole": "none",
+      "excoRole": "none",
+      "skills": {
+        "finance": 1,
+        "law": 0,
+        "strategy": 1,
+        "it": 0,
+        "risk": 1,
+        "hr": 0,
+        "marketing": 0,
+        "industry": 1
+      },
+      "photo": "",
+      "training": [],
+      "note": "ประธานกรรมการบริษัท / กรรมการอิสระ"
+    },
+    {
+      "id": "d2",
+      "name": "นายสรรค์ชัย เตียวประเสริฐกุล",
+      "nameEn": "Sanchai Thiewprasertkul",
+      "position": "รองประธานกรรมการบริษัท",
+      "type": "independent",
+      "gender": "male",
+      "startDate": "",
+      "nrcRole": "none",
+      "acRole": "member",
+      "rmcRole": "none",
+      "gcgRole": "chair",
+      "excoRole": "none",
+      "skills": {
+        "finance": 1,
+        "law": 1,
+        "strategy": 1,
+        "it": 0,
+        "risk": 0,
+        "hr": 0,
+        "marketing": 0,
+        "industry": 1
+      },
+      "photo": "",
+      "training": [],
+      "note": "รองประธานกรรมการบริษัท / กรรมการตรวจสอบ / ประธาน GCG / กรรมการอิสระ"
+    },
+    {
+      "id": "d3",
+      "name": "นายกิตติ สัมฤทธิ์",
+      "nameEn": "Kitti Sumrit",
+      "position": "ประธานเจ้าหน้าที่บริหาร (CEO)",
+      "type": "executive",
+      "gender": "male",
+      "startDate": "",
+      "nrcRole": "none",
+      "acRole": "none",
+      "rmcRole": "none",
+      "gcgRole": "none",
+      "excoRole": "chair",
+      "skills": {
+        "finance": 1,
+        "law": 0,
+        "strategy": 1,
+        "it": 1,
+        "risk": 1,
+        "hr": 0,
+        "marketing": 1,
+        "industry": 1
+      },
+      "photo": "",
+      "training": [],
+      "note": "กรรมการบริษัท / ประธาน ExCo / ประธานเจ้าหน้าที่บริหาร"
+    },
+    {
+      "id": "d4",
+      "name": "นายสุธี จุฬานุตรกุล",
+      "nameEn": "Suthee Chulanutrakul",
+      "position": "กรรมการบริษัท",
+      "type": "nonexecutive",
+      "gender": "male",
+      "startDate": "",
+      "nrcRole": "member",
+      "acRole": "none",
+      "rmcRole": "none",
+      "gcgRole": "none",
+      "excoRole": "none",
+      "skills": {
+        "finance": 1,
+        "law": 0,
+        "strategy": 1,
+        "it": 0,
+        "risk": 0,
+        "hr": 0,
+        "marketing": 1,
+        "industry": 1
+      },
+      "photo": "",
+      "training": [],
+      "note": "กรรมการบริษัท / กรรมการ NRC"
+    },
+    {
+      "id": "d5",
+      "name": "นายกิตติ ณัฐชยางกุล",
+      "nameEn": "Kitti Natchayangkul",
+      "position": "กรรมการบริษัท",
+      "type": "nonexecutive",
+      "gender": "male",
+      "startDate": "",
+      "nrcRole": "none",
+      "acRole": "none",
+      "rmcRole": "chair",
+      "gcgRole": "none",
+      "excoRole": "none",
+      "skills": {
+        "finance": 0,
+        "law": 0,
+        "strategy": 1,
+        "it": 1,
+        "risk": 1,
+        "hr": 0,
+        "marketing": 0,
+        "industry": 1
+      },
+      "photo": "",
+      "training": [],
+      "note": "กรรมการบริษัท / ประธาน RMC"
+    },
+    {
+      "id": "d6",
+      "name": "นางสาวสุดารัตน์ ตั้งสุนทรกิจ",
+      "nameEn": "Sudarat Tangsoontornkij",
+      "position": "ประธานคณะกรรมการตรวจสอบ",
+      "type": "independent",
+      "gender": "female",
+      "startDate": "",
+      "nrcRole": "none",
+      "acRole": "chair",
+      "rmcRole": "none",
+      "gcgRole": "none",
+      "excoRole": "none",
+      "skills": {
+        "finance": 1,
+        "law": 1,
+        "strategy": 0,
+        "it": 0,
+        "risk": 1,
+        "hr": 0,
+        "marketing": 0,
+        "industry": 0
+      },
+      "photo": "",
+      "training": [],
+      "note": "กรรมการบริษัท / ประธาน AC / กรรมการอิสระ"
+    },
+    {
+      "id": "d7",
+      "name": "นายบุญชัย พิทักษ์ดำรงกิจ",
+      "nameEn": "Boonchai Pitugdamrongkija",
+      "position": "กรรมการบริษัท",
+      "type": "independent",
+      "gender": "male",
+      "startDate": "",
+      "nrcRole": "none",
+      "acRole": "member",
+      "rmcRole": "none",
+      "gcgRole": "member",
+      "excoRole": "none",
+      "skills": {
+        "finance": 1,
+        "law": 0,
+        "strategy": 0,
+        "it": 0,
+        "risk": 1,
+        "hr": 0,
+        "marketing": 0,
+        "industry": 1
+      },
+      "photo": "",
+      "training": [],
+      "note": "กรรมการบริษัท / กรรมการ GCG / กรรมการ AC / กรรมการอิสระ"
+    },
+    {
+      "id": "d8",
+      "name": "รศ.ดร.ภก.ลือรัตน์ อนุรัตน์พานิช",
+      "nameEn": "Luerut Anuratphanich",
+      "position": "ประธานคณะกรรมการ NRC",
+      "type": "independent",
+      "gender": "male",
+      "startDate": "",
+      "nrcRole": "chair",
+      "acRole": "none",
+      "rmcRole": "none",
+      "gcgRole": "none",
+      "excoRole": "none",
+      "skills": {
+        "finance": 0,
+        "law": 1,
+        "strategy": 1,
+        "it": 0,
+        "risk": 0,
+        "hr": 1,
+        "marketing": 0,
+        "industry": 0
+      },
+      "photo": "",
+      "training": [],
+      "note": "กรรมการบริษัท / ประธาน NRC / กรรมการอิสระ"
+    },
+    {
+      "id": "d9",
+      "name": "นายณรงค์ จันทร์สร้อย",
+      "nameEn": "Narong Chansoi",
+      "position": "กรรมการบริษัท",
+      "type": "independent",
+      "gender": "male",
+      "startDate": "",
+      "nrcRole": "member",
+      "acRole": "none",
+      "rmcRole": "none",
+      "gcgRole": "none",
+      "excoRole": "none",
+      "skills": {
+        "finance": 0,
+        "law": 1,
+        "strategy": 1,
+        "it": 0,
+        "risk": 0,
+        "hr": 1,
+        "marketing": 0,
+        "industry": 0
+      },
+      "photo": "",
+      "training": [],
+      "note": "กรรมการบริษัท / กรรมการ NRC / กรรมการอิสระ"
+    },
+    {
+      "id": "d10",
+      "name": "นายอมร แดงโชติ",
+      "nameEn": "Amorn Daengchot",
+      "position": "กรรมการบริษัท",
+      "type": "executive",
+      "gender": "male",
+      "startDate": "",
+      "nrcRole": "none",
+      "acRole": "none",
+      "rmcRole": "member",
+      "gcgRole": "none",
+      "excoRole": "member",
+      "skills": {
+        "finance": 1,
+        "law": 0,
+        "strategy": 1,
+        "it": 0,
+        "risk": 1,
+        "hr": 0,
+        "marketing": 0,
+        "industry": 1
+      },
+      "photo": "",
+      "training": [],
+      "note": "กรรมการบริษัท / กรรมการ RMC / กรรมการบริหาร (ExCo)"
+    },
+    {
+      "id": "d11",
+      "name": "นางสาวเกตินาท สัมฤทธิ์",
+      "nameEn": "Ketinart Sumrit",
+      "position": "กรรมการบริษัท",
+      "type": "executive",
+      "gender": "female",
+      "startDate": "",
+      "nrcRole": "none",
+      "acRole": "none",
+      "rmcRole": "none",
+      "gcgRole": "member",
+      "excoRole": "member",
+      "skills": {
+        "finance": 0,
+        "law": 0,
+        "strategy": 1,
+        "it": 1,
+        "risk": 0,
+        "hr": 1,
+        "marketing": 1,
+        "industry": 1
+      },
+      "photo": "",
+      "training": [],
+      "note": "กรรมการบริษัท / กรรมการ GCG / กรรมการบริหาร (ExCo)"
+    },
+    {
+      "id": "d12",
+      "name": "นางสาวณิชา ณัฐชยางกุล",
+      "nameEn": "Nicha Nutchayangkul",
+      "position": "กรรมการบริษัท",
+      "type": "executive",
+      "gender": "female",
+      "startDate": "",
+      "nrcRole": "none",
+      "acRole": "none",
+      "rmcRole": "member",
+      "gcgRole": "none",
+      "excoRole": "member",
+      "skills": {
+        "finance": 1,
+        "law": 0,
+        "strategy": 0,
+        "it": 1,
+        "risk": 1,
+        "hr": 0,
+        "marketing": 0,
+        "industry": 1
+      },
+      "photo": "",
+      "training": [],
+      "note": "กรรมการบริษัท / กรรมการ RMC / กรรมการบริหาร (ExCo)"
+    }
+  ],
+  "meetings": [
+    {
+      "id": "m1",
+      "year": 2569,
+      "no": 1,
+      "date": "2569-02-13",
+      "type": "ordinary",
+      "status": "completed",
+      "agendaFile": "",
+      "momFile": "",
+      "agendaAttachments": [],
+      "momAttachments": [],
+      "agendaItems": [
+        {
+          "id": "a1",
+          "title": "รับรองรายงานการประชุม NRC ครั้งที่ 5/2568",
+          "type": "approve",
+          "status": "done",
+          "note": "",
+          "attachments": []
+        },
+        {
+          "id": "a2",
+          "title": "รายงานผลการดำเนินงานของฝ่ายจัดการ",
+          "type": "inform",
+          "status": "done",
+          "note": "",
+          "attachments": []
+        },
+        {
+          "id": "a3",
+          "title": "พิจารณาโครงสร้างค่าตอบแทนกรรมการประจำปี 2569",
+          "type": "approve",
+          "status": "done",
+          "note": "",
+          "attachments": []
+        },
+        {
+          "id": "a4",
+          "title": "ทบทวนกฎบัตรคณะกรรมการสรรหาฯ",
+          "type": "approve",
+          "status": "done",
+          "note": "",
+          "attachments": []
+        }
+      ],
+      "actionItems": [],
+      "note": ""
+    },
+    {
+      "id": "m2",
+      "year": 2569,
+      "no": 2,
+      "date": "2569-03-18",
+      "type": "ordinary",
+      "status": "completed",
+      "agendaFile": "",
+      "momFile": "",
+      "agendaAttachments": [],
+      "momAttachments": [],
+      "agendaItems": [
+        {
+          "id": "a5",
+          "title": "รับรองรายงานการประชุม NRC ครั้งที่ 1/2569",
+          "type": "approve",
+          "status": "done",
+          "note": "",
+          "attachments": []
+        },
+        {
+          "id": "a6",
+          "title": "พิจารณาเสนอชื่อกรรมการเพื่อดำรงตำแหน่งแทนกรรมการที่ออกตามวาระ (AGM 2569)",
+          "type": "approve",
+          "status": "done",
+          "note": "",
+          "attachments": []
+        },
+        {
+          "id": "a7",
+          "title": "พิจารณาค่าตอบแทนกรรมการเสนอ AGM 2569",
+          "type": "approve",
+          "status": "done",
+          "note": "",
+          "attachments": []
+        },
+        {
+          "id": "a8",
+          "title": "ประเมินผล CEO รอบ 12 เดือน (2568)",
+          "type": "approve",
+          "status": "done",
+          "note": "",
+          "attachments": []
+        }
+      ],
+      "actionItems": [],
+      "note": ""
+    },
+    {
+      "id": "m3",
+      "year": 2569,
+      "no": 3,
+      "date": "2569-04-22",
+      "type": "ordinary",
+      "status": "completed",
+      "agendaFile": "",
+      "momFile": "",
+      "agendaAttachments": [],
+      "momAttachments": [],
+      "agendaItems": [
+        {
+          "id": "a9",
+          "title": "รับรองรายงานการประชุม NRC ครั้งที่ 2/2569",
+          "type": "approve",
+          "status": "done",
+          "note": "",
+          "attachments": []
+        },
+        {
+          "id": "a10",
+          "title": "รายงานผลการประชุมสามัญผู้ถือหุ้น (AGM) 2569",
+          "type": "inform",
+          "status": "done",
+          "note": "",
+          "attachments": []
+        },
+        {
+          "id": "a11",
+          "title": "พิจารณาแผนพัฒนากรรมการ (Director Development Plan)",
+          "type": "approve",
+          "status": "done",
+          "note": "",
+          "attachments": []
+        },
+        {
+          "id": "a12",
+          "title": "ทบทวน Board Skills Matrix ประจำปี 2569",
+          "type": "approve",
+          "status": "inprogress",
+          "note": "",
+          "attachments": []
+        }
+      ],
+      "actionItems": [],
+      "note": ""
+    },
+    {
+      "id": "m4",
+      "year": 2569,
+      "no": 4,
+      "date": "2569-06-10",
+      "type": "ordinary",
+      "status": "completed",
+      "agendaFile": "",
+      "momFile": "",
+      "agendaAttachments": [],
+      "momAttachments": [],
+      "agendaItems": [
+        {
+          "id": "a13",
+          "title": "รับรองรายงานการประชุม NRC ครั้งที่ 3/2569",
+          "type": "approve",
+          "status": "done",
+          "note": "",
+          "attachments": []
+        },
+        {
+          "id": "a14",
+          "title": "รายงาน Succession Plan กรรมการและผู้บริหารระดับสูง",
+          "type": "inform",
+          "status": "done",
+          "note": "",
+          "attachments": []
+        },
+        {
+          "id": "a15",
+          "title": "พิจารณา RACI Matrix ความรับผิดชอบ NRC",
+          "type": "approve",
+          "status": "inprogress",
+          "note": "ส่งมอบฝ่ายเลขานุการพัฒนาร่าง RACI ก่อนประชุมครั้งถัดไป",
+          "attachments": []
+        },
+        {
+          "id": "a16",
+          "title": "พิจารณาโครงสร้างการจ่ายค่าตอบแทน CEO",
+          "type": "approve",
+          "status": "done",
+          "note": "",
+          "attachments": []
+        }
+      ],
+      "actionItems": [],
+      "note": ""
+    },
+    {
+      "id": "m5",
+      "year": 2569,
+      "no": 5,
+      "date": "2569-08-03",
+      "type": "ordinary",
+      "status": "planned",
+      "agendaFile": "",
+      "momFile": "",
+      "agendaAttachments": [],
+      "momAttachments": [],
+      "agendaItems": [
+        {
+          "id": "a17",
+          "title": "รับรองรายงานการประชุม NRC ครั้งที่ 4/2569",
+          "type": "approve",
+          "status": "pending",
+          "note": "",
+          "attachments": []
+        },
+        {
+          "id": "a18",
+          "title": "นำเสนอ RACI Matrix ฉบับสมบูรณ์",
+          "type": "approve",
+          "status": "pending",
+          "note": "",
+          "attachments": []
+        },
+        {
+          "id": "a19",
+          "title": "รายงานผลการประเมิน CEO รอบ 6 เดือน",
+          "type": "inform",
+          "status": "pending",
+          "note": "",
+          "attachments": []
+        },
+        {
+          "id": "a20",
+          "title": "ทบทวนรายชื่อกรรมการบริษัทย่อยและ Sub-Committee",
+          "type": "approve",
+          "status": "pending",
+          "note": "",
+          "attachments": []
+        }
+      ],
+      "actionItems": [],
+      "note": ""
+    },
+    {
+      "id": "m6",
+      "year": 2569,
+      "no": 6,
+      "date": "2569-09-11",
+      "type": "ordinary",
+      "status": "planned",
+      "agendaFile": "",
+      "momFile": "",
+      "agendaAttachments": [],
+      "momAttachments": [],
+      "agendaItems": [
+        {
+          "id": "a21",
+          "title": "รับรองรายงานการประชุม NRC ครั้งที่ 5/2569",
+          "type": "approve",
+          "status": "pending",
+          "note": "",
+          "attachments": []
+        },
+        {
+          "id": "a22",
+          "title": "นำเสนอ Leadership Pipeline และแผนสืบทอดตำแหน่งผู้บริหาร",
+          "type": "approve",
+          "status": "pending",
+          "note": "",
+          "attachments": []
+        },
+        {
+          "id": "a23",
+          "title": "เป้าหมายการสรรหากรรมการใหม่ (Board Recruitment Target)",
+          "type": "approve",
+          "status": "pending",
+          "note": "",
+          "attachments": []
+        },
+        {
+          "id": "a24",
+          "title": "รายงานผลการพัฒนากรรมการ (Training & Development)",
+          "type": "inform",
+          "status": "pending",
+          "note": "",
+          "attachments": []
+        }
+      ],
+      "actionItems": [],
+      "note": ""
+    },
+    {
+      "id": "m7",
+      "year": 2569,
+      "no": 7,
+      "date": "2569-11-02",
+      "type": "ordinary",
+      "status": "planned",
+      "agendaFile": "",
+      "momFile": "",
+      "agendaAttachments": [],
+      "momAttachments": [],
+      "agendaItems": [
+        {
+          "id": "a25",
+          "title": "รับรองรายงานการประชุม NRC ครั้งที่ 6/2569",
+          "type": "approve",
+          "status": "pending",
+          "note": "",
+          "attachments": []
+        },
+        {
+          "id": "a26",
+          "title": "สรุป Board Skills Matrix 2569 ฉบับสมบูรณ์",
+          "type": "approve",
+          "status": "pending",
+          "note": "",
+          "attachments": []
+        },
+        {
+          "id": "a27",
+          "title": "ประเมินผลการปฏิบัติงานคณะกรรมการ NRC ประจำปี 2569",
+          "type": "approve",
+          "status": "pending",
+          "note": "",
+          "attachments": []
+        },
+        {
+          "id": "a28",
+          "title": "วางแผนงาน NRC ประจำปี 2570",
+          "type": "approve",
+          "status": "pending",
+          "note": "",
+          "attachments": []
+        },
+        {
+          "id": "a29",
+          "title": "รายงานการปฏิบัติตาม CG Scorecard",
+          "type": "inform",
+          "status": "pending",
+          "note": "",
+          "attachments": []
+        }
+      ],
+      "actionItems": [],
+      "note": ""
+    }
+  ],
+  "actionItems": [
+    {
+      "id": "ai1",
+      "title": "จัดทำ RACI Matrix ความรับผิดชอบ NRC",
+      "owner": "นายจิณนภัสฐ์ ภัสฐาพงษ์",
+      "dueDate": "2569-08-03",
+      "status": "inprogress",
+      "priority": "high",
+      "meetingRef": "m4",
+      "note": "ร่าง RACI ต้องเสร็จก่อนประชุม 3 ส.ค."
+    },
+    {
+      "id": "ai2",
+      "title": "ปิด Loop การประเมินผล CEO รอบ 6 เดือน",
+      "owner": "นายจิณนภัสฐ์ ภัสฐาพงษ์",
+      "dueDate": "2569-08-03",
+      "status": "pending",
+      "priority": "high",
+      "meetingRef": "m5",
+      "note": "รวบรวมแบบประเมินจากกรรมการทุกท่าน"
+    },
+    {
+      "id": "ai3",
+      "title": "จัดทำ Leadership Pipeline และแผน Succession",
+      "owner": "นายจิณนภัสฐ์ ภัสฐาพงษ์",
+      "dueDate": "2569-09-11",
+      "status": "pending",
+      "priority": "high",
+      "meetingRef": "m6",
+      "note": "ประสานฝ่าย HR รวบรวมข้อมูลผู้บริหาร"
+    },
+    {
+      "id": "ai4",
+      "title": "กำหนด Board Recruitment Target ปี 2570",
+      "owner": "นายจิณนภัสฐ์ ภัสฐาพงษ์",
+      "dueDate": "2569-09-11",
+      "status": "pending",
+      "priority": "medium",
+      "meetingRef": "m6",
+      "note": "วิเคราะห์ช่องว่างทักษะจาก Skills Matrix"
+    },
+    {
+      "id": "ai5",
+      "title": "จัดทำ Board Skills Matrix 2569 ฉบับสมบูรณ์",
+      "owner": "นายจิณนภัสฐ์ ภัสฐาพงษ์",
+      "dueDate": "2569-11-02",
+      "status": "pending",
+      "priority": "medium",
+      "meetingRef": "m7",
+      "note": "อัปเดตหลังการฝึกอบรมกรรมการ Q3"
+    }
+  ],
+  "succession": [
+    {
+      "id": "sp1",
+      "position": "CEO",
+      "incumbent": "นายกิตติ สัมฤทธิ์",
+      "successors": [
+        {
+          "name": "ผู้สืบทอด A",
+          "readiness": "ready-1y",
+          "idp": "Executive Leadership Program, Board Exposure"
+        },
+        {
+          "name": "ผู้สืบทอด B",
+          "readiness": "ready-2y",
+          "idp": "P&L Responsibility, Strategic Planning"
+        }
+      ],
+      "note": ""
+    },
+    {
+      "id": "sp2",
+      "position": "CFO",
+      "incumbent": "ประธานเจ้าหน้าที่การเงิน",
+      "successors": [
+        {
+          "name": "ผู้สืบทอด C",
+          "readiness": "ready-now",
+          "idp": "Investor Relations, M&A Experience"
+        }
+      ],
+      "note": ""
+    },
+    {
+      "id": "sp3",
+      "position": "COO",
+      "incumbent": "ประธานเจ้าหน้าที่ปฏิบัติการ",
+      "successors": [
+        {
+          "name": "ผู้สืบทอด D",
+          "readiness": "ready-2y",
+          "idp": "Operations Excellence, Cross-functional"
+        }
+      ],
+      "note": ""
+    },
+    {
+      "id": "sp4",
+      "position": "CTO",
+      "incumbent": "ประธานเจ้าหน้าที่เทคโนโลยี",
+      "successors": [
+        {
+          "name": "ผู้สืบทอด E",
+          "readiness": "ready-1y",
+          "idp": "Digital Transformation, AI Strategy"
+        }
+      ],
+      "note": ""
+    },
+    {
+      "id": "sp5",
+      "position": "CHRO",
+      "incumbent": "นายจิณนภัสฐ์ ภัสฐาพงษ์",
+      "successors": [
+        {
+          "name": "ผู้สืบทอด F",
+          "readiness": "ready-now",
+          "idp": "Organization Design, Culture Change"
+        }
+      ],
+      "note": ""
+    },
+    {
+      "id": "sp6",
+      "position": "CEO-PPP",
+      "incumbent": "ผู้บริหาร PPP",
+      "successors": [
+        {
+          "name": "ผู้สืบทอด G",
+          "readiness": "ready-2y",
+          "idp": "Business Development"
+        }
+      ],
+      "note": ""
+    },
+    {
+      "id": "sp7",
+      "position": "MD-PSL",
+      "incumbent": "ผู้บริหาร PSL",
+      "successors": [
+        {
+          "name": "ผู้สืบทอด H",
+          "readiness": "ready-not",
+          "idp": "Leadership Development Program"
+        }
+      ],
+      "note": ""
+    },
+    {
+      "id": "sp8",
+      "position": "MD-PDE",
+      "incumbent": "ผู้บริหาร PDE",
+      "successors": [
+        {
+          "name": "ผู้สืบทอด I",
+          "readiness": "ready-1y",
+          "idp": "Industry Knowledge, Network"
+        }
+      ],
+      "note": ""
+    }
+  ],
+  "controlList": {
+    "subcommittees": [
+      {
+        "id": "sc1",
+        "name": "คณะกรรมการตรวจสอบ (AC)",
+        "members": [
+          {
+            "name": "นางสาวสุดารัตน์ ตั้งสุนทรกิจ",
+            "role": "ประธาน",
+            "type": "independent",
+            "term": ""
+          },
+          {
+            "name": "นายสรรค์ชัย เตียวประเสริฐกุล",
+            "role": "กรรมการ",
+            "type": "independent",
+            "term": ""
+          },
+          {
+            "name": "นายบุญชัย พิทักษ์ดำรงกิจ",
+            "role": "กรรมการ",
+            "type": "independent",
+            "term": ""
+          }
+        ]
+      },
+      {
+        "id": "sc2",
+        "name": "คณะกรรมการสรรหาและพิจารณาค่าตอบแทน (NRC)",
+        "members": [
+          {
+            "name": "รศ.ดร.ภก.ลือรัตน์ อนุรัตน์พานิช",
+            "role": "ประธาน",
+            "type": "independent",
+            "term": ""
+          },
+          {
+            "name": "นายสุธี จุฬานุตรกุล",
+            "role": "กรรมการ",
+            "type": "nonexecutive",
+            "term": ""
+          },
+          {
+            "name": "นายณรงค์ จันทร์สร้อย",
+            "role": "กรรมการ",
+            "type": "independent",
+            "term": ""
+          }
+        ]
+      },
+      {
+        "id": "sc3",
+        "name": "คณะกรรมการบริหารความเสี่ยง (RMC)",
+        "members": [
+          {
+            "name": "นายกิตติ ณัฐชยางกุล",
+            "role": "ประธาน",
+            "type": "nonexecutive",
+            "term": ""
+          },
+          {
+            "name": "นายอมร แดงโชติ",
+            "role": "กรรมการ",
+            "type": "executive",
+            "term": ""
+          },
+          {
+            "name": "นางสาวณิชา ณัฐชยางกุล",
+            "role": "กรรมการ",
+            "type": "executive",
+            "term": ""
+          }
+        ]
+      },
+      {
+        "id": "sc4",
+        "name": "คณะกรรมการกำกับดูแลกิจการที่ดีและการพัฒนาอย่างยั่งยืน (GCG)",
+        "members": [
+          {
+            "name": "นายสรรค์ชัย เตียวประเสริฐกุล",
+            "role": "ประธาน",
+            "type": "independent",
+            "term": ""
+          },
+          {
+            "name": "นายบุญชัย พิทักษ์ดำรงกิจ",
+            "role": "กรรมการ",
+            "type": "independent",
+            "term": ""
+          },
+          {
+            "name": "นางสาวเกตินาท สัมฤทธิ์",
+            "role": "กรรมการ",
+            "type": "executive",
+            "term": ""
+          }
+        ]
+      },
+      {
+        "id": "sc5",
+        "name": "คณะกรรมการบริหาร (ExCo)",
+        "members": [
+          {
+            "name": "นายกิตติ สัมฤทธิ์",
+            "role": "ประธาน",
+            "type": "executive",
+            "term": ""
+          },
+          {
+            "name": "นายอมร แดงโชติ",
+            "role": "กรรมการ",
+            "type": "executive",
+            "term": ""
+          },
+          {
+            "name": "นางสาวเกตินาท สัมฤทธิ์",
+            "role": "กรรมการ",
+            "type": "executive",
+            "term": ""
+          },
+          {
+            "name": "นางสาวณิชา ณัฐชยางกุล",
+            "role": "กรรมการ",
+            "type": "executive",
+            "term": ""
+          }
+        ]
+      }
+    ],
+    "subsidiaries": [
+      {
+        "id": "sub1",
+        "name": "PPP",
+        "fullName": "บริษัท พรีไซซ พาวเวอร์ แอนด์ เพาเวอร์ จำกัด",
+        "directors": [
+          {
+            "name": "กรรมการ PPP-1",
+            "role": "ประธาน",
+            "type": "pcc-representative"
+          }
+        ]
+      },
+      {
+        "id": "sub2",
+        "name": "SKB",
+        "fullName": "บริษัท สกายบริดจ์ จำกัด",
+        "directors": [
+          {
+            "name": "กรรมการ SKB-1",
+            "role": "ประธาน",
+            "type": "pcc-representative"
+          }
+        ]
+      },
+      {
+        "id": "sub3",
+        "name": "CEP",
+        "fullName": "บริษัท คลีน เอนเนอร์ยี่ พลัส จำกัด",
+        "directors": [
+          {
+            "name": "กรรมการ CEP-1",
+            "role": "ประธาน",
+            "type": "pcc-representative"
+          }
+        ]
+      },
+      {
+        "id": "sub4",
+        "name": "PKB",
+        "fullName": "บริษัท พีเคบี จำกัด",
+        "directors": [
+          {
+            "name": "กรรมการ PKB-1",
+            "role": "ประธาน",
+            "type": "pcc-representative"
+          }
+        ]
+      },
+      {
+        "id": "sub5",
+        "name": "PSL",
+        "fullName": "บริษัท พรีไซซ โซลูชั่น จำกัด",
+        "directors": [
+          {
+            "name": "กรรมการ PSL-1",
+            "role": "ประธาน",
+            "type": "pcc-representative"
+          }
+        ]
+      },
+      {
+        "id": "sub6",
+        "name": "NSPC",
+        "fullName": "บริษัท นอร์ทสตาร์ พาวเวอร์ คอร์ป จำกัด",
+        "directors": [
+          {
+            "name": "กรรมการ NSPC-1",
+            "role": "ประธาน",
+            "type": "pcc-representative"
+          }
+        ]
+      },
+      {
+        "id": "sub7",
+        "name": "PPD",
+        "fullName": "บริษัท พรีไซซ พาวเวอร์ ดีเวลลอปเมนต์ จำกัด",
+        "directors": [
+          {
+            "name": "กรรมการ PPD-1",
+            "role": "ประธาน",
+            "type": "pcc-representative"
+          }
+        ]
+      },
+      {
+        "id": "sub8",
+        "name": "PDE",
+        "fullName": "บริษัท พรีไซซ ดิจิตอล เอนเนอร์ยี่ จำกัด",
+        "directors": [
+          {
+            "name": "กรรมการ PDE-1",
+            "role": "ประธาน",
+            "type": "pcc-representative"
+          }
+        ]
+      },
+      {
+        "id": "sub9",
+        "name": "PEMC",
+        "fullName": "บริษัท พรีไซซ เอนเนอร์ยี่ แมเนจเมนต์ แอนด์ คอนซัลติ้ง จำกัด",
+        "directors": [
+          {
+            "name": "กรรมการ PEMC-1",
+            "role": "ประธาน",
+            "type": "pcc-representative"
+          }
+        ]
+      }
+    ]
+  },
+  "directorChangelog": [
+    {
+      "id": "dcl1",
+      "effectiveDate": "2569-01-01",
+      "directorId": "",
+      "directorName": "(ตัวอย่าง) นายอชิตศักดิ์ บรรจงโพธิ์กลาง",
+      "changeType": "appointed",
+      "changeDetail": "แต่งตั้งเป็นประธานกรรมการบริษัทและกรรมการอิสระ",
+      "previousValue": "",
+      "newValue": "ประธานกรรมการบริษัท / กรรมการอิสระ",
+      "nrcMeetingRef": "",
+      "boardMeetingRef": "Board 1/2569",
+      "agmRef": "AGM 2569",
+      "approvedBy": "agm",
+      "note": "ออกตามวาระ และได้รับการเลือกตั้งกลับเข้ามาใหม่",
+      "recordedDate": "2569-05-23",
+      "recordedBy": "จิณนภัสฐ์"
+    }
+  ],
+  "remuneration": [],
+  "directorTraining": [],
+  "selfAssessments": [],
+  "documents": [],
+  "agmItems": [],
+  "independenceChecks": [],
+  "conflictLog": []
+}

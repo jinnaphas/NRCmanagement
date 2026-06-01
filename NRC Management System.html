@@ -1261,48 +1261,103 @@ function deleteDirector(id) {
 // ============================================================
 // CONTROL LIST
 // ============================================================
+// นิยามคณะกรรมการชุดย่อย — อ้างอิงบทบาทจากทะเบียนกลาง (Master List)
+const COMMITTEE_DEFS = [
+  { key:'nrcRole',  name:'คณะกรรมการสรรหาและพิจารณาค่าตอบแทน (NRC)' },
+  { key:'acRole',   name:'คณะกรรมการตรวจสอบ (AC)' },
+  { key:'rmcRole',  name:'คณะกรรมการบริหารความเสี่ยง (RMC)' },
+  { key:'gcgRole',  name:'คณะกรรมการกำกับดูแลกิจการที่ดีฯ (GCG)' },
+  { key:'excoRole', name:'คณะกรรมการบริหาร (ExCo)' }
+];
+function typeLabel(t) { return t==='independent'?'อิสระ':t==='executive'?'บริหาร':t==='nonexecutive'?'ไม่ใช่บริหาร':(t||'-'); }
+function roleLabelTh(r) { return r==='chair'?'ประธาน':r==='member'?'กรรมการ':'-'; }
+
 function renderControlList() {
   document.getElementById('content').innerHTML = `
     <div class="section-title">&#127970; Control List</div>
+    <div class="alert alert-info" style="font-size:12px">&#128279; รายชื่อทุกชุดดึงมาจาก <strong>ทะเบียนกลาง (Master List)</strong> ที่เมนู "คณะกรรมการ" — แก้ที่เดียว อัปเดตทุกที่</div>
     <div class="tabs" id="cl-tabs">
-      <button class="tab-btn active" onclick="switchCLTab('subcommittees',this)">คณะกรรมการชุดย่อย</button>
+      <button class="tab-btn active" onclick="switchCLTab('board',this)">คณะกรรมการบริษัท</button>
+      <button class="tab-btn" onclick="switchCLTab('subcommittees',this)">คณะกรรมการชุดย่อย</button>
       <button class="tab-btn" onclick="switchCLTab('subsidiaries',this)">บริษัทย่อย</button>
     </div>
-    <div id="cl-content">${renderSubcommittees()}</div>`;
+    <div id="cl-content">${renderBoardList()}</div>`;
 }
 
 function switchCLTab(tab, btn) {
   document.querySelectorAll('#cl-tabs .tab-btn').forEach(b=>b.classList.remove('active'));
   btn.classList.add('active');
-  document.getElementById('cl-content').innerHTML = tab==='subcommittees' ? renderSubcommittees() : renderSubsidiaries();
+  const el = document.getElementById('cl-content');
+  el.innerHTML = tab==='board' ? renderBoardList() : tab==='subcommittees' ? renderSubcommittees() : renderSubsidiaries();
 }
 
+// คณะกรรมการบริษัท = กรรมการทั้งหมดในทะเบียนกลาง
+function renderBoardList() {
+  const rows = DB.directors.map(d=>{
+    const tags = COMMITTEE_DEFS.filter(c=>d[c.key]&&d[c.key]!=='none')
+      .map(c=>`<span class="tag">${c.name.match(/\(([^)]+)\)/)?.[1]||c.name}${d[c.key]==='chair'?' ⭐':''}</span>`).join('');
+    return `<tr class="clickable" onclick="editDirector('${d.id}')">
+      <td><div class="dir-avatar-wrap" style="gap:8px">${directorAvatar(d.name,28)}<span>${d.name}</span></div></td>
+      <td>${d.position||'-'}</td>
+      <td><span class="tag">${typeLabel(d.type)}</span></td>
+      <td>${tags||'-'}</td>
+    </tr>`;
+  }).join('');
+  return `<div class="panel">
+    <div class="panel-header"><h3>คณะกรรมการบริษัท (${DB.directors.length} คน)</h3>
+      <button class="btn btn-sm btn-light" onclick="showSection('directors')">จัดการทะเบียนกลาง</button></div>
+    <div class="panel-body" style="padding:0"><table class="tbl">
+      <thead><tr><th>ชื่อกรรมการ</th><th>ตำแหน่ง</th><th>ประเภท</th><th>คณะย่อย</th></tr></thead>
+      <tbody>${rows||'<tr><td colspan="4" class="empty-state">ยังไม่มีกรรมการ</td></tr>'}</tbody>
+    </table></div></div>`;
+}
+
+// คณะกรรมการชุดย่อย — derive จากบทบาทในทะเบียนกลาง
 function renderSubcommittees() {
-  return DB.controlList.subcommittees.map(sc=>`
-    <div class="panel">
-      <div class="panel-header">
-        <h3>${sc.name}</h3>
-        <div class="btn-group">
-          <button class="btn btn-sm btn-light" onclick="addSCMember('${sc.id}')">+ เพิ่มสมาชิก</button>
-        </div>
+  return COMMITTEE_DEFS.map(c=>{
+    const members = DB.directors.filter(d=>d[c.key]&&d[c.key]!=='none')
+      .sort((a,b)=> (a[c.key]==='chair'?0:1) - (b[c.key]==='chair'?0:1));
+    return `<div class="panel">
+      <div class="panel-header"><h3>${c.name}</h3>
+        <button class="btn btn-sm btn-light" onclick="manageCommitteeMembers('${c.key}')">&#9998; จัดการสมาชิก</button>
       </div>
       <div class="panel-body" style="padding:0">
         <table class="tbl">
-          <thead><tr><th>ชื่อกรรมการ</th><th>บทบาท</th><th>ประเภท</th><th>วาระ</th><th>จัดการ</th></tr></thead>
-          <tbody>${(sc.members||[]).map(mem=>`
-            <tr>
-              <td><div class="dir-avatar-wrap" style="gap:8px">${directorAvatar(mem.name,28)}<span>${mem.name}</span></div></td><td>${mem.role}</td>
-              <td><span class="tag">${mem.type==='independent'?'อิสระ':mem.type==='executive'?'บริหาร':mem.type==='nonexecutive'?'ไม่ใช่บริหาร':mem.type}</span></td>
-              <td>${mem.term||'-'}</td>
-              <td>
-                <button class="btn btn-sm btn-orange" onclick="editSCMember('${sc.id}','${encodeURIComponent(mem.name)}')">&#9998;</button>
-                <button class="btn btn-sm btn-red" onclick="deleteSCMember('${sc.id}','${encodeURIComponent(mem.name)}')">&#128465;</button>
-              </td>
-            </tr>`).join('')||'<tr><td colspan="5" class="empty-state">ยังไม่มีสมาชิก</td></tr>'}
+          <thead><tr><th>ชื่อกรรมการ</th><th>บทบาท</th><th>ประเภท</th></tr></thead>
+          <tbody>${members.map(d=>`
+            <tr class="clickable" onclick="editDirector('${d.id}')">
+              <td><div class="dir-avatar-wrap" style="gap:8px">${directorAvatar(d.name,28)}<span>${d.name}</span></div></td>
+              <td>${roleLabelTh(d[c.key])}</td>
+              <td><span class="tag">${typeLabel(d.type)}</span></td>
+            </tr>`).join('')||'<tr><td colspan="3" class="empty-state">ยังไม่มีสมาชิก</td></tr>'}
           </tbody>
         </table>
       </div>
-    </div>`).join('');
+    </div>`;
+  }).join('');
+}
+// จัดการสมาชิกคณะย่อย = ปรับบทบาทกรรมการแต่ละคนในทะเบียนกลาง
+function manageCommitteeMembers(key) {
+  const def = COMMITTEE_DEFS.find(c=>c.key===key);
+  const rows = DB.directors.map(d=>`
+    <tr>
+      <td><div class="dir-avatar-wrap" style="gap:8px">${directorAvatar(d.name,26)}<span>${d.name}</span></div></td>
+      <td><select class="form-control" id="cm-${d.id}" style="padding:4px 8px">
+        <option value="none" ${(!d[key]||d[key]==='none')?'selected':''}>— ไม่อยู่ —</option>
+        <option value="member" ${d[key]==='member'?'selected':''}>กรรมการ</option>
+        <option value="chair" ${d[key]==='chair'?'selected':''}>ประธาน</option>
+      </select></td>
+    </tr>`).join('');
+  openModal('จัดการสมาชิก — ' + def.name,
+    `<p class="text-muted mb-8" style="font-size:12px">กำหนดบทบาทของกรรมการแต่ละคน (บันทึกลงทะเบียนกลาง)</p>
+     <table class="tbl"><thead><tr><th>กรรมการ</th><th style="width:160px">บทบาท</th></tr></thead><tbody>${rows}</tbody></table>`,
+    `<button class="btn btn-outline" onclick="closeModal()">ยกเลิก</button>
+     <button class="btn btn-primary" onclick="saveCommitteeMembers('${key}')">บันทึก</button>`);
+}
+function saveCommitteeMembers(key) {
+  DB.directors.forEach(d=>{ const el=document.getElementById('cm-'+d.id); if (el) d[key]=el.value; });
+  saveData(); closeModal();
+  document.getElementById('cl-content').innerHTML = renderSubcommittees();
 }
 
 function renderSubsidiaries() {
