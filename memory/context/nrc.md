@@ -32,9 +32,16 @@ Nomination and Remuneration Committee (NRC)
 ## ไฟล์สำคัญ
 | ไฟล์ | หน้าที่ |
 |------|--------|
-| NRC Management System.html | ระบบบริหารครบวงจร (CRUD, localStorage) |
+| NRC Management System.html | Web App บริหารครบวงจร (host บน GitHub Pages) → รายละเอียด: memory/context/nrc-app.md |
+| data.json | แหล่งข้อมูลหลักของแอป (read-only ผ่าน Pages) |
+| SETUP-GUIDE.md | คู่มือเปิด Pages / token / Drive link / เผยแพร่ |
 | NRC Checklist & Control List.xlsx | ตรวจสอบงานประจำปี |
 | สรุปวาระการประชุม NRC 2566-2569.md | สรุปย้อนหลัง |
+
+## กระบวนการบริหารด้วยแอป (v3 — สรุป)
+- Master pool (ทะเบียนทั้งหมด) → จัดคนเข้า บอร์ด PCC / คณะย่อย / บริษัทย่อย
+- แก้ข้อมูล → กด **Save & Publish** → commit data.json ขึ้น GitHub → live ~1 นาที
+- รูป/ไฟล์ = Google Drive share link · ไม่ต้องล็อกอิน · CG/Skills Matrix คิดจากสมาชิกบอร์ด
 
 ## เกณฑ์ CG ที่ NRC ดูแล (วัดจาก Board ทั้งหมด)
 | เกณฑ์ | ค่าที่ต้องการ | สถานะปัจจุบัน |

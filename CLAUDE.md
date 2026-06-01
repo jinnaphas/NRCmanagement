@@ -50,9 +50,13 @@
 ## Projects / Files
 | ชื่อ | รายละเอียด | Path |
 |------|-----------|------|
-| **NRC Management System** | ระบบบริหาร NRC ทั้งหมด (HTML SPA, localStorage) | NRC/NRC Management System.html |
+| **NRC Management System** | Web App บริหาร NRC (Single-file HTML, host บน GitHub Pages, ข้อมูลจาก data.json, รูป/ไฟล์ใช้ Drive share link, ปุ่ม Save & Publish commit ขึ้น GitHub) | NRC Management System.html |
+| **data.json** | แหล่งข้อมูลหลักของแอป (read-only เสิร์ฟผ่าน Pages) | data.json |
+| **คู่มือ/Setup** | วิธีเปิด Pages, สร้าง token, ใส่ลิงก์ Drive, เผยแพร่ข้อมูล | SETUP-GUIDE.md |
 | **Checklist NRC** | Excel checklist ประจำปี | NRC/NRC Checklist & Control List.xlsx |
 | **สรุปวาระ 2566-2569** | สรุปการประชุม NRC 25 ครั้ง | NRC/สรุปวาระการประชุม NRC 2566-2569.md |
+
+→ สถาปัตยกรรม & กระบวนการบริหารด้วยแอป (v3) ฉบับเต็ม: memory/context/nrc-app.md
 
 ## Preferences
 - ภาษาหลัก: ภาษาไทย (English สำหรับ technical terms)
