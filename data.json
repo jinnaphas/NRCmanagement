@@ -320,17 +320,44 @@
       "excoRole": "member",
       "skills": {
         "finance": 1,
-        "law": 0,
+        "law": 1,
         "strategy": 0,
         "it": 1,
         "risk": 1,
         "hr": 0,
         "marketing": 0,
-        "industry": 1
+        "industry": 0
       },
-      "photo": "",
+      "note": "กรรมการบริษัท / กรรมการ RMC / กรรมการบริหาร (ExCo)",
       "training": [],
-      "note": "กรรมการบริษัท / กรรมการ RMC / กรรมการบริหาร (ExCo)"
+      "photo": "https://precise.co.th/storage/2025/02/d11.-Nicha.png"
+    },
+    {
+      "id": "dmpvhla39ootro",
+      "name": "นางสาวอุมาพร สุเมธกิจการ",
+      "nameEn": "Umapon Sumetkijakan",
+      "position": "กรรมการบริษัท",
+      "type": "independent",
+      "gender": "female",
+      "startDate": "2569-04-24",
+      "nrcRole": "member",
+      "acRole": "none",
+      "rmcRole": "none",
+      "gcgRole": "none",
+      "excoRole": "none",
+      "skills": {
+        "finance": 1,
+        "law": 0,
+        "strategy": 1,
+        "it": 0,
+        "risk": 0,
+        "hr": 1,
+        "marketing": 1,
+        "industry": 0
+      },
+      "note": "",
+      "training": [],
+      "photo": "https://en.precise.co.th/storage/2026/05/admin-photo-temp.png"
     }
   ],
   "meetings": [
