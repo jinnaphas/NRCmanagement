@@ -31,9 +31,9 @@
         "marketing": 0,
         "industry": 1
       },
-      "photo": "",
+      "note": "ประธานกรรมการบริษัท / กรรมการอิสระ",
       "training": [],
-      "note": "ประธานกรรมการบริษัท / กรรมการอิสระ"
+      "photo": "https://precise.co.th/storage/2025/02/1.-achitsak.png"
     },
     {
       "id": "d2",
@@ -85,9 +85,9 @@
         "marketing": 1,
         "industry": 1
       },
-      "photo": "",
+      "note": "กรรมการบริษัท / ประธาน ExCo / ประธานเจ้าหน้าที่บริหาร",
       "training": [],
-      "note": "กรรมการบริษัท / ประธาน ExCo / ประธานเจ้าหน้าที่บริหาร"
+      "photo": "https://precise.co.th/storage/2025/02/2.-kitti.png"
     },
     {
       "id": "d4",
@@ -112,9 +112,9 @@
         "marketing": 1,
         "industry": 1
       },
-      "photo": "",
+      "note": "กรรมการบริษัท / กรรมการ NRC",
       "training": [],
-      "note": "กรรมการบริษัท / กรรมการ NRC"
+      "photo": "https://precise.co.th/storage/2025/02/4.-sutee.png"
     },
     {
       "id": "d5",
@@ -139,9 +139,9 @@
         "marketing": 0,
         "industry": 1
       },
-      "photo": "",
+      "note": "กรรมการบริษัท / ประธาน RMC",
       "training": [],
-      "note": "กรรมการบริษัท / ประธาน RMC"
+      "photo": "https://precise.co.th/storage/2025/02/3.-kitti-nat-1-3.png"
     },
     {
       "id": "d6",
@@ -166,9 +166,9 @@
         "marketing": 0,
         "industry": 0
       },
-      "photo": "",
+      "note": "กรรมการบริษัท / ประธาน AC / กรรมการอิสระ",
       "training": [],
-      "note": "กรรมการบริษัท / ประธาน AC / กรรมการอิสระ"
+      "photo": "https://precise.co.th/storage/2025/01/7.-sudarat-fix.png"
     },
     {
       "id": "d7",
@@ -193,9 +193,9 @@
         "marketing": 0,
         "industry": 1
       },
-      "photo": "",
+      "note": "กรรมการบริษัท / กรรมการ GCG / กรรมการ AC / กรรมการอิสระ",
       "training": [],
-      "note": "กรรมการบริษัท / กรรมการ GCG / กรรมการ AC / กรรมการอิสระ"
+      "photo": "https://precise.co.th/storage/2025/02/8.-boonchai.png"
     },
     {
       "id": "d8",
@@ -220,9 +220,9 @@
         "marketing": 0,
         "industry": 0
       },
-      "photo": "",
+      "note": "กรรมการบริษัท / ประธาน NRC / กรรมการอิสระ",
       "training": [],
-      "note": "กรรมการบริษัท / ประธาน NRC / กรรมการอิสระ"
+      "photo": "https://precise.co.th/storage/2026/05/9.-%E0%B8%A3%E0%B8%A8.%E0%B8%94%E0%B8%A3.%E0%B8%A0%E0%B8%81.%E0%B8%A5%E0%B8%B7%E0%B8%AD%E0%B8%A3%E0%B8%B1%E0%B8%95%E0%B8%99%E0%B9%8C-%E0%B8%AD%E0%B8%99%E0%B8%B8%E0%B8%A3%E0%B8%B1%E0%B8%95%E0%B8%99%E0%B9%8C%E0%B8%9E%E0%B8%B2%E0%B8%99%E0%B8%B4%E0%B8%8A.png"
     },
     {
       "id": "d9",
@@ -247,9 +247,9 @@
         "marketing": 0,
         "industry": 0
       },
-      "photo": "",
+      "note": "กรรมการบริษัท / กรรมการ NRC / กรรมการอิสระ",
       "training": [],
-      "note": "กรรมการบริษัท / กรรมการ NRC / กรรมการอิสระ"
+      "photo": "https://precise.co.th/storage/2026/01/10.-%E0%B8%99%E0%B8%B2%E0%B8%A2%E0%B8%93%E0%B8%A3%E0%B8%87%E0%B8%84%E0%B9%8C-%E0%B8%88%E0%B8%B1%E0%B8%99%E0%B8%97%E0%B8%A3%E0%B9%8C%E0%B8%AA%E0%B8%A3%E0%B9%89%E0%B8%AD%E0%B8%A2.png"
     },
     {
       "id": "d10",
@@ -274,9 +274,9 @@
         "marketing": 0,
         "industry": 1
       },
-      "photo": "",
+      "note": "กรรมการบริษัท / กรรมการ RMC / กรรมการบริหาร (ExCo)",
       "training": [],
-      "note": "กรรมการบริษัท / กรรมการ RMC / กรรมการบริหาร (ExCo)"
+      "photo": "https://precise.co.th/storage/2025/02/10.-amorn.png"
     },
     {
       "id": "d11",
@@ -303,7 +303,7 @@
       },
       "note": "กรรมการบริษัท / กรรมการ GCG / กรรมการบริหาร (ExCo)",
       "training": [],
-      "photo": ""
+      "photo": "https://precise.co.th/storage/2025/02/9.-Ketinart.png"
     },
     {
       "id": "d12",
