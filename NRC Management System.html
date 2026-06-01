@@ -1113,6 +1113,35 @@ function cgAnalysisHtml() {
     </div>`;
 }
 
+// การวิเคราะห์ตามหลัก CG (ใช้ในแท็บคณะกรรมการบริษัท ของ Control List)
+function cgAnalysisHtml() {
+  const cg = getDirectorCGStats();
+  return `
+    <div class="cards-row">
+      <div class="card"><div class="card-label">กรรมการบริษัทรวม</div><div class="card-value">${cg.total}</div><div class="card-sub">คน</div></div>
+      <div class="card ${cg.indepRatio>=50?'green':'red'}">
+        <div class="card-label">กรรมการอิสระ</div><div class="card-value">${cg.indepRatio}%</div>
+        <div class="card-sub">${cg.independent}/${cg.total} คน ${cg.indepRatio>=50?'&#9989; ผ่านเกณฑ์ &gt;50%':'&#9888; ต่ำกว่า 50%'}</div>
+      </div>
+      <div class="card ${cg.femaleRatio>=30?'green':'orange'}">
+        <div class="card-label">สัดส่วนหญิง</div><div class="card-value">${cg.femaleRatio}%</div>
+        <div class="card-sub">${cg.female}/${cg.total} คน ${cg.femaleRatio>=30?'&#9989;':'&#9888; &lt;30%'}</div>
+      </div>
+      <div class="card"><div class="card-label">ไม่ใช่บริหาร</div><div class="card-value blue">${cg.nonexec}</div><div class="card-sub">${cg.nonexec}/${cg.total} คน</div></div>
+    </div>
+    <div class="panel" style="margin-bottom:16px">
+      <div class="panel-header"><h3>&#128202; การวิเคราะห์ตามหลัก CG</h3></div>
+      <div class="panel-body">
+        <div style="font-size:13px;font-weight:700;color:var(--navy);margin-bottom:6px">สัดส่วนกรรมการอิสระ — เกณฑ์ CG: &gt; 50%</div>
+        <div class="progress-bar" style="height:12px"><div class="progress-fill" style="width:${Math.min(cg.indepRatio,100)}%;background:${cg.indepRatio>=50?'var(--green)':'var(--red)'}"></div></div>
+        <div style="font-size:13px;margin-top:6px;color:${cg.indepRatio>=50?'var(--green)':'var(--red)'};font-weight:700">${cg.indepRatio}% ${cg.indepRatio>=50?'&#9989; ผ่านเกณฑ์':'&#10060; ต่ำกว่าเกณฑ์'}</div>
+        <div style="font-size:13px;font-weight:700;color:var(--navy);margin:14px 0 6px">สัดส่วนกรรมการหญิง — เกณฑ์ CG: &ge; 30%</div>
+        <div class="progress-bar" style="height:12px"><div class="progress-fill" style="width:${Math.min(cg.femaleRatio,100)}%;background:${cg.femaleRatio>=30?'var(--green)':'var(--orange)'}"></div></div>
+        <div style="font-size:13px;margin-top:6px;color:${cg.femaleRatio>=30?'var(--green)':'var(--orange)'};font-weight:700">${cg.femaleRatio}% ${cg.femaleRatio>=30?'&#9989; ผ่านเกณฑ์':'&#9888; ต่ำกว่าเกณฑ์'}</div>
+      </div>
+    </div>`;
+}
+
 function renderDirectors() {
   const dirs = DB.directors;
   const typeLabel = { independent:'อิสระ', executive:'บริหาร', nonexecutive:'ไม่ใช่บริหาร' };
