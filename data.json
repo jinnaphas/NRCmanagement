@@ -33,7 +33,8 @@
       },
       "note": "ประธานกรรมการบริษัท / กรรมการอิสระ",
       "training": [],
-      "photo": "https://precise.co.th/storage/2025/02/1.-achitsak.png"
+      "photo": "https://precise.co.th/storage/2025/02/1.-achitsak.png",
+      "boardRole": "member"
     },
     {
       "id": "d3",
@@ -60,7 +61,8 @@
       },
       "note": "กรรมการบริษัท / ประธาน ExCo / ประธานเจ้าหน้าที่บริหาร",
       "training": [],
-      "photo": "https://precise.co.th/storage/2025/02/2.-kitti.png"
+      "photo": "https://precise.co.th/storage/2025/02/2.-kitti.png",
+      "boardRole": "member"
     },
     {
       "id": "d4",
@@ -87,7 +89,8 @@
       },
       "note": "กรรมการบริษัท / กรรมการ NRC",
       "training": [],
-      "photo": "https://precise.co.th/storage/2025/02/4.-sutee.png"
+      "photo": "https://precise.co.th/storage/2025/02/4.-sutee.png",
+      "boardRole": "member"
     },
     {
       "id": "d5",
@@ -114,7 +117,8 @@
       },
       "note": "กรรมการบริษัท / ประธาน RMC",
       "training": [],
-      "photo": "https://precise.co.th/storage/2025/02/3.-kitti-nat-1-3.png"
+      "photo": "https://precise.co.th/storage/2025/02/3.-kitti-nat-1-3.png",
+      "boardRole": "member"
     },
     {
       "id": "d6",
@@ -141,7 +145,8 @@
       },
       "note": "กรรมการบริษัท / ประธาน AC / กรรมการอิสระ",
       "training": [],
-      "photo": "https://precise.co.th/storage/2025/01/7.-sudarat-fix.png"
+      "photo": "https://precise.co.th/storage/2025/01/7.-sudarat-fix.png",
+      "boardRole": "member"
     },
     {
       "id": "d7",
@@ -168,7 +173,8 @@
       },
       "note": "กรรมการบริษัท / กรรมการ GCG / กรรมการ AC / กรรมการอิสระ",
       "training": [],
-      "photo": "https://precise.co.th/storage/2025/02/8.-boonchai.png"
+      "photo": "https://precise.co.th/storage/2025/02/8.-boonchai.png",
+      "boardRole": "member"
     },
     {
       "id": "d8",
@@ -195,7 +201,8 @@
       },
       "note": "กรรมการบริษัท / ประธาน NRC / กรรมการอิสระ",
       "training": [],
-      "photo": "https://precise.co.th/storage/2026/05/9.-%E0%B8%A3%E0%B8%A8.%E0%B8%94%E0%B8%A3.%E0%B8%A0%E0%B8%81.%E0%B8%A5%E0%B8%B7%E0%B8%AD%E0%B8%A3%E0%B8%B1%E0%B8%95%E0%B8%99%E0%B9%8C-%E0%B8%AD%E0%B8%99%E0%B8%B8%E0%B8%A3%E0%B8%B1%E0%B8%95%E0%B8%99%E0%B9%8C%E0%B8%9E%E0%B8%B2%E0%B8%99%E0%B8%B4%E0%B8%8A.png"
+      "photo": "https://precise.co.th/storage/2026/05/9.-%E0%B8%A3%E0%B8%A8.%E0%B8%94%E0%B8%A3.%E0%B8%A0%E0%B8%81.%E0%B8%A5%E0%B8%B7%E0%B8%AD%E0%B8%A3%E0%B8%B1%E0%B8%95%E0%B8%99%E0%B9%8C-%E0%B8%AD%E0%B8%99%E0%B8%B8%E0%B8%A3%E0%B8%B1%E0%B8%95%E0%B8%99%E0%B9%8C%E0%B8%9E%E0%B8%B2%E0%B8%99%E0%B8%B4%E0%B8%8A.png",
+      "boardRole": "member"
     },
     {
       "id": "d9",
@@ -222,7 +229,8 @@
       },
       "note": "กรรมการบริษัท / กรรมการ NRC / กรรมการอิสระ",
       "training": [],
-      "photo": "https://precise.co.th/storage/2026/01/10.-%E0%B8%99%E0%B8%B2%E0%B8%A2%E0%B8%93%E0%B8%A3%E0%B8%87%E0%B8%84%E0%B9%8C-%E0%B8%88%E0%B8%B1%E0%B8%99%E0%B8%97%E0%B8%A3%E0%B9%8C%E0%B8%AA%E0%B8%A3%E0%B9%89%E0%B8%AD%E0%B8%A2.png"
+      "photo": "https://precise.co.th/storage/2026/01/10.-%E0%B8%99%E0%B8%B2%E0%B8%A2%E0%B8%93%E0%B8%A3%E0%B8%87%E0%B8%84%E0%B9%8C-%E0%B8%88%E0%B8%B1%E0%B8%99%E0%B8%97%E0%B8%A3%E0%B9%8C%E0%B8%AA%E0%B8%A3%E0%B9%89%E0%B8%AD%E0%B8%A2.png",
+      "boardRole": "member"
     },
     {
       "id": "d10",
@@ -249,7 +257,8 @@
       },
       "note": "กรรมการบริษัท / กรรมการ RMC / กรรมการบริหาร (ExCo)",
       "training": [],
-      "photo": "https://precise.co.th/storage/2025/02/10.-amorn.png"
+      "photo": "https://precise.co.th/storage/2025/02/10.-amorn.png",
+      "boardRole": "member"
     },
     {
       "id": "d11",
@@ -276,7 +285,8 @@
       },
       "note": "กรรมการบริษัท / กรรมการ GCG / กรรมการบริหาร (ExCo)",
       "training": [],
-      "photo": "https://precise.co.th/storage/2025/02/9.-Ketinart.png"
+      "photo": "https://precise.co.th/storage/2025/02/9.-Ketinart.png",
+      "boardRole": "member"
     },
     {
       "id": "d12",
@@ -303,7 +313,8 @@
       },
       "note": "กรรมการบริษัท / กรรมการ RMC / กรรมการบริหาร (ExCo)",
       "training": [],
-      "photo": "https://precise.co.th/storage/2025/02/d11.-Nicha.png"
+      "photo": "https://precise.co.th/storage/2025/02/d11.-Nicha.png",
+      "boardRole": "member"
     },
     {
       "id": "dmpvhla39ootro",
@@ -330,7 +341,8 @@
       },
       "note": "",
       "training": [],
-      "photo": "https://en.precise.co.th/storage/2026/05/admin-photo-temp.png"
+      "photo": "https://en.precise.co.th/storage/2026/05/admin-photo-temp.png",
+      "boardRole": "member"
     },
     {
       "id": "dmpvi8lb9m2q4l",
@@ -340,6 +352,7 @@
       "type": "executive",
       "gender": "female",
       "startDate": "",
+      "boardRole": "none",
       "nrcRole": "none",
       "acRole": "none",
       "rmcRole": "none",
