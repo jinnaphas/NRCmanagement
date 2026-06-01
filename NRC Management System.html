@@ -213,6 +213,7 @@ textarea.form-control { resize: vertical; min-height: 80px; }
   <div id="topbar">
     <h1 id="page-title">Dashboard</h1>
     <span id="sync-status" class="idle" title="สถานะข้อมูล (data.json)">&#9729; กำลังโหลด</span>
+    <button class="btn btn-green btn-sm" onclick="publishToGitHub()" title="บันทึก data.json ขึ้น GitHub">&#128190; Save &amp; Publish</button>
     <span class="badge" id="topbar-badge">NRC PCC</span>
   </div>
   <div id="content"></div>
@@ -468,6 +469,68 @@ function exportDataJson() {
   const a = document.createElement('a'); a.href = url; a.download = 'data.json'; a.click();
   URL.revokeObjectURL(url);
   dataDirty = false; updateSyncStatus('ok', 'Export แล้ว ' + nowT());
+}
+// ── Save & Publish ขึ้น GitHub (commit data.json ผ่าน Contents API) ───────────
+const GH_SETTINGS_KEY = 'nrc_gh_publish_v1';
+function ghSettings() {
+  try { const s = localStorage.getItem(GH_SETTINGS_KEY); return s ? JSON.parse(s) : {}; }
+  catch(e) { return {}; }
+}
+function saveGhConfig() {
+  const cfg = {
+    token: (document.getElementById('gh-token').value||'').trim(),
+    owner: (document.getElementById('gh-owner').value||'jinnaphas').trim(),
+    repo:  (document.getElementById('gh-repo').value||'NRCmanagement').trim(),
+    branch:(document.getElementById('gh-branch').value||'main').trim()
+  };
+  localStorage.setItem(GH_SETTINGS_KEY, JSON.stringify(cfg));
+  const el=document.getElementById('gh-pub-status');
+  if (el) el.innerHTML = '<span style="color:var(--green)">&#10003; บันทึกการตั้งค่าแล้ว</span>';
+}
+function clearGhToken() {
+  if (!confirm('ลบ token ออกจากเครื่องนี้?')) return;
+  const cfg = ghSettings(); delete cfg.token;
+  localStorage.setItem(GH_SETTINGS_KEY, JSON.stringify(cfg));
+  const t=document.getElementById('gh-token'); if (t) t.value='';
+  const el=document.getElementById('gh-pub-status'); if (el) el.innerHTML='ลบ token แล้ว';
+}
+function utf8ToBase64(str) { return btoa(unescape(encodeURIComponent(str))); }
+async function publishToGitHub() {
+  // อ่านค่าจากฟอร์มถ้าเปิดหน้า settings อยู่ มิฉะนั้นใช้ค่าที่บันทึกไว้
+  if (document.getElementById('gh-token')) saveGhConfig();
+  const { token, owner, repo, branch } = ghSettings();
+  const path = 'data.json';
+  const el = document.getElementById('gh-pub-status');
+  const setStat = (h)=>{ if (el) el.innerHTML = h; };
+  if (!token) { alert('กรุณาใส่ GitHub Token ก่อน'); return; }
+  updateSyncStatus('syncing', 'กำลังเผยแพร่...'); setStat('&#9203; กำลังเผยแพร่ขึ้น GitHub...');
+  const api = `https://api.github.com/repos/${owner}/${repo}/contents/${path}`;
+  const headers = { 'Authorization': 'Bearer ' + token, 'Accept': 'application/vnd.github+json' };
+  try {
+    // 1) หา sha ของไฟล์เดิม (ถ้ามี)
+    let sha = undefined;
+    const getRes = await fetch(`${api}?ref=${encodeURIComponent(branch)}`, { headers });
+    if (getRes.ok) { const j = await getRes.json(); sha = j.sha; }
+    else if (getRes.status !== 404) throw new Error('อ่านไฟล์เดิมไม่ได้: ' + getRes.status);
+    // 2) PUT เนื้อหาใหม่
+    const body = {
+      message: 'Update data.json — NRC system ' + nowT(),
+      content: utf8ToBase64(JSON.stringify(DB, null, 2)),
+      branch
+    };
+    if (sha) body.sha = sha;
+    const putRes = await fetch(api, { method:'PUT', headers:{...headers,'Content-Type':'application/json'}, body: JSON.stringify(body) });
+    if (!putRes.ok) {
+      const err = await putRes.json().catch(()=>({}));
+      throw new Error((err.message||putRes.status) + (putRes.status===403?' (ตรวจสิทธิ์ token: Contents Read & Write)':''));
+    }
+    dataDirty = false;
+    updateSyncStatus('ok', 'เผยแพร่แล้ว ' + nowT());
+    setStat('<span style="color:var(--green)">&#10003; เผยแพร่สำเร็จ ' + nowT() + '</span><br><small class="text-muted">เว็บจะอัปเดตใน ~1 นาที (GitHub Pages)</small>');
+  } catch(e) {
+    updateSyncStatus('error', 'เผยแพร่ไม่สำเร็จ');
+    setStat('<span style="color:var(--red)">&#10007; ' + e.message + '</span>');
+  }
 }
 // แปลง Google Drive share link -> URL รูปที่ฝังใน <img> ได้
 function driveImageUrl(url) {
@@ -2731,6 +2794,7 @@ function saveCommitteeSync() {
 // ============================================================
 function renderSettings() {
   const c=DB.company;
+  const gh=ghSettings();
   document.getElementById('content').innerHTML = `
     <div class="section-title">&#9881; ตั้งค่าระบบ</div>
     <div class="panel" style="margin-bottom:16px">
@@ -2779,7 +2843,34 @@ function renderSettings() {
       </div>
     </div>
     <div class="panel" style="margin-bottom:16px">
-      <div class="panel-header"><h3>&#128190; เผยแพร่ข้อมูล (data.json)</h3></div>
+      <div class="panel-header"><h3>&#128640; Save &amp; Publish ขึ้น GitHub (real-time)</h3></div>
+      <div class="panel-body">
+        <p class="text-muted mb-8">กดปุ่มเดียว = บันทึก <code>data.json</code> ขึ้น GitHub โดยตรง &rarr; เว็บอัปเดตอัตโนมัติใน ~1 นาที (ใส่ token ครั้งเดียวในเครื่องนี้ เฉพาะคนแก้ข้อมูล)</p>
+        <div class="form-group">
+          <label>GitHub Token <span class="text-muted">(Fine-grained, สิทธิ์ Contents: Read &amp; Write เฉพาะ repo นี้)</span></label>
+          <input class="form-control" id="gh-token" type="password" placeholder="github_pat_..." autocomplete="off" value="${(gh.token||'').replace(/"/g,'&quot;')}">
+          <small class="text-muted">สร้างที่ GitHub &rarr; Settings &rarr; Developer settings &rarr; Fine-grained tokens (ดูขั้นตอนใน SETUP-GUIDE.md)</small>
+        </div>
+        <div class="form-row">
+          <div class="form-group"><label>Owner</label><input class="form-control" id="gh-owner" value="${(gh.owner||'jinnaphas')}"></div>
+          <div class="form-group"><label>Repo</label><input class="form-control" id="gh-repo" value="${(gh.repo||'NRCmanagement')}"></div>
+          <div class="form-group"><label>Branch</label><input class="form-control" id="gh-branch" value="${(gh.branch||'main')}"></div>
+        </div>
+        <div class="btn-group" style="margin-top:6px">
+          <button class="btn btn-green" onclick="publishToGitHub()">&#128190; Save &amp; Publish</button>
+          <button class="btn btn-outline" onclick="saveGhConfig()">&#128190; บันทึกการตั้งค่า</button>
+          <button class="btn btn-outline" style="color:var(--red)" onclick="clearGhToken()">&times; ลบ token ออกจากเครื่อง</button>
+        </div>
+        <div id="gh-pub-status" style="margin-top:12px;font-size:13px;line-height:1.7"></div>
+        <hr class="divider" style="margin:14px 0">
+        <p class="text-muted" style="font-size:12px;margin:0">
+          &#128274; token เก็บใน localStorage ของเครื่องนี้เท่านั้น — กรรมการที่เปิดดูไม่ต้องมี token<br>
+          &#9888; อย่าใช้ token นี้ในเครื่องสาธารณะ / ตั้ง token แบบ fine-grained จำกัดเฉพาะ repo นี้
+        </p>
+      </div>
+    </div>
+    <div class="panel" style="margin-bottom:16px">
+      <div class="panel-header"><h3>&#128190; เผยแพร่ข้อมูล (data.json) — วิธีสำรอง (Manual)</h3></div>
       <div class="panel-body">
         <p class="text-muted mb-8">ข้อมูลหลักมาจากไฟล์ <code>data.json</code> บนเว็บ (read-only) ทุกคนเปิด URL เห็นเหมือนกัน ไม่ต้องล็อกอิน</p>
         <div class="alert alert-info" style="margin-bottom:12px">
