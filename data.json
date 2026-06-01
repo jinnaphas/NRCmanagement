@@ -331,6 +331,34 @@
       "note": "",
       "training": [],
       "photo": "https://en.precise.co.th/storage/2026/05/admin-photo-temp.png"
+    },
+    {
+      "id": "dmpvi8lb9m2q4l",
+      "name": "นางสาวทิพย์สุดา ทองใหญ่",
+      "nameEn": "",
+      "position": "Vice President - Financial Capita;",
+      "type": "executive",
+      "gender": "female",
+      "startDate": "",
+      "nrcRole": "none",
+      "acRole": "none",
+      "rmcRole": "none",
+      "gcgRole": "none",
+      "excoRole": "member",
+      "skills": {
+        "finance": 1,
+        "law": 0,
+        "strategy": 0,
+        "it": 0,
+        "risk": 0,
+        "hr": 0,
+        "marketing": 0,
+        "industry": 0,
+        "skmpvi5t2a": 0
+      },
+      "note": "",
+      "training": [],
+      "photo": ""
     }
   ],
   "meetings": [
