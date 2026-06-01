@@ -36,33 +36,6 @@
       "photo": "https://precise.co.th/storage/2025/02/1.-achitsak.png"
     },
     {
-      "id": "d2",
-      "name": "นายสรรค์ชัย เตียวประเสริฐกุล",
-      "nameEn": "Sanchai Thiewprasertkul",
-      "position": "รองประธานกรรมการบริษัท",
-      "type": "independent",
-      "gender": "male",
-      "startDate": "",
-      "nrcRole": "none",
-      "acRole": "member",
-      "rmcRole": "none",
-      "gcgRole": "chair",
-      "excoRole": "none",
-      "skills": {
-        "finance": 1,
-        "law": 1,
-        "strategy": 1,
-        "it": 0,
-        "risk": 0,
-        "hr": 0,
-        "marketing": 0,
-        "industry": 1
-      },
-      "photo": "",
-      "training": [],
-      "note": "รองประธานกรรมการบริษัท / กรรมการตรวจสอบ / ประธาน GCG / กรรมการอิสระ"
-    },
-    {
       "id": "d3",
       "name": "นายกิตติ สัมฤทธิ์",
       "nameEn": "Kitti Sumrit",
@@ -1185,6 +1158,10 @@
     {
       "key": "industry",
       "label": "พลังงาน/อุตสาหกรรม"
+    },
+    {
+      "key": "skmpvi5t2a",
+      "label": "STEM"
     }
   ]
 }
