@@ -600,7 +600,7 @@ function migrateDB() {
     if (!s.signatories) s.signatories = [];
     if (s.signCondition === undefined) s.signCondition = '';
   });
-  if (DB.directors) DB.directors.forEach(d => { if (!d.photo) d.photo = ''; });
+  if (DB.directors) DB.directors.forEach(d => { if (!d.photo) d.photo = ''; if (d.boardRole === undefined) d.boardRole = 'member'; });
 }
 // บันทึกการแก้ไข = ทำเครื่องหมายว่ามีข้อมูลค้าง (เก็บใน memory; เผยแพร่ด้วยการ Export)
 function saveData() { markDirty(); }
@@ -672,8 +672,12 @@ function calcTenureYears(startDate) {
   const now = new Date();
   return ((now-start)/(1000*60*60*24*365.25)).toFixed(1);
 }
+// คณะกรรมการบริษัท = คนใน Master ที่ถูกจัดให้อยู่ในบอร์ด (boardRole != none)
+function boardDirectors() { return DB.directors.filter(d=>d.boardRole && d.boardRole!=='none'); }
+function boardRoleLabel(r){ return r==='chair'?'ประธานกรรมการบริษัท':r==='vice'?'รองประธานกรรมการบริษัท':r==='member'?'กรรมการบริษัท':'-'; }
+function boardRoleRank(r){ return r==='chair'?0:r==='vice'?1:2; }
 function getDirectorCGStats() {
-  const dirs = DB.directors; const total = dirs.length;
+  const dirs = boardDirectors(); const total = dirs.length;
   const independent = dirs.filter(d=>d.type==='independent').length;
   const female = dirs.filter(d=>d.gender==='female').length;
   const nonexec = dirs.filter(d=>d.type!=='executive').length;
@@ -1193,6 +1197,7 @@ function renderDirectors() {
       <td><span class="tag">${typeLabel[d.type]||d.type}</span></td>
       <td>${d.gender==='female'?'&#9792; หญิง':'&#9794; ชาย'}</td>
       <td style="color:${tenureWarn?'var(--red)':'inherit'}">${tenure?tenure+' ปี'+(tenureWarn?' &#9888;':''):'-'}</td>
+      <td style="font-size:11px">${d.boardRole&&d.boardRole!=='none'?`<span class="tag">${d.boardRole==='chair'?'⭐ ':d.boardRole==='vice'?'รอง ':''}บอร์ด PCC</span>`:'<span class="text-muted">—</span>'}</td>
       <td style="font-size:11px">
         ${d.nrcRole==='chair'?'<span class="tag">&#11088; NRC</span>':d.nrcRole==='member'?'<span class="tag">NRC</span>':''}
         ${d.acRole==='chair'?'<span class="tag">&#11088; AC</span>':d.acRole==='member'?'<span class="tag">AC</span>':''}
@@ -1209,25 +1214,25 @@ function renderDirectors() {
 
   document.getElementById('content').innerHTML = `
     <div class="alert alert-info" style="margin-bottom:14px">
-      <strong>ทะเบียนคณะกรรมการทั้งหมด</strong> — แหล่งข้อมูลกลาง (Master List) ของกรรมการ PCC ทุกคน คณะกรรมการชุดต่าง ๆ ใน Control List ดึงรายชื่อจากที่นี่ &middot; การวิเคราะห์ CG และ Board Skills Matrix อยู่ที่ <strong>Control List &rarr; คณะกรรมการบริษัท</strong>
+      <strong>ทะเบียนคณะกรรมการทั้งหมด (Master)</strong> — รายชื่อบุคคลทั้งหมด แล้วนำไป <em>จัดเข้า</em> คณะกรรมการบริษัท / คณะย่อย / บริษัทย่อย ที่เมนู <strong>Control List</strong> &middot; การอยู่ในทะเบียนนี้ ไม่ได้แปลว่าอยู่ในบอร์ด PCC โดยอัตโนมัติ (กำหนดตำแหน่งบอร์ดในช่อง "บทบาทในคณะกรรมการบริษัท")
     </div>
     <div class="flex-between mb-8">
-      <div class="section-title">&#128101; ทะเบียนคณะกรรมการทั้งหมด (${dirs.length} คน)</div>
-      <button class="btn btn-primary" onclick="editDirector(null)">+ เพิ่มกรรมการ</button>
+      <div class="section-title">&#128101; ทะเบียนคณะกรรมการทั้งหมด (${dirs.length} คน &middot; อยู่ในบอร์ด PCC ${boardDirectors().length} คน)</div>
+      <button class="btn btn-primary" onclick="editDirector(null)">+ เพิ่มรายชื่อ</button>
     </div>
     <div class="panel">
       <div class="panel-body" style="padding:0">
         <table class="tbl">
-          <thead><tr><th>ชื่อ-ตำแหน่ง</th><th>ประเภท</th><th>เพศ</th><th>วาระ</th><th>คณะกรรมการชุดย่อย</th><th>จัดการ</th></tr></thead>
-          <tbody>${rows||'<tr><td colspan="6" class="empty-state">ยังไม่มีข้อมูล</td></tr>'}</tbody>
+          <thead><tr><th>ชื่อ-ตำแหน่ง</th><th>ประเภท</th><th>เพศ</th><th>วาระ</th><th>บอร์ด PCC</th><th>คณะกรรมการชุดย่อย</th><th>จัดการ</th></tr></thead>
+          <tbody>${rows||'<tr><td colspan="7" class="empty-state">ยังไม่มีข้อมูล</td></tr>'}</tbody>
         </table>
       </div>
     </div>`;
 }
 
 function buildSkillsMatrix() {
-  const dirs = DB.directors;
-  if (!dirs.length) return '<p class="text-muted">ยังไม่มีข้อมูลกรรมการ</p>';
+  const dirs = boardDirectors();
+  if (!dirs.length) return '<p class="text-muted">ยังไม่มีกรรมการในบอร์ด — จัดสมาชิกที่ "จัดการสมาชิกบอร์ด"</p>';
   const headers = getSkillsList().map(s=>`<th>${s.label}<br><span onclick="removeSkill('${s.key}')" title="ลบทักษะนี้" style="cursor:pointer;color:#ffaaaa;font-weight:400">&#10005;</span></th>`).join('');
   const totals = {};
   getSkillsList().forEach(s=>{ totals[s.key]=dirs.filter(d=>d.skills&&d.skills[s.key]).length; });
@@ -1312,6 +1317,12 @@ function editDirector(id) {
        </select></div>
      </div>
      <div class="form-group"><label>วันที่เริ่มดำรงตำแหน่ง (ปี ค.ศ. ใช้คำนวณวาระ)</label><input class="form-control" id="fd-start" type="date" value="${toCEStr(f.startDate||'')}"></div>
+     <div class="form-group"><label>บทบาทในคณะกรรมการบริษัท (PCC Board)</label><select class="form-control" id="fd-board">
+       <option value="none" ${(f.boardRole||'none')==='none'?'selected':''}>— ไม่อยู่ในบอร์ด PCC (อยู่เฉพาะ Master/บริษัทย่อย) —</option>
+       <option value="chair" ${f.boardRole==='chair'?'selected':''}>ประธานกรรมการบริษัท</option>
+       <option value="vice" ${f.boardRole==='vice'?'selected':''}>รองประธานกรรมการบริษัท</option>
+       <option value="member" ${f.boardRole==='member'?'selected':''}>กรรมการบริษัท</option>
+     </select></div>
      <p style="font-size:12px;font-weight:700;color:var(--navy);margin-bottom:8px">บทบาทในคณะกรรมการชุดย่อย</p>
      <div class="form-row">
        <div class="form-group"><label>NRC</label><select class="form-control" id="fd-nrc">${roleOpts(f.nrcRole)}</select></div>
@@ -1336,7 +1347,7 @@ async function saveDirector(id, isNew) {
   const skills={};
   getSkillsList().forEach(s=>{ skills[s.key]=document.getElementById('fsk-'+s.key).checked?1:0; });
   const photo = (document.getElementById('fd-photo').value||'').trim();
-  const data = { id, name, nameEn:document.getElementById('fd-nameEn').value, position:document.getElementById('fd-pos').value, type:document.getElementById('fd-type').value, gender:document.getElementById('fd-gender').value, startDate:toBEStr(document.getElementById('fd-start').value), nrcRole:document.getElementById('fd-nrc').value, acRole:document.getElementById('fd-ac').value, rmcRole:document.getElementById('fd-rmc').value, gcgRole:document.getElementById('fd-gcg').value, excoRole:document.getElementById('fd-exco').value, skills, note:document.getElementById('fd-note').value, training:[], photo };
+  const data = { id, name, nameEn:document.getElementById('fd-nameEn').value, position:document.getElementById('fd-pos').value, type:document.getElementById('fd-type').value, gender:document.getElementById('fd-gender').value, startDate:toBEStr(document.getElementById('fd-start').value), boardRole:document.getElementById('fd-board').value, nrcRole:document.getElementById('fd-nrc').value, acRole:document.getElementById('fd-ac').value, rmcRole:document.getElementById('fd-rmc').value, gcgRole:document.getElementById('fd-gcg').value, excoRole:document.getElementById('fd-exco').value, skills, note:document.getElementById('fd-note').value, training:[], photo };
   if (isNew) { DB.directors.push(data); }
   else { const i=DB.directors.findIndex(x=>x.id===id); if (i>=0) DB.directors[i]=data; }
   saveData(); closeModal(); renderDirectors();
@@ -1380,24 +1391,25 @@ function switchCLTab(tab, btn) {
   el.innerHTML = tab==='board' ? renderBoardList() : tab==='subcommittees' ? renderSubcommittees() : renderSubsidiaries();
 }
 
-// คณะกรรมการบริษัท = กรรมการทั้งหมดในทะเบียนกลาง
+// คณะกรรมการบริษัท = คนใน Master ที่ถูกจัดให้อยู่ในบอร์ด (boardRole)
 function renderBoardList() {
-  const rows = DB.directors.map(d=>{
+  const board = boardDirectors().sort((a,b)=>boardRoleRank(a.boardRole)-boardRoleRank(b.boardRole));
+  const rows = board.map(d=>{
     const tags = COMMITTEE_DEFS.filter(c=>d[c.key]&&d[c.key]!=='none')
       .map(c=>`<span class="tag">${c.name.match(/\(([^)]+)\)/)?.[1]||c.name}${d[c.key]==='chair'?' ⭐':''}</span>`).join('');
     return `<tr class="clickable" onclick="editDirector('${d.id}')">
       <td><div class="dir-avatar-wrap" style="gap:8px">${directorAvatar(d.name,28)}<span>${d.name}</span></div></td>
-      <td>${d.position||'-'}</td>
+      <td>${boardRoleLabel(d.boardRole)}</td>
       <td><span class="tag">${typeLabel(d.type)}</span></td>
       <td>${tags||'-'}</td>
     </tr>`;
   }).join('');
   return `<div class="panel">
-    <div class="panel-header"><h3>คณะกรรมการบริษัท (${DB.directors.length} คน)</h3>
-      <button class="btn btn-sm btn-light" onclick="showSection('directors')">จัดการทะเบียนกลาง</button></div>
+    <div class="panel-header"><h3>คณะกรรมการบริษัท (${board.length} คน)</h3>
+      <button class="btn btn-sm btn-light" onclick="manageBoardMembers()">&#9998; จัดการสมาชิกบอร์ด</button></div>
     <div class="panel-body" style="padding:0"><table class="tbl">
-      <thead><tr><th>ชื่อกรรมการ</th><th>ตำแหน่ง</th><th>ประเภท</th><th>คณะย่อย</th></tr></thead>
-      <tbody>${rows||'<tr><td colspan="4" class="empty-state">ยังไม่มีกรรมการ</td></tr>'}</tbody>
+      <thead><tr><th>ชื่อกรรมการ</th><th>ตำแหน่งในบอร์ด</th><th>ประเภท</th><th>คณะย่อย</th></tr></thead>
+      <tbody>${rows||'<tr><td colspan="4" class="empty-state">ยังไม่มีสมาชิกบอร์ด — กด "จัดการสมาชิกบอร์ด" เพื่อเลือกจากทะเบียน</td></tr>'}</tbody>
     </table></div></div>
     ${signatoryPanelHtml('อำนาจลงนามตามกฎหมาย — บมจ. พรีไซซ คอร์ปอเรชั่น (PCC)', pccSignatoryNames(), DB.company.signCondition, "editPccSignatories()")}
     ${cgAnalysisHtml()}
@@ -1487,6 +1499,29 @@ function saveCommitteeMembers(key) {
   DB.directors.forEach(d=>{ const el=document.getElementById('cm-'+d.id); if (el) d[key]=el.value; });
   saveData(); closeModal();
   document.getElementById('cl-content').innerHTML = renderSubcommittees();
+}
+// จัดสมาชิกคณะกรรมการบริษัท (PCC Board) จาก Master
+function manageBoardMembers() {
+  const rows = DB.directors.map(d=>`
+    <tr>
+      <td><div class="dir-avatar-wrap" style="gap:8px">${directorAvatar(d.name,26)}<span>${d.name}</span></div></td>
+      <td><select class="form-control" id="bm-${d.id}" style="padding:4px 8px">
+        <option value="none" ${(!d.boardRole||d.boardRole==='none')?'selected':''}>— ไม่อยู่ในบอร์ด —</option>
+        <option value="member" ${d.boardRole==='member'?'selected':''}>กรรมการบริษัท</option>
+        <option value="vice" ${d.boardRole==='vice'?'selected':''}>รองประธานกรรมการบริษัท</option>
+        <option value="chair" ${d.boardRole==='chair'?'selected':''}>ประธานกรรมการบริษัท</option>
+      </select></td>
+    </tr>`).join('');
+  openModal('จัดการสมาชิกคณะกรรมการบริษัท (PCC)',
+    `<p class="text-muted mb-8" style="font-size:12px">เลือกคนจากทะเบียนกลางเข้าเป็นคณะกรรมการบริษัท พร้อมกำหนดตำแหน่ง</p>
+     <table class="tbl"><thead><tr><th>รายชื่อใน Master</th><th style="width:220px">ตำแหน่งในบอร์ด</th></tr></thead><tbody>${rows}</tbody></table>`,
+    `<button class="btn btn-outline" onclick="closeModal()">ยกเลิก</button>
+     <button class="btn btn-primary" onclick="saveBoardMembers()">บันทึก</button>`);
+}
+function saveBoardMembers() {
+  DB.directors.forEach(d=>{ const el=document.getElementById('bm-'+d.id); if (el) d.boardRole=el.value; });
+  saveData(); closeModal();
+  document.getElementById('cl-content').innerHTML = renderBoardList();
 }
 
 function renderSubsidiaries() {
@@ -1632,7 +1667,12 @@ function deleteSCMember(scId, encodedName) {
 }
 
 function subDirectorForm(f) {
-  return `<div class="form-group"><label>ชื่อ-นามสกุล</label><input class="form-control" id="fsd-name" value="${f?f.name:''}" placeholder="ระบุชื่อ..."></div>
+  const masterOpts = DB.directors.map(d=>`<option value="${(d.name||'').replace(/"/g,'&quot;')}">${d.name}</option>`).join('');
+  return `<div class="form-group"><label>เลือกจากทะเบียนกลาง (Master)</label>
+      <select class="form-control" id="fsd-master" onchange="if(this.value)document.getElementById('fsd-name').value=this.value">
+        <option value="">— เลือกรายชื่อจากทะเบียน หรือพิมพ์เองด้านล่าง —</option>${masterOpts}
+      </select></div>
+    <div class="form-group"><label>ชื่อ-นามสกุล</label><input class="form-control" id="fsd-name" value="${f?(f.name||'').replace(/"/g,'&quot;'):''}" placeholder="ระบุชื่อ..."></div>
     <div class="form-row">
       <div class="form-group"><label>บทบาท</label><select class="form-control" id="fsd-role">
         <option ${f&&f.role==='ประธาน'?'selected':''}>ประธาน</option>
