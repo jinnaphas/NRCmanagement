@@ -3,7 +3,9 @@
     "name": "บริษัท พรีไซซ คอร์ปอเรชั่น จำกัด (มหาชน)",
     "abbr": "PCC",
     "secretary": "นายจิณนภัสฐ์ ภัสฐาพงษ์",
-    "fiscalYear": 2569
+    "fiscalYear": 2569,
+    "signatoryIds": [],
+    "signCondition": ""
   },
   "directors": [
     {
@@ -980,7 +982,9 @@
             "role": "ประธาน",
             "type": "pcc-representative"
           }
-        ]
+        ],
+        "signatories": [],
+        "signCondition": ""
       },
       {
         "id": "sub2",
@@ -992,7 +996,9 @@
             "role": "ประธาน",
             "type": "pcc-representative"
           }
-        ]
+        ],
+        "signatories": [],
+        "signCondition": ""
       },
       {
         "id": "sub3",
@@ -1004,7 +1010,9 @@
             "role": "ประธาน",
             "type": "pcc-representative"
           }
-        ]
+        ],
+        "signatories": [],
+        "signCondition": ""
       },
       {
         "id": "sub4",
@@ -1016,7 +1024,9 @@
             "role": "ประธาน",
             "type": "pcc-representative"
           }
-        ]
+        ],
+        "signatories": [],
+        "signCondition": ""
       },
       {
         "id": "sub5",
@@ -1028,7 +1038,9 @@
             "role": "ประธาน",
             "type": "pcc-representative"
           }
-        ]
+        ],
+        "signatories": [],
+        "signCondition": ""
       },
       {
         "id": "sub6",
@@ -1040,7 +1052,9 @@
             "role": "ประธาน",
             "type": "pcc-representative"
           }
-        ]
+        ],
+        "signatories": [],
+        "signCondition": ""
       },
       {
         "id": "sub7",
@@ -1052,7 +1066,9 @@
             "role": "ประธาน",
             "type": "pcc-representative"
           }
-        ]
+        ],
+        "signatories": [],
+        "signCondition": ""
       },
       {
         "id": "sub8",
@@ -1064,7 +1080,9 @@
             "role": "ประธาน",
             "type": "pcc-representative"
           }
-        ]
+        ],
+        "signatories": [],
+        "signCondition": ""
       },
       {
         "id": "sub9",
@@ -1076,7 +1094,9 @@
             "role": "ประธาน",
             "type": "pcc-representative"
           }
-        ]
+        ],
+        "signatories": [],
+        "signCondition": ""
       }
     ]
   },
@@ -1105,5 +1125,39 @@
   "documents": [],
   "agmItems": [],
   "independenceChecks": [],
-  "conflictLog": []
+  "conflictLog": [],
+  "skillsList": [
+    {
+      "key": "finance",
+      "label": "การเงิน/บัญชี"
+    },
+    {
+      "key": "law",
+      "label": "กฎหมาย"
+    },
+    {
+      "key": "strategy",
+      "label": "กลยุทธ์"
+    },
+    {
+      "key": "it",
+      "label": "IT/ดิจิทัล"
+    },
+    {
+      "key": "risk",
+      "label": "บริหารความเสี่ยง"
+    },
+    {
+      "key": "hr",
+      "label": "HR/องค์กร"
+    },
+    {
+      "key": "marketing",
+      "label": "การตลาด"
+    },
+    {
+      "key": "industry",
+      "label": "พลังงาน/อุตสาหกรรม"
+    }
+  ]
 }
