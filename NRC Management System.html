@@ -1242,7 +1242,7 @@ function editDirector(id) {
      <button class="btn btn-primary" onclick="saveDirector('${f.id}',${isNew})">บันทึก</button>`);
 }
 
-function saveDirector(id, isNew) {
+async function saveDirector(id, isNew) {
   const name=document.getElementById('fd-name').value.trim(); if (!name) return alert('กรุณาระบุชื่อ');
   const skills={};
   SKILLS_LIST.forEach(s=>{ skills[s.key]=document.getElementById('fsk-'+s.key).checked?1:0; });
