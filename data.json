@@ -899,8 +899,18 @@
       "status": "completed",
       "agendaFile": "",
       "momFile": "",
-      "agendaAttachments": [],
-      "momAttachments": [],
+      "agendaAttachments": [
+        {
+          "name": "Agenda NRC 3-2569",
+          "link": "https://drive.google.com/file/d/1worrrn_7FWfljQN31z3Dejx25MaUT5PO/view?usp=drive_link"
+        }
+      ],
+      "momAttachments": [
+        {
+          "name": "MOM NRC 3-2569",
+          "link": "https://drive.google.com/file/d/1BljtzwOhF4b6ACfe-yw0QNX19IbIllt_/view?usp=drive_link"
+        }
+      ],
       "agendaItems": [
         {
           "id": "a9",
