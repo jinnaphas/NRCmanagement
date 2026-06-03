@@ -1016,6 +1016,122 @@
       "note": "",
       "training": [],
       "photo": ""
+    },
+    {
+      "id": "dmpw2zi51ugmve",
+      "name": "นายประจวบ อุชชิน",
+      "nameEn": "",
+      "position": "ที่ปรึกษาด้านโรงไฟฟ้า",
+      "type": "independent",
+      "gender": "male",
+      "startDate": "2569-01-01",
+      "boardRole": "none",
+      "nrcRole": "none",
+      "acRole": "none",
+      "rmcRole": "none",
+      "gcgRole": "none",
+      "excoRole": "none",
+      "skills": {
+        "finance": 0,
+        "law": 0,
+        "strategy": 0,
+        "it": 0,
+        "risk": 1,
+        "hr": 0,
+        "marketing": 0,
+        "industry": 1,
+        "skmpvi5t2a": 0
+      },
+      "note": "",
+      "training": [],
+      "photo": ""
+    },
+    {
+      "id": "dmpw30ivcngcz9",
+      "name": "นายณัฐวุฒิ ยิ่งถาวร",
+      "nameEn": "",
+      "position": "MD SBP / PCE",
+      "type": "executive",
+      "gender": "male",
+      "startDate": "2569-01-01",
+      "boardRole": "none",
+      "nrcRole": "none",
+      "acRole": "none",
+      "rmcRole": "none",
+      "gcgRole": "none",
+      "excoRole": "none",
+      "skills": {
+        "finance": 0,
+        "law": 0,
+        "strategy": 0,
+        "it": 0,
+        "risk": 0,
+        "hr": 0,
+        "marketing": 0,
+        "industry": 1,
+        "skmpvi5t2a": 0
+      },
+      "note": "",
+      "training": [],
+      "photo": ""
+    },
+    {
+      "id": "dmpw316hwjvioc",
+      "name": "นายจิรศักดิ์ มุสิกทัศน์",
+      "nameEn": "",
+      "position": "ACTO PPP",
+      "type": "executive",
+      "gender": "male",
+      "startDate": "2569-01-01",
+      "boardRole": "none",
+      "nrcRole": "none",
+      "acRole": "none",
+      "rmcRole": "none",
+      "gcgRole": "none",
+      "excoRole": "none",
+      "skills": {
+        "finance": 0,
+        "law": 0,
+        "strategy": 0,
+        "it": 0,
+        "risk": 0,
+        "hr": 0,
+        "marketing": 0,
+        "industry": 1,
+        "skmpvi5t2a": 0
+      },
+      "note": "",
+      "training": [],
+      "photo": ""
+    },
+    {
+      "id": "dmpw31ytclolmi",
+      "name": "นายสมาน โอราวัฒน์",
+      "nameEn": "",
+      "position": "ที่ปรึกษา",
+      "type": "independent",
+      "gender": "male",
+      "startDate": "2569-01-01",
+      "boardRole": "none",
+      "nrcRole": "none",
+      "acRole": "none",
+      "rmcRole": "none",
+      "gcgRole": "none",
+      "excoRole": "none",
+      "skills": {
+        "finance": 0,
+        "law": 0,
+        "strategy": 0,
+        "it": 0,
+        "risk": 0,
+        "hr": 0,
+        "marketing": 0,
+        "industry": 1,
+        "skmpvi5t2a": 0
+      },
+      "note": "",
+      "training": [],
+      "photo": ""
     }
   ],
   "meetings": [
@@ -1709,13 +1825,42 @@
         "fullName": "บริษัท พรีไซซ เพาเวอร์ โปรดิวเซอร์ จำกัด",
         "directors": [
           {
-            "name": "กรรมการ PPP-1",
+            "name": "นายประจวบ อุชชิน",
             "role": "ประธาน",
+            "type": "independent"
+          },
+          {
+            "name": "นางสาวณิชา ณัฐชยางกุล",
+            "role": "กรรมการ",
+            "type": "pcc-representative"
+          },
+          {
+            "name": "นายอมร แดงโชติ",
+            "role": "กรรมการ",
+            "type": "executive"
+          },
+          {
+            "name": "นายณัฐวุฒิ ยิ่งถาวร",
+            "role": "กรรมการ",
+            "type": "executive"
+          },
+          {
+            "name": "นายจิรศักดิ์ มุสิกทัศน์",
+            "role": "กรรมการ",
+            "type": "executive"
+          },
+          {
+            "name": "นางวัชรี สรรพช่าง",
+            "role": "กรรมการ",
             "type": "pcc-representative"
           }
         ],
-        "signatories": [],
-        "signCondition": ""
+        "signatories": [
+          "นายประจวบ อุชชิน",
+          "นายอมร แดงโชติ",
+          "นางวัชรี สรรพช่าง"
+        ],
+        "signCondition": "นายประจวบ อุชชิน นายอมร แดงโชติ\nนางวัชรี สรรพช่าง กรรมการสองในสามคนนี้ลงลายมือชื่อร่วมกัน และประทับตราสำคัญของบริษัท\n"
       },
       {
         "id": "sub2",
