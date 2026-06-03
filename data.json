@@ -581,6 +581,122 @@
       "note": "",
       "training": [],
       "photo": ""
+    },
+    {
+      "id": "dmpw0f34jdiu3x",
+      "name": "นายศิริชัย จิรรัตน์พิทักษ์",
+      "nameEn": "",
+      "position": "PMO PEM",
+      "type": "executive",
+      "gender": "male",
+      "startDate": "2569-01-01",
+      "boardRole": "none",
+      "nrcRole": "none",
+      "acRole": "none",
+      "rmcRole": "none",
+      "gcgRole": "none",
+      "excoRole": "none",
+      "skills": {
+        "finance": 0,
+        "law": 0,
+        "strategy": 0,
+        "it": 0,
+        "risk": 0,
+        "hr": 0,
+        "marketing": 0,
+        "industry": 1,
+        "skmpvi5t2a": 0
+      },
+      "note": "",
+      "training": [],
+      "photo": ""
+    },
+    {
+      "id": "dmpw0g00rvkz39",
+      "name": "นางสาวทิตยาภรณ์ บัวแก้ว",
+      "nameEn": "",
+      "position": "Business Manager PEM105",
+      "type": "executive",
+      "gender": "female",
+      "startDate": "2569-01-01",
+      "boardRole": "none",
+      "nrcRole": "none",
+      "acRole": "none",
+      "rmcRole": "none",
+      "gcgRole": "none",
+      "excoRole": "none",
+      "skills": {
+        "finance": 0,
+        "law": 0,
+        "strategy": 0,
+        "it": 0,
+        "risk": 0,
+        "hr": 0,
+        "marketing": 1,
+        "industry": 0,
+        "skmpvi5t2a": 0
+      },
+      "note": "",
+      "training": [],
+      "photo": ""
+    },
+    {
+      "id": "dmpw0h1kneaks5",
+      "name": "นายนิชนันท์ ชูประสิทธิ์",
+      "nameEn": "",
+      "position": "Business Manager PSP101",
+      "type": "executive",
+      "gender": "male",
+      "startDate": "2569-01-01",
+      "boardRole": "none",
+      "nrcRole": "none",
+      "acRole": "none",
+      "rmcRole": "none",
+      "gcgRole": "none",
+      "excoRole": "none",
+      "skills": {
+        "finance": 0,
+        "law": 0,
+        "strategy": 0,
+        "it": 0,
+        "risk": 0,
+        "hr": 0,
+        "marketing": 0,
+        "industry": 1,
+        "skmpvi5t2a": 0
+      },
+      "note": "",
+      "training": [],
+      "photo": ""
+    },
+    {
+      "id": "dmpw0hy8ewe011",
+      "name": "นายกรชาล จียโชค",
+      "nameEn": "",
+      "position": "ACTO PEM",
+      "type": "executive",
+      "gender": "male",
+      "startDate": "2569-01-01",
+      "boardRole": "none",
+      "nrcRole": "none",
+      "acRole": "none",
+      "rmcRole": "none",
+      "gcgRole": "none",
+      "excoRole": "none",
+      "skills": {
+        "finance": 0,
+        "law": 0,
+        "strategy": 0,
+        "it": 0,
+        "risk": 0,
+        "hr": 0,
+        "marketing": 0,
+        "industry": 1,
+        "skmpvi5t2a": 1
+      },
+      "note": "",
+      "training": [],
+      "photo": ""
     }
   ],
   "meetings": [
@@ -1340,13 +1456,55 @@
         "fullName": "บริษัท พรีไซซ อีเลคตริค แมนูแฟคเจอริ่ง จำกัด",
         "directors": [
           {
-            "name": "กรรมการ PEMC-1",
+            "name": "นางสาวณิชา ณัฐชยางกุล",
             "role": "ประธาน",
             "type": "pcc-representative"
+          },
+          {
+            "name": "นางวัชรี สรรพช่าง",
+            "role": "กรรมการ",
+            "type": "pcc-representative"
+          },
+          {
+            "name": "นายภัทราวุธ ศักดา",
+            "role": "กรรมการ",
+            "type": "executive"
+          },
+          {
+            "name": "นายเศกสรร ปรีชา",
+            "role": "กรรมการ",
+            "type": "executive"
+          },
+          {
+            "name": "นายศิริชัย จิรรัตน์พิทักษ์",
+            "role": "กรรมการ",
+            "type": "executive"
+          },
+          {
+            "name": "นางสาวทิตยาภรณ์ บัวแก้ว",
+            "role": "กรรมการ",
+            "type": "executive"
+          },
+          {
+            "name": "นายนิชนันท์ ชูประสิทธิ์",
+            "role": "กรรมการ",
+            "type": "executive"
+          },
+          {
+            "name": "นายกรชาล จียโชค",
+            "role": "กรรมการ",
+            "type": "executive"
           }
         ],
-        "signatories": [],
-        "signCondition": ""
+        "signatories": [
+          "นางสาวณิชา ณัฐชยางกุล",
+          "นางวัชรี สรรพช่าง",
+          "นายภัทราวุธ ศักดา",
+          "นายเศกสรร ปรีชา",
+          "นางสาวทิตยาภรณ์ บัวแก้ว",
+          "นายกรชาล จียโชค"
+        ],
+        "signCondition": "1. นายภัทราวุธ ศักดา นายเศกสรร ปรีชา นางวัชรี สรรพช่าง กรรมการสองในสามคนนี้ลงลายมือชื่อร่วมกัน และประทับตราสำคัญของบริษัท\n\n2.  นางสาวทิตยาภรณ์ บัวแก้ว\nหรือ นายกรชาล จียโชค ลงลายมือชื่อร่วมกับ  นางวัชรี สรรพช่าง และประทับตราสำคัญของบริษัท\n"
       },
       {
         "id": "submpvz7jifn5ttt",
