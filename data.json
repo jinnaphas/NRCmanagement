@@ -1021,7 +1021,7 @@
       {
         "id": "sub1",
         "name": "PPP",
-        "fullName": "บริษัท พรีไซซ พาวเวอร์ แอนด์ เพาเวอร์ จำกัด",
+        "fullName": "บริษัท พรีไซซ เพาเวอร์ โปรดิวเซอร์ จำกัด",
         "directors": [
           {
             "name": "กรรมการ PPP-1",
@@ -1034,8 +1034,8 @@
       },
       {
         "id": "sub2",
-        "name": "SKB",
-        "fullName": "บริษัท สกายบริดจ์ จำกัด",
+        "name": "SBP",
+        "fullName": "บริษัท สงขลาไบโอเพาเวอร์ จำกัด",
         "directors": [
           {
             "name": "กรรมการ SKB-1",
@@ -1048,8 +1048,8 @@
       },
       {
         "id": "sub3",
-        "name": "CEP",
-        "fullName": "บริษัท คลีน เอนเนอร์ยี่ พลัส จำกัด",
+        "name": "PCE",
+        "fullName": "บริษัท พรีไซซ คลีน เอ็นเนอร์จี จำกัด",
         "directors": [
           {
             "name": "กรรมการ CEP-1",
@@ -1062,8 +1062,8 @@
       },
       {
         "id": "sub4",
-        "name": "PKB",
-        "fullName": "บริษัท พีเคบี จำกัด",
+        "name": "SKB",
+        "fullName": "บริษัท สงขลาไบโอ แมส จำกัด (SKB) -บริษัทร่วม",
         "directors": [
           {
             "name": "กรรมการ PKB-1",
@@ -1077,7 +1077,7 @@
       {
         "id": "sub5",
         "name": "PSL",
-        "fullName": "บริษัท พรีไซซ โซลูชั่น จำกัด",
+        "fullName": "บริษัท พรีไซซ สมาร์ท ไลฟ์ จำกัด",
         "directors": [
           {
             "name": "กรรมการ PSL-1",
@@ -1105,7 +1105,7 @@
       {
         "id": "sub7",
         "name": "PPD",
-        "fullName": "บริษัท พรีไซซ พาวเวอร์ ดีเวลลอปเมนต์ จำกัด",
+        "fullName": "บริษัท แปซิฟิค พรอสเพอริตี้ ดีเวลลอปเม้นท์ จำกัด",
         "directors": [
           {
             "name": "กรรมการ PPD-1",
@@ -1119,7 +1119,7 @@
       {
         "id": "sub8",
         "name": "PDE",
-        "fullName": "บริษัท พรีไซซ ดิจิตอล เอนเนอร์ยี่ จำกัด",
+        "fullName": "บริษัท พรีไซซ ดิจิตอล อีโคโนมี่ จำกัด",
         "directors": [
           {
             "name": "กรรมการ PDE-1",
@@ -1132,8 +1132,8 @@
       },
       {
         "id": "sub9",
-        "name": "PEMC",
-        "fullName": "บริษัท พรีไซซ เอนเนอร์ยี่ แมเนจเมนต์ แอนด์ คอนซัลติ้ง จำกัด",
+        "name": "PEM",
+        "fullName": "บริษัท พรีไซซ อีเลคตริค แมนูแฟคเจอริ่ง จำกัด",
         "directors": [
           {
             "name": "กรรมการ PEMC-1",
@@ -1141,6 +1141,86 @@
             "type": "pcc-representative"
           }
         ],
+        "signatories": [],
+        "signCondition": ""
+      },
+      {
+        "id": "submpvz7jifn5ttt",
+        "name": "PEMC",
+        "fullName": "บริษัท พรีไซซ อีเลคตริค แมนูแฟคเจอริ่ง จำกัด (กัมพูชา)",
+        "directors": [],
+        "signatories": [],
+        "signCondition": ""
+      },
+      {
+        "id": "submpvz99wujsu2p",
+        "name": "CI",
+        "fullName": "บริษัท โคเอลเม่ อินเตอร์เนชั่นแนล จำกัด - (บริษัทร่วม)",
+        "directors": [],
+        "signatories": [],
+        "signCondition": ""
+      },
+      {
+        "id": "submpvz9rl87asqa",
+        "name": "PSS",
+        "fullName": "บริษัท พรีไซซ สมาร์ท โซลูชั่น จำกัด",
+        "directors": [],
+        "signatories": [],
+        "signCondition": ""
+      },
+      {
+        "id": "submpvza5ocq7trf",
+        "name": "PTS",
+        "fullName": "บริษัท พรีไซซ บีซีจี โทเทิ่ล โซลูชั่น แอนด์ เซอร์วิส จำกัด",
+        "directors": [],
+        "signatories": [],
+        "signCondition": ""
+      },
+      {
+        "id": "submpvzakl574h7u",
+        "name": "PPS",
+        "fullName": "บริษัท พรีไซซ สมาร์ท กริด โปรดักส์ แอนด์ เซอร์วิส  จำกัด",
+        "directors": [],
+        "signatories": [],
+        "signCondition": ""
+      },
+      {
+        "id": "submpvzclmyuwljv",
+        "name": "PEP",
+        "fullName": "บริษัท พรีไซซ เอ็นเนอร์จี ครอพ แพลนเทชั่น จำกัด",
+        "directors": [],
+        "signatories": [],
+        "signCondition": ""
+      },
+      {
+        "id": "submpvzcwh32d9mb",
+        "name": "TSP1",
+        "fullName": "บริษัท ตากใบ โซล่าร์ เพาเวอร์ 1 จำกัด (TSP1)",
+        "directors": [],
+        "signatories": [],
+        "signCondition": ""
+      },
+      {
+        "id": "submpvzd59brvxiz",
+        "name": "TSP2",
+        "fullName": "บริษัท ตากใบ โซล่าร์ เพาเวอร์ 2 จำกัด (TSP2)",
+        "directors": [],
+        "signatories": [],
+        "signCondition": ""
+      },
+      {
+        "id": "submpvze2rfvkcra",
+        "name": "SBF",
+        "fullName": "บริษัท สงขลาไบโอฟูเอล จำกัด (SBF)-บริษัทร่วม",
+        "directors": [],
+        "signatories": [],
+        "signCondition": ""
+      },
+      {
+        "id": "submpvzeb5txutsh",
+        "name": "NSPC",
+        "fullName": "บริษัท น้ำซ้อ ไฮโดร เพาเวอร์ จำกัด (NSPC) -บริษัทร่วม",
+        "directors": [],
         "signatories": [],
         "signCondition": ""
       }
