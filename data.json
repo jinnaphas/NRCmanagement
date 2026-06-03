@@ -929,6 +929,35 @@
       "note": "",
       "training": [],
       "photo": ""
+    },
+    {
+      "id": "dmpw2rkjg8bh86",
+      "name": "นายสุวัตชัย หงษ์สิบเก้า",
+      "nameEn": "",
+      "position": "BM PSP105",
+      "type": "executive",
+      "gender": "male",
+      "startDate": "2569-01-01",
+      "boardRole": "none",
+      "nrcRole": "none",
+      "acRole": "none",
+      "rmcRole": "none",
+      "gcgRole": "none",
+      "excoRole": "none",
+      "skills": {
+        "finance": 0,
+        "law": 0,
+        "strategy": 0,
+        "it": 0,
+        "risk": 0,
+        "hr": 0,
+        "marketing": 1,
+        "industry": 0,
+        "skmpvi5t2a": 0
+      },
+      "note": "",
+      "training": [],
+      "photo": ""
     }
   ],
   "meetings": [
@@ -1706,13 +1735,37 @@
         "fullName": "บริษัท แปซิฟิค พรอสเพอริตี้ ดีเวลลอปเม้นท์ จำกัด",
         "directors": [
           {
-            "name": "กรรมการ PPD-1",
+            "name": "นางสาวณิชา ณัฐชยางกุล",
             "role": "ประธาน",
             "type": "pcc-representative"
+          },
+          {
+            "name": "นางวัชรี สรรพช่าง",
+            "role": "กรรมการ",
+            "type": "pcc-representative"
+          },
+          {
+            "name": "นางสาวจันจิรา ปั้นเขียว",
+            "role": "กรรมการ",
+            "type": "executive"
+          },
+          {
+            "name": "นายนนทชา สิงหนุต",
+            "role": "กรรมการ",
+            "type": "executive"
+          },
+          {
+            "name": "นายสุวัตชัย หงษ์สิบเก้า",
+            "role": "กรรมการ",
+            "type": "executive"
           }
         ],
-        "signatories": [],
-        "signCondition": ""
+        "signatories": [
+          "นางวัชรี สรรพช่าง",
+          "นายนนทชา สิงหนุต",
+          "นายสุวัตชัย หงษ์สิบเก้า"
+        ],
+        "signCondition": "นายนนทชา สิงหนุต นางวัชรี สรรพช่าง นายสุวัตชัย หงษ์สิบเก้า กรรมการสองในสามคนนี้ลงลายมือชื่อร่วมกัน และประทับตราสำคัญของบริษัท\n"
       },
       {
         "id": "sub8",
