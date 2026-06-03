@@ -1132,6 +1132,151 @@
       "note": "",
       "training": [],
       "photo": ""
+    },
+    {
+      "id": "dmpw3cr6mmqpkt",
+      "name": "นายสุทีป ธรรมรุจี",
+      "nameEn": "",
+      "position": "SKB",
+      "type": "nonexecutive",
+      "gender": "male",
+      "startDate": "2569-01-01",
+      "boardRole": "none",
+      "nrcRole": "none",
+      "acRole": "none",
+      "rmcRole": "none",
+      "gcgRole": "none",
+      "excoRole": "none",
+      "skills": {
+        "finance": 0,
+        "law": 0,
+        "strategy": 0,
+        "it": 0,
+        "risk": 0,
+        "hr": 0,
+        "marketing": 0,
+        "industry": 1,
+        "skmpvi5t2a": 0
+      },
+      "note": "",
+      "training": [],
+      "photo": ""
+    },
+    {
+      "id": "dmpw3dg8xf1w5r",
+      "name": "นายวัลลภ ธรรมปัญญาสกุล",
+      "nameEn": "",
+      "position": "SKB",
+      "type": "nonexecutive",
+      "gender": "male",
+      "startDate": "2569-01-01",
+      "boardRole": "none",
+      "nrcRole": "none",
+      "acRole": "none",
+      "rmcRole": "none",
+      "gcgRole": "none",
+      "excoRole": "none",
+      "skills": {
+        "finance": 0,
+        "law": 0,
+        "strategy": 0,
+        "it": 0,
+        "risk": 0,
+        "hr": 0,
+        "marketing": 0,
+        "industry": 1,
+        "skmpvi5t2a": 0
+      },
+      "note": "",
+      "training": [],
+      "photo": ""
+    },
+    {
+      "id": "dmpw3fuh32942b",
+      "name": "นายสีสุวัน แก้วมะนี",
+      "nameEn": "",
+      "position": "NSPC",
+      "type": "independent",
+      "gender": "male",
+      "startDate": "2569-01-01",
+      "boardRole": "none",
+      "nrcRole": "none",
+      "acRole": "none",
+      "rmcRole": "none",
+      "gcgRole": "none",
+      "excoRole": "none",
+      "skills": {
+        "finance": 0,
+        "law": 0,
+        "strategy": 0,
+        "it": 0,
+        "risk": 0,
+        "hr": 0,
+        "marketing": 0,
+        "industry": 1,
+        "skmpvi5t2a": 0
+      },
+      "note": "",
+      "training": [],
+      "photo": ""
+    },
+    {
+      "id": "dmpw3g6wrhn6v2",
+      "name": "นายสมพงษ์ กังสวิวัฒน์",
+      "nameEn": "",
+      "position": "NSPC",
+      "type": "independent",
+      "gender": "male",
+      "startDate": "2569-01-01",
+      "boardRole": "none",
+      "nrcRole": "none",
+      "acRole": "none",
+      "rmcRole": "none",
+      "gcgRole": "none",
+      "excoRole": "none",
+      "skills": {
+        "finance": 0,
+        "law": 0,
+        "strategy": 0,
+        "it": 0,
+        "risk": 0,
+        "hr": 0,
+        "marketing": 0,
+        "industry": 1,
+        "skmpvi5t2a": 0
+      },
+      "note": "",
+      "training": [],
+      "photo": ""
+    },
+    {
+      "id": "dmpw3gpshn9jj8",
+      "name": "นางสาวภณิตา เศวตวรรณรัตน์",
+      "nameEn": "",
+      "position": "NSPC",
+      "type": "independent",
+      "gender": "male",
+      "startDate": "2569-01-01",
+      "boardRole": "none",
+      "nrcRole": "none",
+      "acRole": "none",
+      "rmcRole": "none",
+      "gcgRole": "none",
+      "excoRole": "none",
+      "skills": {
+        "finance": 0,
+        "law": 0,
+        "strategy": 0,
+        "it": 0,
+        "risk": 0,
+        "hr": 0,
+        "marketing": 0,
+        "industry": 1,
+        "skmpvi5t2a": 0
+      },
+      "note": "",
+      "training": [],
+      "photo": ""
     }
   ],
   "meetings": [
@@ -1942,10 +2087,35 @@
             "name": "นายประจวบ อุชชิน",
             "role": "ประธาน",
             "type": "independent"
+          },
+          {
+            "name": "นายสุทีป ธรรมรุจี",
+            "role": "กรรมการ",
+            "type": "independent"
+          },
+          {
+            "name": "นายวัลลภ ธรรมปัญญาสกุล",
+            "role": "กรรมการ",
+            "type": "independent"
+          },
+          {
+            "name": "นายสมาน โอราวัฒน์",
+            "role": "กรรมการ",
+            "type": "pcc-representative"
+          },
+          {
+            "name": "นายณัฐวุฒิ ยิ่งถาวร",
+            "role": "กรรมการ",
+            "type": "executive"
           }
         ],
-        "signatories": [],
-        "signCondition": ""
+        "signatories": [
+          "นายประจวบ อุชชิน",
+          "นายสุทีป ธรรมรุจี",
+          "นายวัลลภ ธรรมปัญญาสกุล",
+          "นายณัฐวุฒิ ยิ่งถาวร"
+        ],
+        "signCondition": "นายประจวบ อุชชิน หรือนายณัฐวุฒิ ยิ่งถาวร ลงลายมือชื่อร่วมกับนายสุทีป ธรรมรุจี หรือนายวัลลภ ธรรมปัญญาสกุล รวมเป็นสองคนและประทับตราสำคัญของบริษัท"
       },
       {
         "id": "sub5",
@@ -1998,16 +2168,38 @@
       {
         "id": "sub6",
         "name": "NSPC",
-        "fullName": "บริษัท นอร์ทสตาร์ พาวเวอร์ คอร์ป จำกัด",
+        "fullName": "บริษัท น้ำซ้อ ไฮโดร เพาเวอร์ จำกัด (NSPC) -บริษัทร่วม",
         "directors": [
           {
-            "name": "กรรมการ NSPC-1",
+            "name": "นายสีสุวัน แก้วมะนี",
             "role": "ประธาน",
+            "type": "independent"
+          },
+          {
+            "name": "นายสมพงษ์ กังสวิวัฒน์",
+            "role": "กรรมการ",
+            "type": "independent"
+          },
+          {
+            "name": "นางสาวภณิตา เศวตวรรณรัตน์",
+            "role": "กรรมการ",
+            "type": "independent"
+          },
+          {
+            "name": "นายอมร แดงโชติ",
+            "role": "กรรมการ",
+            "type": "pcc-representative"
+          },
+          {
+            "name": "นางสาวณิชา ณัฐชยางกุล",
+            "role": "กรรมการ",
             "type": "pcc-representative"
           }
         ],
-        "signatories": [],
-        "signCondition": ""
+        "signatories": [
+          "นายสีสุวัน แก้วมะนี"
+        ],
+        "signCondition": "นายสีสุวัน แก้วมะนี"
       },
       {
         "id": "sub7",
@@ -2404,19 +2596,31 @@
         "id": "submpvze2rfvkcra",
         "name": "SBF",
         "fullName": "บริษัท สงขลาไบโอฟูเอล จำกัด (SBF)-บริษัทร่วม",
-        "directors": [],
-        "signatories": [],
-        "signCondition": ""
-      },
-      {
-        "id": "submpvzeb5txutsh",
-        "name": "NSPC",
-        "fullName": "บริษัท น้ำซ้อ ไฮโดร เพาเวอร์ จำกัด (NSPC) -บริษัทร่วม",
         "directors": [
           {
-            "name": "นายณัฐวุฒิ ยิ่งถาวร",
+            "name": "นายสมาน โอราวัฒน์",
             "role": "ประธาน",
-            "type": "executive"
+            "type": "pcc-representative"
+          },
+          {
+            "name": "นายสุทีป ธรรมรุจี",
+            "role": "กรรมการ",
+            "type": "independent"
+          },
+          {
+            "name": "นายประจวบ อุชชิน",
+            "role": "กรรมการ",
+            "type": "independent"
+          },
+          {
+            "name": "นายณัฐวุฒิ ยิ่งถาวร",
+            "role": "กรรมการ",
+            "type": "pcc-representative"
+          },
+          {
+            "name": "นายวัลลภ ธรรมปัญญาสกุล",
+            "role": "กรรมการ",
+            "type": "independent"
           }
         ],
         "signatories": [],
