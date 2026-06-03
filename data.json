@@ -552,6 +552,35 @@
       "note": "",
       "training": [],
       "photo": "https://drive.google.com/file/d/188n2GuAYRNJ4dAmhR_fdaEWwimejLD7s/view?usp=drive_link"
+    },
+    {
+      "id": "dmpw0c5inb1r2v",
+      "name": "นางวัชรี สรรพช่าง",
+      "nameEn": "",
+      "position": "Physical Capital CSM - PCC",
+      "type": "executive",
+      "gender": "female",
+      "startDate": "2569-01-01",
+      "boardRole": "none",
+      "nrcRole": "none",
+      "acRole": "none",
+      "rmcRole": "none",
+      "gcgRole": "none",
+      "excoRole": "none",
+      "skills": {
+        "finance": 0,
+        "law": 0,
+        "strategy": 0,
+        "it": 0,
+        "risk": 0,
+        "hr": 0,
+        "marketing": 0,
+        "industry": 0,
+        "skmpvi5t2a": 0
+      },
+      "note": "",
+      "training": [],
+      "photo": ""
     }
   ],
   "meetings": [
