@@ -842,6 +842,64 @@
       "note": "",
       "training": [],
       "photo": ""
+    },
+    {
+      "id": "dmpw2j9j6pnw7w",
+      "name": "นายอนุชา จรูญกิตติกร",
+      "nameEn": "",
+      "position": "ACTO PEM",
+      "type": "executive",
+      "gender": "male",
+      "startDate": "2569-01-01",
+      "boardRole": "none",
+      "nrcRole": "none",
+      "acRole": "none",
+      "rmcRole": "none",
+      "gcgRole": "none",
+      "excoRole": "none",
+      "skills": {
+        "finance": 0,
+        "law": 0,
+        "strategy": 0,
+        "it": 0,
+        "risk": 0,
+        "hr": 0,
+        "marketing": 0,
+        "industry": 1,
+        "skmpvi5t2a": 1
+      },
+      "note": "",
+      "training": [],
+      "photo": ""
+    },
+    {
+      "id": "dmpw2k1i272e9i",
+      "name": "นางสาวกาญจนา ชีวะพานิช",
+      "nameEn": "",
+      "position": "ACOO",
+      "type": "executive",
+      "gender": "female",
+      "startDate": "2569-01-01",
+      "boardRole": "none",
+      "nrcRole": "none",
+      "acRole": "none",
+      "rmcRole": "none",
+      "gcgRole": "none",
+      "excoRole": "none",
+      "skills": {
+        "finance": 0,
+        "law": 0,
+        "strategy": 0,
+        "it": 0,
+        "risk": 0,
+        "hr": 0,
+        "marketing": 0,
+        "industry": 1,
+        "skmpvi5t2a": 0
+      },
+      "note": "",
+      "training": [],
+      "photo": ""
     }
   ],
   "meetings": [
@@ -1781,25 +1839,85 @@
         "id": "submpvz9rl87asqa",
         "name": "PSS",
         "fullName": "บริษัท พรีไซซ สมาร์ท โซลูชั่น จำกัด",
-        "directors": [],
-        "signatories": [],
-        "signCondition": ""
+        "directors": [
+          {
+            "name": "นางสาวทิตยาภรณ์ บัวแก้ว",
+            "role": "ประธาน",
+            "type": "executive"
+          },
+          {
+            "name": "นายอนุชา จรูญกิตติกร",
+            "role": "กรรมการ",
+            "type": "executive"
+          },
+          {
+            "name": "นางสาวกาญจนา ชีวะพานิช",
+            "role": "กรรมการ",
+            "type": "executive"
+          }
+        ],
+        "signatories": [
+          "นางสาวทิตยาภรณ์ บัวแก้ว",
+          "นายอนุชา จรูญกิตติกร",
+          "นางสาวกาญจนา ชีวะพานิช"
+        ],
+        "signCondition": "นางสาวทิตยาภรณ์ บัวแก้ว นางสาวกาญจนา ชีวะพานิช นายอนุชา จรูญกิตติกร กรรมการสองในสามลงลายมือชื่อร่วมกันและประทับตราสำคัญของบริษัท"
       },
       {
         "id": "submpvza5ocq7trf",
         "name": "PTS",
         "fullName": "บริษัท พรีไซซ บีซีจี โทเทิ่ล โซลูชั่น แอนด์ เซอร์วิส จำกัด",
-        "directors": [],
-        "signatories": [],
-        "signCondition": ""
+        "directors": [
+          {
+            "name": "นางสาวทิตยาภรณ์ บัวแก้ว",
+            "role": "ประธาน",
+            "type": "executive"
+          },
+          {
+            "name": "นายอนุชา จรูญกิตติกร",
+            "role": "กรรมการ",
+            "type": "executive"
+          },
+          {
+            "name": "นางสาวกาญจนา ชีวะพานิช",
+            "role": "กรรมการ",
+            "type": "executive"
+          }
+        ],
+        "signatories": [
+          "นางสาวทิตยาภรณ์ บัวแก้ว",
+          "นายอนุชา จรูญกิตติกร",
+          "นางสาวกาญจนา ชีวะพานิช"
+        ],
+        "signCondition": "นางสาวทิตยาภรณ์ บัวแก้ว นางสาวกาญจนา ชีวะพานิช นายอนุชา จรูญกิตติกร กรรมการสองในสามลงลายมือชื่อร่วมกันและประทับตราสำคัญของบริษัท"
       },
       {
         "id": "submpvzakl574h7u",
         "name": "PPS",
         "fullName": "บริษัท พรีไซซ สมาร์ท กริด โปรดักส์ แอนด์ เซอร์วิส  จำกัด",
-        "directors": [],
-        "signatories": [],
-        "signCondition": ""
+        "directors": [
+          {
+            "name": "นางสาวทิตยาภรณ์ บัวแก้ว",
+            "role": "ประธาน",
+            "type": "executive"
+          },
+          {
+            "name": "นายอนุชา จรูญกิตติกร",
+            "role": "กรรมการ",
+            "type": "executive"
+          },
+          {
+            "name": "นางสาวกาญจนา ชีวะพานิช",
+            "role": "กรรมการ",
+            "type": "executive"
+          }
+        ],
+        "signatories": [
+          "นางสาวทิตยาภรณ์ บัวแก้ว",
+          "นายอนุชา จรูญกิตติกร",
+          "นางสาวกาญจนา ชีวะพานิช"
+        ],
+        "signCondition": "นางสาวทิตยาภรณ์ บัวแก้ว นางสาวกาญจนา ชีวะพานิช นายอนุชา จรูญกิตติกร กรรมการสองในสามลงลายมือชื่อร่วมกันและประทับตราสำคัญของบริษัท"
       },
       {
         "id": "submpvzclmyuwljv",
