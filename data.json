@@ -900,6 +900,35 @@
       "note": "",
       "training": [],
       "photo": ""
+    },
+    {
+      "id": "dmpw2or4zlawi4",
+      "name": "นายนนทชา สิงหนุต",
+      "nameEn": "",
+      "position": "ACOO PSP",
+      "type": "executive",
+      "gender": "male",
+      "startDate": "2569-01-01",
+      "boardRole": "none",
+      "nrcRole": "none",
+      "acRole": "none",
+      "rmcRole": "none",
+      "gcgRole": "none",
+      "excoRole": "none",
+      "skills": {
+        "finance": 0,
+        "law": 0,
+        "strategy": 0,
+        "it": 0,
+        "risk": 0,
+        "hr": 0,
+        "marketing": 0,
+        "industry": 1,
+        "skmpvi5t2a": 0
+      },
+      "note": "",
+      "training": [],
+      "photo": ""
     }
   ],
   "meetings": [
@@ -1691,13 +1720,37 @@
         "fullName": "บริษัท พรีไซซ ดิจิตอล อีโคโนมี่ จำกัด",
         "directors": [
           {
-            "name": "กรรมการ PDE-1",
+            "name": "นางสาวณิชา ณัฐชยางกุล",
             "role": "ประธาน",
             "type": "pcc-representative"
+          },
+          {
+            "name": "นางวัชรี สรรพช่าง",
+            "role": "กรรมการ",
+            "type": "pcc-representative"
+          },
+          {
+            "name": "นายวิชัย ยิ่งจอหอ",
+            "role": "กรรมการ",
+            "type": "executive"
+          },
+          {
+            "name": "นางสาวจันจิรา ปั้นเขียว",
+            "role": "กรรมการ",
+            "type": "executive"
+          },
+          {
+            "name": "นายนนทชา สิงหนุต",
+            "role": "กรรมการ",
+            "type": "executive"
           }
         ],
-        "signatories": [],
-        "signCondition": ""
+        "signatories": [
+          "นางวัชรี สรรพช่าง",
+          "นายวิชัย ยิ่งจอหอ",
+          "นายนนทชา สิงหนุต"
+        ],
+        "signCondition": "นายวิชัย ยิ่งจอหอ นายนนทชา สิงหนุต นางวัชรี สรรพช่าง กรรมการสองในสามคนนี้ลงลายมือชื่อร่วมกัน และประทับตราสำคัญของบริษัท\n"
       },
       {
         "id": "sub9",
