@@ -435,7 +435,7 @@
       },
       "note": "",
       "training": [],
-      "photo": "https://drive.google.com/file/d/1Co8ATI0PoNlGo2y6YDd8G1rvRUkrVjlI/view?usp=drive_link"
+      "photo": "https://drive.google.com/file/d/10r2-xF2qU8I_GBBC-Z90EeeHQER75eoN/view?usp=drive_link"
     },
     {
       "id": "dmpvzl7x9ic18b",
@@ -693,6 +693,64 @@
         "marketing": 0,
         "industry": 1,
         "skmpvi5t2a": 1
+      },
+      "note": "",
+      "training": [],
+      "photo": ""
+    },
+    {
+      "id": "dmpw0qtrlin69g",
+      "name": "นายเกียรติศักดิ์ สารพิมพ์",
+      "nameEn": "",
+      "position": "TCS PEM",
+      "type": "executive",
+      "gender": "male",
+      "startDate": "2569-01-01",
+      "boardRole": "none",
+      "nrcRole": "none",
+      "acRole": "none",
+      "rmcRole": "none",
+      "gcgRole": "none",
+      "excoRole": "none",
+      "skills": {
+        "finance": 0,
+        "law": 0,
+        "strategy": 0,
+        "it": 0,
+        "risk": 0,
+        "hr": 0,
+        "marketing": 1,
+        "industry": 0,
+        "skmpvi5t2a": 0
+      },
+      "note": "",
+      "training": [],
+      "photo": ""
+    },
+    {
+      "id": "dmpw0s0ova1k5a",
+      "name": "นายสินา นัท",
+      "nameEn": "",
+      "position": "BM PEMC",
+      "type": "executive",
+      "gender": "male",
+      "startDate": "2569-01-01",
+      "boardRole": "none",
+      "nrcRole": "none",
+      "acRole": "none",
+      "rmcRole": "none",
+      "gcgRole": "none",
+      "excoRole": "none",
+      "skills": {
+        "finance": 0,
+        "law": 0,
+        "strategy": 0,
+        "it": 0,
+        "risk": 0,
+        "hr": 0,
+        "marketing": 0,
+        "industry": 1,
+        "skmpvi5t2a": 0
       },
       "note": "",
       "training": [],
@@ -1510,9 +1568,41 @@
         "id": "submpvz7jifn5ttt",
         "name": "PEMC",
         "fullName": "บริษัท พรีไซซ อีเลคตริค แมนูแฟคเจอริ่ง จำกัด (กัมพูชา)",
-        "directors": [],
-        "signatories": [],
-        "signCondition": ""
+        "directors": [
+          {
+            "name": "นายอมร แดงโชติ",
+            "role": "ประธาน",
+            "type": "pcc-representative"
+          },
+          {
+            "name": "นายเศกสรร ปรีชา",
+            "role": "กรรมการ",
+            "type": "executive"
+          },
+          {
+            "name": "นายภัทราวุธ ศักดา",
+            "role": "กรรมการ",
+            "type": "executive"
+          },
+          {
+            "name": "นายเกียรติศักดิ์ สารพิมพ์",
+            "role": "กรรมการ",
+            "type": "executive"
+          },
+          {
+            "name": "นายสินา นัท",
+            "role": "กรรมการ",
+            "type": "executive"
+          }
+        ],
+        "signatories": [
+          "นายอมร แดงโชติ",
+          "นายเศกสรร ปรีชา",
+          "นายภัทราวุธ ศักดา",
+          "นายเกียรติศักดิ์ สารพิมพ์",
+          "นายสินา นัท"
+        ],
+        "signCondition": "นายอมร แดงโชติ  นายเศกสรร ปรีชา นายภัทราวุธ ศักดา นายเกียรติศักดิ์ สารพิมพ์  และ นายสินา นัทกรรมการสองในห้าคนนี้ลงลายมือชื่อร่วมกัน และประทับตราสำคัญของบริษัท"
       },
       {
         "id": "submpvz99wujsu2p",
