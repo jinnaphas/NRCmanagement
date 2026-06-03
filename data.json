@@ -825,8 +825,18 @@
       "status": "completed",
       "agendaFile": "",
       "momFile": "",
-      "agendaAttachments": [],
-      "momAttachments": [],
+      "agendaAttachments": [
+        {
+          "name": "Agenda NRC 2-2569",
+          "link": "https://docs.google.com/document/d/1tKnZy6Z5Y6po3GH22sUnrsz3ZBz3svBZ/edit?usp=drive_link&ouid=100362487037752803426&rtpof=true&sd=true"
+        }
+      ],
+      "momAttachments": [
+        {
+          "name": "MOM NRC 2-2569",
+          "link": "https://drive.google.com/file/d/1SyxKFvUFmWKlqmWqbpUz2NU08oRahLgG/view?usp=drive_link"
+        }
+      ],
       "agendaItems": [
         {
           "id": "a5",
@@ -838,7 +848,7 @@
         },
         {
           "id": "a6",
-          "title": "พิจารณาเสนอชื่อกรรมการเพื่อดำรงตำแหน่งแทนกรรมการที่ออกตามวาระ (AGM 2569)",
+          "title": "4.1 พิจารณาเห็นชอบรายชื่อบุคคลที่บริษัท พรีไซซ คอร์ปอเรชั่น จำกัด (มหาชน) (PCC) ส่งเข้าเป็นกรรมการของบริษัทย่อย และบริษัทร่วม ตามสัดส่วนการถือหุ้น",
           "type": "approve",
           "status": "done",
           "note": "",
@@ -846,7 +856,7 @@
         },
         {
           "id": "a7",
-          "title": "พิจารณาค่าตอบแทนกรรมการเสนอ AGM 2569",
+          "title": "4.2 พิจารณาเป้าหมายการสรรหาคณะกรรมการ",
           "type": "approve",
           "status": "done",
           "note": "",
@@ -854,8 +864,24 @@
         },
         {
           "id": "a8",
-          "title": "ประเมินผล CEO รอบ 12 เดือน (2568)",
+          "title": "4.3 พิจารณาเห็นชอบงบประมาณขึ้นเงินเดือนประจำปี 2569",
           "type": "approve",
+          "status": "done",
+          "note": "",
+          "attachments": []
+        },
+        {
+          "id": "ampw1r8q7h2qpd",
+          "title": "4.4 พิจารณาเห็นชอบแบบประเมินผลงานของผู้บริหารสูงสุด (CEO) ประจำปี 2569",
+          "type": "approve",
+          "status": "inprogress",
+          "note": "",
+          "attachments": []
+        },
+        {
+          "id": "ampw1s4havsz3e",
+          "title": "5.1 หารืออัตราร้อยละการปรับเพิ่มเงินเดือนตามเกณฑ์ 9 Box (Performance x Potential)",
+          "type": "inform",
           "status": "done",
           "note": "",
           "attachments": []
