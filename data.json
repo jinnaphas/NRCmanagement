@@ -1691,20 +1691,20 @@
   "directorChangelog": [
     {
       "id": "dcl1",
-      "effectiveDate": "2569-01-01",
-      "directorId": "",
-      "directorName": "(ตัวอย่าง) นายอชิตศักดิ์ บรรจงโพธิ์กลาง",
+      "effectiveDate": "2569-04-24",
+      "directorId": "dmpvhla39ootro",
+      "directorName": "นางสาวอุมาพร สุเมธกิจการ",
       "changeType": "appointed",
-      "changeDetail": "แต่งตั้งเป็นประธานกรรมการบริษัทและกรรมการอิสระ",
+      "changeDetail": "แต่งตั้งกรรมการอิสระใหม่ของ Board PCC ในประชุมผู้ถือหุ้น PCC",
       "previousValue": "",
-      "newValue": "ประธานกรรมการบริษัท / กรรมการอิสระ",
-      "nrcMeetingRef": "",
-      "boardMeetingRef": "Board 1/2569",
+      "newValue": "กรรมการอิสระ",
+      "nrcMeetingRef": "NRC 2/2569 (18 มี.ค. 2569)",
+      "boardMeetingRef": "",
       "agmRef": "AGM 2569",
       "approvedBy": "agm",
-      "note": "ออกตามวาระ และได้รับการเลือกตั้งกลับเข้ามาใหม่",
-      "recordedDate": "2569-05-23",
-      "recordedBy": "จิณนภัสฐ์"
+      "note": "",
+      "recordedDate": "2569-06-02",
+      "recordedBy": "นายจิณนภัสฐ์ ภัสฐาพงษ์"
     }
   ],
   "remuneration": [],
