@@ -958,6 +958,64 @@
       "note": "",
       "training": [],
       "photo": ""
+    },
+    {
+      "id": "dmpw2u5kigy88j",
+      "name": "นายเศรษฐพงษ์ สุภาเศษ",
+      "nameEn": "",
+      "position": "PM PSL102",
+      "type": "executive",
+      "gender": "male",
+      "startDate": "2569-01-01",
+      "boardRole": "none",
+      "nrcRole": "none",
+      "acRole": "none",
+      "rmcRole": "none",
+      "gcgRole": "none",
+      "excoRole": "none",
+      "skills": {
+        "finance": 0,
+        "law": 0,
+        "strategy": 0,
+        "it": 0,
+        "risk": 0,
+        "hr": 0,
+        "marketing": 0,
+        "industry": 1,
+        "skmpvi5t2a": 0
+      },
+      "note": "",
+      "training": [],
+      "photo": ""
+    },
+    {
+      "id": "dmpw2ums7h3qbs",
+      "name": "นายพิชิต สมบูรณ์",
+      "nameEn": "",
+      "position": "ที่ปรึกษา PSL102",
+      "type": "independent",
+      "gender": "male",
+      "startDate": "2569-01-01",
+      "boardRole": "none",
+      "nrcRole": "none",
+      "acRole": "none",
+      "rmcRole": "none",
+      "gcgRole": "none",
+      "excoRole": "none",
+      "skills": {
+        "finance": 0,
+        "law": 0,
+        "strategy": 0,
+        "it": 0,
+        "risk": 0,
+        "hr": 0,
+        "marketing": 0,
+        "industry": 1,
+        "skmpvi5t2a": 0
+      },
+      "note": "",
+      "training": [],
+      "photo": ""
     }
   ],
   "meetings": [
@@ -1707,13 +1765,47 @@
         "fullName": "บริษัท พรีไซซ สมาร์ท ไลฟ์ จำกัด",
         "directors": [
           {
-            "name": "กรรมการ PSL-1",
+            "name": "นางสาวณิชา ณัฐชยางกุล",
             "role": "ประธาน",
             "type": "pcc-representative"
+          },
+          {
+            "name": "นางวัชรี สรรพช่าง",
+            "role": "กรรมการ",
+            "type": "pcc-representative"
+          },
+          {
+            "name": "นายอมร แดงโชติ",
+            "role": "กรรมการ",
+            "type": "executive"
+          },
+          {
+            "name": "นายพิชิต สมบูรณ์",
+            "role": "กรรมการ",
+            "type": "independent"
+          },
+          {
+            "name": "นางสาวจันจิรา ปั้นเขียว",
+            "role": "กรรมการ",
+            "type": "executive"
+          },
+          {
+            "name": "นายนนทชา สิงหนุต",
+            "role": "กรรมการ",
+            "type": "executive"
+          },
+          {
+            "name": "นายเศรษฐพงษ์ สุภาเศษ",
+            "role": "กรรมการ",
+            "type": "executive"
           }
         ],
-        "signatories": [],
-        "signCondition": ""
+        "signatories": [
+          "นางวัชรี สรรพช่าง",
+          "นายอมร แดงโชติ",
+          "นายเศรษฐพงษ์ สุภาเศษ"
+        ],
+        "signCondition": "นายอมร แดงโชติ นางวัชรี สรรพช่าง  นายเศรษฐพงษ์ สุภาเศษ กรรมการสองในสามคนนี้ลงลายมือชื่อร่วมกัน และประทับตราสำคัญของบริษัท"
       },
       {
         "id": "sub6",
