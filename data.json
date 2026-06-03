@@ -755,6 +755,93 @@
       "note": "",
       "training": [],
       "photo": ""
+    },
+    {
+      "id": "dmpw2169qo8biq",
+      "name": "นายสุรศักดิ์ ปิลันธนภาคย์",
+      "nameEn": "",
+      "position": "COO2 PSP",
+      "type": "executive",
+      "gender": "male",
+      "startDate": "2569-01-01",
+      "boardRole": "none",
+      "nrcRole": "none",
+      "acRole": "none",
+      "rmcRole": "none",
+      "gcgRole": "none",
+      "excoRole": "none",
+      "skills": {
+        "finance": 0,
+        "law": 0,
+        "strategy": 0,
+        "it": 0,
+        "risk": 0,
+        "hr": 0,
+        "marketing": 1,
+        "industry": 0,
+        "skmpvi5t2a": 0
+      },
+      "note": "",
+      "training": [],
+      "photo": ""
+    },
+    {
+      "id": "dmpw22afnqtk3r",
+      "name": "นายฟรานเซสโก บาสโซ",
+      "nameEn": "",
+      "position": "CI",
+      "type": "nonexecutive",
+      "gender": "male",
+      "startDate": "2569-01-01",
+      "boardRole": "none",
+      "nrcRole": "none",
+      "acRole": "none",
+      "rmcRole": "none",
+      "gcgRole": "none",
+      "excoRole": "none",
+      "skills": {
+        "finance": 0,
+        "law": 0,
+        "strategy": 0,
+        "it": 0,
+        "risk": 0,
+        "hr": 0,
+        "marketing": 0,
+        "industry": 0,
+        "skmpvi5t2a": 0
+      },
+      "note": "",
+      "training": [],
+      "photo": ""
+    },
+    {
+      "id": "dmpw23ccmxcbwa",
+      "name": "นายนิโคโล บาสโซ",
+      "nameEn": "",
+      "position": "CI",
+      "type": "independent",
+      "gender": "male",
+      "startDate": "2569-01-01",
+      "boardRole": "none",
+      "nrcRole": "none",
+      "acRole": "none",
+      "rmcRole": "none",
+      "gcgRole": "none",
+      "excoRole": "none",
+      "skills": {
+        "finance": 0,
+        "law": 0,
+        "strategy": 0,
+        "it": 0,
+        "risk": 0,
+        "hr": 0,
+        "marketing": 0,
+        "industry": 0,
+        "skmpvi5t2a": 0
+      },
+      "note": "",
+      "training": [],
+      "photo": ""
     }
   ],
   "meetings": [
@@ -1654,9 +1741,41 @@
         "id": "submpvz99wujsu2p",
         "name": "CI",
         "fullName": "บริษัท โคเอลเม่ อินเตอร์เนชั่นแนล จำกัด - (บริษัทร่วม)",
-        "directors": [],
-        "signatories": [],
-        "signCondition": ""
+        "directors": [
+          {
+            "name": "นายศิริชัย จิรรัตน์พิทักษ์",
+            "role": "ประธาน",
+            "type": "executive"
+          },
+          {
+            "name": "นายสุรศักดิ์ ปิลันธนภาคย์",
+            "role": "กรรมการ",
+            "type": "executive"
+          },
+          {
+            "name": "นายฟรานเซสโก บาสโซ",
+            "role": "กรรมการ",
+            "type": "executive"
+          },
+          {
+            "name": "นายนิโคโล บาสโซ",
+            "role": "กรรมการ",
+            "type": "executive"
+          },
+          {
+            "name": "นายเศกสรร ปรีชา",
+            "role": "กรรมการ",
+            "type": "executive"
+          }
+        ],
+        "signatories": [
+          "นายศิริชัย จิรรัตน์พิทักษ์",
+          "นายสุรศักดิ์ ปิลันธนภาคย์",
+          "นายฟรานเซสโก บาสโซ",
+          "นายนิโคโล บาสโซ",
+          "นายเศกสรร ปรีชา"
+        ],
+        "signCondition": "นายศิริชัย จิรรัตน์พิทักษ์  นายสุรศักดิ์ ปิลันธนภาคย์ นายเศกสรร ปรีชา นายฟรานเซสโก บาสโซ นายนิโคโล บาสโซ กรรมการสองคนลงลายมือชื่อร่วมกันและประทับตราสำคัญของบริษัท"
       },
       {
         "id": "submpvz9rl87asqa",
