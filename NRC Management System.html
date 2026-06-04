@@ -600,7 +600,14 @@ function migrateDB() {
     if (!s.signatories) s.signatories = [];
     if (s.signCondition === undefined) s.signCondition = '';
   });
-  if (DB.directors) DB.directors.forEach(d => { if (!d.photo) d.photo = ''; if (d.boardRole === undefined) d.boardRole = 'member'; });
+  if (DB.directors) DB.directors.forEach(d => { if (!d.photo) d.photo = ''; if (d.boardRole === undefined) d.boardRole = 'member'; if (!d.iodCerts) d.iodCerts = {}; });
+  if (!DB.iodPrograms || !DB.iodPrograms.length) DB.iodPrograms = ['DAP','DCP','RCP','BNCP','AACP'];
+  if (DB.directorTraining) DB.directorTraining.forEach(t => {
+    if (!t.courseType) t.courseType = (t.category==='governance') ? 'governance' : 'internal';
+    if (t.institute === undefined) t.institute = t.organizer || '';
+    if (t.dateText === undefined) t.dateText = t.date ? '' : '';
+    if (t.year === undefined && t.date) { const y=parseInt(String(t.date).slice(0,4)); t.year = y>2400?y:(y?y+543:null); }
+  });
 }
 // บันทึกการแก้ไข = ทำเครื่องหมายว่ามีข้อมูลค้าง (เก็บใน memory; เผยแพร่ด้วยการ Export)
 function saveData() { markDirty(); }
@@ -2221,117 +2228,213 @@ function saveRemun(dirId, year) {
 // ============================================================
 // DIRECTOR TRAINING — แผนพัฒนากรรมการ
 // ============================================================
-const TRAIN_CATS = { governance:'การกำกับดูแล', finance:'การเงิน/บัญชี', strategy:'กลยุทธ์', risk:'บริหารความเสี่ยง', it:'เทคโนโลยี', hr:'HR/Sustainability', other:'อื่นๆ' };
+const TRAIN_TYPES = { iod:'IOD/กรรมการ', governance:'CG/กำกับดูแล', exec:'ผู้บริหาร (Exec Ed)', external:'ภายนอก/สัมมนา', internal:'ภายในองค์กร' };
+const TRAIN_TYPE_COLOR = { iod:'#1F3864', governance:'#2E75B6', exec:'#5B4A9C', external:'#ED7D31', internal:'#70AD47' };
+const DEV_TYPES = ['iod','governance','exec','external'];   // นับเป็น Director Development (ไม่รวม operational ภายใน)
+const TRAIN_TARGET = 24;                                    // เป้าชั่วโมง/ปี
+function getIodPrograms(){ return (DB.iodPrograms && DB.iodPrograms.length) ? DB.iodPrograms : ['DAP','DCP','RCP','BNCP','AACP']; }
+function trainingDirectors(){ const b=boardDirectors(); return b.length?b:DB.directors; }
+function trHours(t){ return Number(t.hours)||0; }
+function trDateText(t){ return t.dateText || (t.date?thDate(t.date):'—'); }
+function trTypeBadge(ct){ const c=TRAIN_TYPE_COLOR[ct]||'#888'; return `<span class="badge-status" style="background:${c}22;color:${c};border:1px solid ${c}55">${TRAIN_TYPES[ct]||ct}</span>`; }
+
+let trainTab = 'overview';
+const trainState = { dir:'', type:'', year:'', q:'', incInternal:false };
 
 function renderTraining() {
-  const filterDir = document.getElementById('tr-fdir')?.value || '';
-  const filterCat = document.getElementById('tr-fcat')?.value || '';
-  const filterYr  = document.getElementById('tr-fyr')?.value  || '';
-  const dirOpts = DB.directors.map(d=>`<option value="${d.id}" ${d.id===filterDir?'selected':''}>${d.name}</option>`).join('');
-  const catOpts = Object.entries(TRAIN_CATS).map(([k,v])=>`<option value="${k}" ${k===filterCat?'selected':''}>${v}</option>`).join('');
-  const allYrs = [...new Set(DB.directorTraining.map(t=>t.date?.substr(0,4)).filter(Boolean))].sort().reverse();
-  const yrOpts = allYrs.map(y=>`<option value="${y}" ${y===filterYr?'selected':''}>${y}</option>`).join('');
+  document.getElementById('content').innerHTML = `
+    <div class="flex-between mb-8">
+      <div class="section-title">📚 พัฒนากรรมการ (Director Development)</div>
+      <div class="btn-group">
+        <button class="btn btn-outline" onclick="editIodFromMaster()">🎓 IOD Cert</button>
+        <button class="btn btn-primary" onclick="editTraining(null)">+ บันทึกการอบรม</button>
+      </div>
+    </div>
+    <div class="tabs" id="tr-tabs">
+      <button class="tab-btn ${trainTab==='overview'?'active':''}" onclick="trainTabSwitch('overview',this)">ภาพรวม</button>
+      <button class="tab-btn ${trainTab==='iod'?'active':''}" onclick="trainTabSwitch('iod',this)">IOD Certification</button>
+      <button class="tab-btn ${trainTab==='log'?'active':''}" onclick="trainTabSwitch('log',this)">ประวัติการอบรม</button>
+    </div>
+    <div id="tr-content">${trainTabHtml()}</div>`;
+}
+function trainTabSwitch(tab, btn){ trainTab=tab; document.querySelectorAll('#tr-tabs .tab-btn').forEach(b=>b.classList.remove('active')); btn.classList.add('active'); document.getElementById('tr-content').innerHTML=trainTabHtml(); }
+function trainTabHtml(){ return trainTab==='iod'?trainIodHtml() : trainTab==='log'?trainLogHtml() : trainOverviewHtml(); }
 
-  let rows = DB.directorTraining;
-  if (filterDir) rows = rows.filter(r=>r.directorId===filterDir);
-  if (filterCat) rows = rows.filter(r=>r.category===filterCat);
-  if (filterYr)  rows = rows.filter(r=>r.date?.startsWith(filterYr));
-  rows = [...rows].sort((a,b)=>(b.date||'').localeCompare(a.date||''));
-
-  // Summary: hours per director
-  const hrMap = {};
-  DB.directorTraining.forEach(t=>{ hrMap[t.directorId]=(hrMap[t.directorId]||0)+(t.hours||0); });
-  const summaryBars = DB.directors.map(d=>{
-    const hrs = hrMap[d.id]||0;
-    const pct = Math.min(hrs/24*100,100);
-    const color = hrs>=24?'var(--green)':hrs>=12?'var(--blue)':'var(--orange)';
-    return `<div class="training-bar-wrap">${directorAvatar(d.name,26)}<span style="font-size:11px;min-width:200px">${d.name}</span><div class="training-bar-bg"><div class="training-bar-fill" style="width:${pct}%;background:${color}"></div></div><span style="font-size:11px;min-width:50px;text-align:right">${hrs} ชม.</span></div>`;
+// ── แท็บ 1: ภาพรวม ───────────────────────────────────────────────────────────
+function trainOverviewHtml() {
+  const yrs = [...new Set(DB.directorTraining.map(t=>t.year).filter(Boolean))].sort((a,b)=>b-a);
+  const yr = trainState.year ? parseInt(trainState.year) : (yrs[0]||null);
+  const inc = trainState.incInternal;
+  const types = inc ? Object.keys(TRAIN_TYPES) : DEV_TYPES;
+  const dirs = trainingDirectors();
+  const hoursOf = (id)=> DB.directorTraining.filter(t=>t.directorId===id && (!yr||t.year===yr) && types.includes(t.courseType)).reduce((a,b)=>a+trHours(b),0);
+  const totalAllOf = (id)=> DB.directorTraining.filter(t=>t.directorId===id && (!yr||t.year===yr)).reduce((a,b)=>a+trHours(b),0);
+  const totalHrs = dirs.reduce((a,d)=>a+hoursOf(d.id),0);
+  const metTarget = dirs.filter(d=>hoursOf(d.id)>=TRAIN_TARGET).length;
+  const iodOk = dirs.filter(d=>{ const c=d.iodCerts||{}; return c.DAP||c.DCP; }).length;
+  const bars = dirs.map(d=>{
+    const hrs = hoursOf(d.id), all = totalAllOf(d.id);
+    const pct = Math.min(hrs/TRAIN_TARGET*100,100);
+    const color = hrs>=TRAIN_TARGET?'var(--green)':hrs>=TRAIN_TARGET/2?'var(--blue)':'var(--orange)';
+    return `<div class="training-bar-wrap">${directorAvatar(d.name,26)}<span style="font-size:11px;min-width:210px">${d.name}</span>
+      <div class="training-bar-bg"><div class="training-bar-fill" style="width:${pct}%;background:${color}"></div></div>
+      <span style="font-size:11px;min-width:120px;text-align:right">${hrs} ชม.${inc?'':` <span class="text-muted">(รวม ${all})</span>`}</span></div>`;
   }).join('');
+  return `
+    <div class="cards-row">
+      <div class="card"><div class="card-label">ชั่วโมงพัฒนา${inc?' (รวมภายใน)':''} ปี ${yr||'-'}</div><div class="card-value">${totalHrs}</div><div class="card-sub">เป้า ${TRAIN_TARGET} ชม./คน/ปี</div></div>
+      <div class="card ${metTarget>=dirs.length?'green':'orange'}"><div class="card-label">ถึงเป้า</div><div class="card-value">${metTarget}/${dirs.length}</div><div class="card-sub">คน</div></div>
+      <div class="card ${iodOk>=dirs.length?'green':'red'}"><div class="card-label">มี IOD Cert (DAP/DCP)</div><div class="card-value">${iodOk}/${dirs.length}</div><div class="card-sub">คน</div></div>
+      <div class="card"><div class="card-label">รายการอบรมทั้งหมด</div><div class="card-value blue">${DB.directorTraining.length}</div><div class="card-sub">รายการ</div></div>
+    </div>
+    <div class="panel"><div class="panel-header"><h3>📊 ชั่วโมงพัฒนากรรมการ (เป้า ${TRAIN_TARGET} ชม./ปี)</h3>
+      <div style="display:flex;gap:10px;align-items:center">
+        <select class="form-control btn-sm" style="width:120px;padding:3px 8px" onchange="trainState.year=this.value;document.getElementById('tr-content').innerHTML=trainOverviewHtml()">
+          <option value="">ทุกปี</option>${yrs.map(y=>`<option value="${y}" ${y===yr?'selected':''}>${y}</option>`).join('')}</select>
+        <label style="font-size:12px;color:#fff;display:flex;gap:5px;align-items:center"><input type="checkbox" ${inc?'checked':''} onchange="trainState.incInternal=this.checked;document.getElementById('tr-content').innerHTML=trainOverviewHtml()"> รวมอบรมภายใน (operational)</label>
+      </div>
+    </div>
+    <div class="panel-body">${bars||'<p class="text-muted">ยังไม่มีข้อมูล</p>'}
+      <p class="text-muted mt-8" style="font-size:11px">* ค่าเริ่มต้นนับเฉพาะ Director Development (IOD/CG/ผู้บริหาร/ภายนอก) — ติ๊ก "รวมอบรมภายใน" เพื่อรวมงาน operational</p>
+    </div></div>`;
+}
 
+// ── แท็บ 2: IOD Certification Matrix ─────────────────────────────────────────
+function trainIodHtml() {
+  const progs = getIodPrograms();
+  const dirs = trainingDirectors();
+  const head = progs.map(p=>`<th>${p} <span onclick="removeIodProgram('${p}')" title="ลบคอลัมน์" style="cursor:pointer;color:#ffaaaa;font-weight:400">×</span></th>`).join('');
+  const rows = dirs.map(d=>{
+    const cells = progs.map(p=>{
+      const v=(d.iodCerts||{})[p]||'';
+      return `<td style="text-align:center;cursor:pointer;${v?'background:#E2EFDA':''}" onclick="editIodCert('${d.id}','${p}')">${v?`<strong>${v}</strong>`:'<span class="text-muted">—</span>'}</td>`;
+    }).join('');
+    return `<tr><td class="dir-name" style="text-align:left">${directorAvatar(d.name,24)} ${d.name}</td>${cells}</tr>`;
+  }).join('');
+  return `<div class="alert alert-info" style="font-size:12px">🎓 ทะเบียนหลักสูตร IOD ของกรรมการ (ใช้เปิดเผยใน 56-1 One Report) — คลิกช่องเพื่อใส่/แก้เลขรุ่น/ปี</div>
+    <div class="flex-between mb-8"><span class="text-muted" style="font-size:12px">DAP·DCP·RCP·BNCP·AACP …</span>
+      <button class="btn btn-sm btn-primary" onclick="addIodProgram()">+ เพิ่มหลักสูตร IOD</button></div>
+    <div class="panel skills-matrix"><div class="panel-body" style="padding:0;overflow-x:auto"><table style="width:100%">
+      <thead><tr><th class="dir-name" style="text-align:left">กรรมการ</th>${head}</tr></thead>
+      <tbody>${rows||`<tr><td colspan="${progs.length+1}" class="empty-state">ยังไม่มีกรรมการ</td></tr>`}</tbody>
+    </table></div></div>`;
+}
+function editIodCert(dirId, prog){
+  const d=DB.directors.find(x=>x.id===dirId); if(!d) return;
+  if(!d.iodCerts) d.iodCerts={};
+  const v=prompt(`${prog} ของ ${d.name}\nใส่เลขรุ่น/ปี (เช่น 187/2014) — เว้นว่างเพื่อลบ`, d.iodCerts[prog]||'');
+  if(v===null) return;
+  if(v.trim()) d.iodCerts[prog]=v.trim(); else delete d.iodCerts[prog];
+  saveData(); document.getElementById('tr-content').innerHTML=trainIodHtml();
+}
+function addIodProgram(){
+  const p=(prompt('รหัสหลักสูตร IOD ใหม่ (เช่น ELP, CDC)')||'').trim().toUpperCase();
+  if(!p) return; const list=getIodPrograms(); if(!list.includes(p)){ DB.iodPrograms=[...list,p]; saveData(); }
+  document.getElementById('tr-content').innerHTML=trainIodHtml();
+}
+function removeIodProgram(p){
+  if(!confirm(`ลบคอลัมน์ ${p}? (ค่าของกรรมการในคอลัมน์นี้จะถูกนำออก)`)) return;
+  DB.iodPrograms=getIodPrograms().filter(x=>x!==p);
+  DB.directors.forEach(d=>{ if(d.iodCerts) delete d.iodCerts[p]; });
+  saveData(); document.getElementById('tr-content').innerHTML=trainIodHtml();
+}
+function editIodFromMaster(){ trainTab='iod'; renderTraining(); }
+
+// ── แท็บ 3: ประวัติการอบรม (Log) ─────────────────────────────────────────────
+function trainLogHtml() {
+  const dirOpts = DB.directors.map(d=>`<option value="${d.id}" ${d.id===trainState.dir?'selected':''}>${d.name}</option>`).join('');
+  const typeOpts = Object.entries(TRAIN_TYPES).map(([k,v])=>`<option value="${k}" ${k===trainState.type?'selected':''}>${v}</option>`).join('');
+  const yrs = [...new Set(DB.directorTraining.map(t=>t.year).filter(Boolean))].sort((a,b)=>b-a);
+  const yrOpts = yrs.map(y=>`<option value="${y}" ${String(y)===trainState.year?'selected':''}>${y}</option>`).join('');
+  let rows = DB.directorTraining.filter(t=>
+    (!trainState.dir || t.directorId===trainState.dir) &&
+    (!trainState.type || t.courseType===trainState.type) &&
+    (!trainState.year || String(t.year)===trainState.year) &&
+    (!trainState.q || (`${t.course} ${t.institute}`||'').toLowerCase().includes(trainState.q.toLowerCase())));
+  rows = [...rows].sort((a,b)=>(b.year||0)-(a.year||0));
   const tRows = rows.map(t=>{
     const d = DB.directors.find(x=>x.id===t.directorId);
-    const fullName = d ? d.name : (t.directorName||'-');
+    const nm = d ? d.name : (t.directorName||'-');
     return `<tr>
-      <td><div class="dir-avatar-wrap" style="gap:8px">${directorAvatar(fullName,28)}<span>${fullName}</span></div></td>
-      <td><strong>${t.course||'-'}</strong></td>
-      <td>${t.organizer||'-'}</td>
-      <td>${thDate(t.date)}</td>
-      <td class="text-right">${t.hours||0}</td>
-      <td><span class="badge-status status-inprogress">${TRAIN_CATS[t.category]||t.category}</span></td>
+      <td><div class="dir-avatar-wrap" style="gap:8px">${directorAvatar(nm,26)}<span style="font-size:12px">${nm}</span></div></td>
+      <td><strong>${t.course||'-'}</strong>${t.batch?`<br><span class="text-muted" style="font-size:10px">รุ่น ${t.batch}</span>`:''}</td>
+      <td style="font-size:12px">${t.institute||'-'}</td>
+      <td>${trTypeBadge(t.courseType)}</td>
+      <td style="font-size:12px;white-space:nowrap">${trDateText(t)}</td>
+      <td class="text-right">${trHours(t)||'-'}</td>
       <td>
         <button class="btn btn-sm btn-orange" onclick="editTraining('${t.id}')">✏️</button>
         <button class="btn btn-sm btn-red" onclick="deleteTraining('${t.id}')">🗑</button>
       </td>
     </tr>`;
   }).join('');
-
-  document.getElementById('content').innerHTML = `
-    <div class="flex-between mb-8">
-      <div class="section-title">📚 แผนพัฒนากรรมการ (Director Training)</div>
-      <button class="btn btn-primary" onclick="editTraining(null)">+ บันทึกการอบรม</button>
-    </div>
-    <div class="panel"><div class="panel-header"><h3>📊 สรุปชั่วโมงอบรมสะสม (เป้า 24 ชม./ปี)</h3></div>
-    <div class="panel-body">${summaryBars||'<p class="text-muted">ยังไม่มีข้อมูล</p>'}</div></div>
-    <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin:12px 0">
-      <select id="tr-fdir" class="form-control" style="width:180px" onchange="renderTraining()"><option value="">— กรรมการทั้งหมด —</option>${dirOpts}</select>
-      <select id="tr-fcat" class="form-control" style="width:160px" onchange="renderTraining()"><option value="">— หมวดทั้งหมด —</option>${catOpts}</select>
-      <select id="tr-fyr"  class="form-control" style="width:110px" onchange="renderTraining()"><option value="">— ปีทั้งหมด —</option>${yrOpts}</select>
+  return `<div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-bottom:12px">
+      <select class="form-control" style="width:200px" onchange="trainState.dir=this.value;document.getElementById('tr-content').innerHTML=trainLogHtml()"><option value="">— กรรมการทั้งหมด —</option>${dirOpts}</select>
+      <select class="form-control" style="width:170px" onchange="trainState.type=this.value;document.getElementById('tr-content').innerHTML=trainLogHtml()"><option value="">— ทุกประเภท —</option>${typeOpts}</select>
+      <select class="form-control" style="width:110px" onchange="trainState.year=this.value;document.getElementById('tr-content').innerHTML=trainLogHtml()"><option value="">— ทุกปี —</option>${yrOpts}</select>
+      <input class="form-control" style="width:180px" placeholder="ค้นหาหลักสูตร/สถาบัน" value="${(trainState.q||'').replace(/"/g,'&quot;')}" oninput="trainState.q=this.value" onkeydown="if(event.key==='Enter')document.getElementById('tr-content').innerHTML=trainLogHtml()">
       <span style="margin-left:auto;font-size:12px;color:var(--text-light)">${rows.length} รายการ</span>
     </div>
     <div class="panel"><div class="panel-body" style="padding:0">
       <table class="tbl">
-        <thead><tr><th>กรรมการ</th><th>หลักสูตร</th><th>สถาบัน/ผู้จัด</th><th>วันที่</th><th class="text-right">ชม.</th><th>หมวด</th><th></th></tr></thead>
-        <tbody>${tRows||'<tr><td colspan="7" class="text-muted" style="text-align:center;padding:30px">ยังไม่มีข้อมูลการอบรม</td></tr>'}</tbody>
+        <thead><tr><th>กรรมการ</th><th>หลักสูตร</th><th>สถาบัน</th><th>ประเภท</th><th>วันที่</th><th class="text-right">ชม.</th><th></th></tr></thead>
+        <tbody>${tRows||'<tr><td colspan="7" class="text-muted" style="text-align:center;padding:30px">ยังไม่มีข้อมูล</td></tr>'}</tbody>
       </table>
     </div></div>`;
 }
 
 function editTraining(id) {
   const t = id ? DB.directorTraining.find(x=>x.id===id) : null;
-  const dirOpts = DB.directors.map(d=>{
-    const sel = t && t.directorId===d.id ? 'selected' : '';
-    return `<option value="${d.id}" ${sel}>${d.name}</option>`;
-  }).join('');
-  const catOpts = Object.entries(TRAIN_CATS).map(([k,v])=>`<option value="${k}" ${t&&t.category===k?'selected':''}>${v}</option>`).join('');
+  const dirOpts = DB.directors.map(d=>`<option value="${d.id}" ${t&&t.directorId===d.id?'selected':''}>${d.name}</option>`).join('');
+  const typeOpts = Object.entries(TRAIN_TYPES).map(([k,v])=>`<option value="${k}" ${t&&t.courseType===k?'selected':''}>${v}</option>`).join('');
   document.getElementById('modal-title').textContent = id ? '✏️ แก้ไขการอบรม' : '+ บันทึกการอบรม';
   document.getElementById('modal-body').innerHTML = `
     <div class="form-row">
       <div class="form-group" style="flex:1.5"><label>กรรมการ *</label><select class="form-control" id="tr-dir"><option value="">—</option>${dirOpts}</select></div>
-      <div class="form-group"><label>วันที่อบรม *</label><input type="date" class="form-control" id="tr-date" value="${t?toCEStr(t.date):''}"></div>
+      <div class="form-group"><label>ประเภท</label><select class="form-control" id="tr-type">${typeOpts}</select></div>
     </div>
-    <div class="form-group"><label>ชื่อหลักสูตร *</label><input class="form-control" id="tr-course" value="${t?t.course:''}" placeholder="เช่น Director Certification Program (DCP)"></div>
+    <div class="form-group"><label>ชื่อหลักสูตร *</label><input class="form-control" id="tr-course" value="${t?(t.course||'').replace(/"/g,'&quot;'):''}" placeholder="เช่น Director Certification Program (DCP)"></div>
+    <div class="form-group"><label>สถาบัน/ผู้จัด</label><input class="form-control" id="tr-org" value="${t?(t.institute||'').replace(/"/g,'&quot;'):''}" placeholder="เช่น IOD, ก.ล.ต."></div>
     <div class="form-row">
-      <div class="form-group"><label>สถาบัน/ผู้จัด</label><input class="form-control" id="tr-org" value="${t?t.organizer:''}" placeholder="เช่น IOD, ก.ล.ต."></div>
-      <div class="form-group"><label>จำนวนชั่วโมง</label><input type="number" class="form-control" id="tr-hrs" value="${t?t.hours:0}" min="0"></div>
-      <div class="form-group"><label>หมวด</label><select class="form-control" id="tr-cat">${catOpts}</select></div>
+      <div class="form-group" style="flex:1.5"><label>วันที่ (ข้อความ)</label><input class="form-control" id="tr-datetext" value="${t?(t.dateText||'').replace(/"/g,'&quot;'):''}" placeholder="เช่น 25/06/2567 - 26/06/2567"></div>
+      <div class="form-group"><label>ปี (พ.ศ.)</label><input type="number" class="form-control" id="tr-year" value="${t&&t.year?t.year:''}" placeholder="2568"></div>
+      <div class="form-group"><label>ชั่วโมง</label><input type="number" step="0.5" class="form-control" id="tr-hrs" value="${t?trHours(t):0}" min="0"></div>
     </div>
-    <div class="form-group"><label>หมายเหตุ</label><input class="form-control" id="tr-note" value="${t?t.note:''}"></div>`;
-  document.getElementById('modal-footer').innerHTML = `<button class="btn btn-outline" onclick="closeModal()">ยกเลิก</button><button class="btn btn-primary" onclick="saveTraining('${id||''}')">💾 บันทึก</button>`;
+    <div class="form-row">
+      <div class="form-group"><label>รุ่น / เลข Cert</label><input class="form-control" id="tr-batch" value="${t?(t.batch||'').replace(/"/g,'&quot;'):''}" placeholder="เช่น DCP 187/2014"></div>
+      <div class="form-group"><label>ผล</label><input class="form-control" id="tr-result" value="${t?(t.result||'').replace(/"/g,'&quot;'):''}" placeholder="เช่น ผ่าน/PA"></div>
+    </div>
+    <div class="form-group"><label>หมายเหตุ</label><input class="form-control" id="tr-note" value="${t?(t.note||'').replace(/"/g,'&quot;'):''}"></div>`;
+  document.getElementById('modal-footer').innerHTML = `<button class="btn btn-outline" onclick="closeModal()">ยกเลิก</button>${id?`<button class="btn btn-red" onclick="deleteTraining('${id}',true)">🗑 ลบ</button>`:''}<button class="btn btn-primary" onclick="saveTraining('${id||''}')">💾 บันทึก</button>`;
   document.getElementById('modal-overlay').classList.add('show');
 }
 
 function saveTraining(id) {
   const dirId = document.getElementById('tr-dir').value;
   const course = document.getElementById('tr-course').value.trim();
-  const dateVal = document.getElementById('tr-date').value;
-  if (!dirId || !course || !dateVal) { alert('กรุณากรอกข้อมูลให้ครบ'); return; }
+  if (!dirId || !course) { alert('กรุณาเลือกกรรมการและชื่อหลักสูตร'); return; }
   const d = DB.directors.find(x=>x.id===dirId);
+  const yv = parseInt(document.getElementById('tr-year').value);
   const entry = {
     id: id||genId('tr'), directorId:dirId, directorName:d?d.name:'',
-    date:toBEStr(dateVal), course, organizer:document.getElementById('tr-org').value,
-    hours:parseInt(document.getElementById('tr-hrs').value)||0,
-    category:document.getElementById('tr-cat').value,
-    note:document.getElementById('tr-note').value
+    course, institute:document.getElementById('tr-org').value.trim(),
+    courseType:document.getElementById('tr-type').value,
+    dateText:document.getElementById('tr-datetext').value.trim(),
+    year: yv||null,
+    hours:parseFloat(document.getElementById('tr-hrs').value)||0,
+    batch:document.getElementById('tr-batch').value.trim(),
+    result:document.getElementById('tr-result').value.trim(),
+    note:document.getElementById('tr-note').value.trim()
   };
   if (id) { const i=DB.directorTraining.findIndex(x=>x.id===id); if(i>=0) DB.directorTraining[i]=entry; }
   else DB.directorTraining.push(entry);
   saveData(); closeModal(); renderTraining();
 }
 
-function deleteTraining(id) {
+function deleteTraining(id, fromModal) {
   if (!confirm('ลบรายการนี้?')) return;
   DB.directorTraining = DB.directorTraining.filter(x=>x.id!==id);
-  saveData(); renderTraining();
+  saveData(); if (fromModal) closeModal(); renderTraining();
 }
 
 // ============================================================
@@ -3023,8 +3126,8 @@ function generateDisclosure() {
     const role = d.nrcRole==='chair'?'ประธาน':'กรรมการ';
     return `${d.name} (${role})`;
   }).join(' / ');
-  const trainYr = DB.directorTraining.filter(t=>t.date&&t.date.startsWith(String(yr)));
-  const trainHrs = trainYr.reduce((a,b)=>a+(b.hours||0),0);
+  const trainYr = DB.directorTraining.filter(t=>t.year===yr || (t.date&&String(t.date).startsWith(String(yr))));
+  const trainHrs = trainYr.reduce((a,b)=>a+(Number(b.hours)||0),0);
   const remunYr = DB.remuneration.filter(r=>r.year===yr);
   const totalRemun = remunYr.reduce((a,b)=>a+(b.retainer||0)+(b.boardFee||0)+(b.nrcFee||0)+(b.otherFee||0),0);
   const text = `คณะกรรมการสรรหาและพิจารณาค่าตอบแทน (NRC) ประกอบด้วย ${nrcMembers}
