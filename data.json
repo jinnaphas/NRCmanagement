@@ -1802,18 +1802,13 @@
   "succession": [
     {
       "id": "sp1",
-      "position": "CEO",
+      "position": "CEO-PCC",
       "incumbent": "นายกิตติ สัมฤทธิ์",
       "successors": [
         {
-          "name": "ผู้สืบทอด A",
-          "readiness": "ready-1y",
-          "idp": "Executive Leadership Program, Board Exposure"
-        },
-        {
-          "name": "ผู้สืบทอด B",
+          "name": "นายอมร แดงโชติ",
           "readiness": "ready-2y",
-          "idp": "P&L Responsibility, Strategic Planning"
+          "idp": "Executive Leadership Program, Board Exposure"
         }
       ],
       "note": ""
