@@ -43,6 +43,19 @@
       "iodCerts": {
         "DCP": "217/2016",
         "RCP": "55/2023"
+      },
+      "firstAppoint": "2560-05-08",
+      "convAppoint": "2561-05-09",
+      "nineYearDate": "2570-04-27",
+      "replacedName": "",
+      "exitDate": "",
+      "termStatus": "active",
+      "rotation": {
+        "2561": "in",
+        "2564": "reelect",
+        "2567": "reelect",
+        "2570": "reelect",
+        "2573": "reelect"
       }
     },
     {
@@ -75,6 +88,20 @@
       "iodCerts": {
         "DCP": "187/2014",
         "RCP": "33/2014"
+      },
+      "firstAppoint": "2530-05-15",
+      "convAppoint": "2561-05-09",
+      "nineYearDate": "",
+      "replacedName": "",
+      "exitDate": "",
+      "termStatus": "active",
+      "rotation": {
+        "2561": "in",
+        "2562": "reelect",
+        "2564": "reelect",
+        "2566": "reelect",
+        "2569": "reelect",
+        "2572": "reelect"
       }
     },
     {
@@ -107,6 +134,20 @@
       "photo": "https://precise.co.th/storage/2025/02/4.-sutee.png",
       "iodCerts": {
         "DCP": "201/2015"
+      },
+      "firstAppoint": "2530-05-15",
+      "convAppoint": "2561-05-09",
+      "nineYearDate": "",
+      "replacedName": "",
+      "exitDate": "",
+      "termStatus": "active",
+      "rotation": {
+        "2561": "in",
+        "2562": "reelect",
+        "2565": "reelect",
+        "2568": "reelect",
+        "2571": "reelect",
+        "2574": "reelect"
       }
     },
     {
@@ -139,6 +180,20 @@
       "iodCerts": {
         "DCP": "205/2015",
         "RCP": "35/2014"
+      },
+      "firstAppoint": "2530-05-15",
+      "convAppoint": "2561-05-09",
+      "nineYearDate": "",
+      "replacedName": "",
+      "exitDate": "",
+      "termStatus": "active",
+      "rotation": {
+        "2561": "in",
+        "2562": "reelect",
+        "2564": "reelect",
+        "2566": "reelect",
+        "2569": "reelect",
+        "2572": "reelect"
       }
     },
     {
@@ -171,6 +226,19 @@
       "iodCerts": {
         "DAP": "151/2018",
         "AACP": "30/2018"
+      },
+      "firstAppoint": "2561-04-27",
+      "convAppoint": "2561-05-09",
+      "nineYearDate": "2570-04-27",
+      "replacedName": "",
+      "exitDate": "",
+      "termStatus": "active",
+      "rotation": {
+        "2561": "in",
+        "2564": "reelect",
+        "2567": "reelect",
+        "2570": "reelect",
+        "2573": "retire"
       }
     },
     {
@@ -203,6 +271,19 @@
       "iodCerts": {
         "DCP": "155/2012",
         "AACP": "18/2015"
+      },
+      "firstAppoint": "2563-04-24",
+      "convAppoint": "2563-04-24",
+      "nineYearDate": "2572-04-24",
+      "replacedName": "นายสุริยา เลิศวัฒนะพงษ์",
+      "exitDate": "",
+      "termStatus": "active",
+      "rotation": {
+        "2563": "in",
+        "2565": "reelect",
+        "2568": "reelect",
+        "2571": "reelect",
+        "2574": "retire"
       }
     },
     {
@@ -235,6 +316,17 @@
       "iodCerts": {
         "DAP": "233/2025",
         "BNCP": "23/2025"
+      },
+      "firstAppoint": "2568-04-28",
+      "convAppoint": "2568-04-28",
+      "nineYearDate": "",
+      "replacedName": "นางนารี บุญธีรวร",
+      "exitDate": "",
+      "termStatus": "active",
+      "rotation": {
+        "2568": "in",
+        "2571": "reelect",
+        "2574": "reelect"
       }
     },
     {
@@ -267,6 +359,17 @@
       "iodCerts": {
         "DAP": "235/2025",
         "BNCP": "24/2025"
+      },
+      "firstAppoint": "2568-04-28",
+      "convAppoint": "2568-04-28",
+      "nineYearDate": "",
+      "replacedName": "",
+      "exitDate": "",
+      "termStatus": "active",
+      "rotation": {
+        "2568": "in",
+        "2571": "reelect",
+        "2574": "reelect"
       }
     },
     {
@@ -299,6 +402,19 @@
       "iodCerts": {
         "DCP": "171/2013",
         "RCP": "48/2021"
+      },
+      "firstAppoint": "2563-04-24",
+      "convAppoint": "2563-04-24",
+      "nineYearDate": "",
+      "replacedName": "นายอธิศานต์ วายุภาพ",
+      "exitDate": "",
+      "termStatus": "active",
+      "rotation": {
+        "2563": "in",
+        "2565": "reelect",
+        "2568": "reelect",
+        "2570": "reelect",
+        "2573": "reelect"
       }
     },
     {
@@ -330,6 +446,20 @@
       "boardRole": "member",
       "iodCerts": {
         "DCP": "203/2015"
+      },
+      "firstAppoint": "2557-02-28",
+      "convAppoint": "2561-05-09",
+      "nineYearDate": "",
+      "replacedName": "",
+      "exitDate": "",
+      "termStatus": "active",
+      "rotation": {
+        "2561": "in",
+        "2562": "reelect",
+        "2565": "reelect",
+        "2567": "reelect",
+        "2569": "reelect",
+        "2572": "reelect"
       }
     },
     {
@@ -361,6 +491,17 @@
       "boardRole": "member",
       "iodCerts": {
         "DCP": "274/2019"
+      },
+      "firstAppoint": "2567-04-29",
+      "convAppoint": "2567-04-29",
+      "nineYearDate": "",
+      "replacedName": "",
+      "exitDate": "",
+      "termStatus": "active",
+      "rotation": {
+        "2567": "in",
+        "2570": "reelect",
+        "2573": "reelect"
       }
     },
     {
@@ -390,7 +531,17 @@
       "training": [],
       "photo": "https://en.precise.co.th/storage/2026/05/admin-photo-temp.png",
       "boardRole": "member",
-      "iodCerts": {}
+      "iodCerts": {},
+      "firstAppoint": "2569-04-29",
+      "convAppoint": "2569-04-29",
+      "nineYearDate": "",
+      "replacedName": "นายสรรค์ชัย เตียวประเสริฐกุล",
+      "exitDate": "",
+      "termStatus": "active",
+      "rotation": {
+        "2569": "in",
+        "2572": "reelect"
+      }
     },
     {
       "id": "dmpvi8lb9m2q4l",
@@ -5894,5 +6045,38 @@
     "RCP",
     "BNCP",
     "AACP"
-  ]
+  ],
+  "termRules": {
+    "termYears": 3,
+    "indepLimitYears": 9,
+    "conversionDate": "2561-05-09",
+    "minIndependent": 3
+  },
+  "agmYears": [
+    2561,
+    2562,
+    2563,
+    2564,
+    2565,
+    2566,
+    2567,
+    2568,
+    2569,
+    2570,
+    2571,
+    2572,
+    2573,
+    2574
+  ],
+  "agmDates": {
+    "2561": "2561-04-27",
+    "2562": "2562-04-26",
+    "2563": "2563-04-24",
+    "2564": "2564-04-26",
+    "2565": "2565-04-25",
+    "2566": "2566-04-27",
+    "2567": "2567-04-29",
+    "2568": "2568-04-28",
+    "2569": "2569-04-29"
+  }
 }

@@ -197,6 +197,7 @@ textarea.form-control { resize: vertical; min-height: 80px; }
     <a onclick="showSection('meetings')" id="nav-meetings"><span class="icon">&#128197;</span> การประชุม</a>
     <a onclick="showSection('directors')" id="nav-directors"><span class="icon">&#128101;</span> ทะเบียนคณะกรรมการทั้งหมด</a>
     <a onclick="showSection('controllist')" id="nav-controllist"><span class="icon">&#127970;</span> Control List</a>
+    <a onclick="showSection('boardterm')" id="nav-boardterm"><span class="icon">&#128338;</span> วาระกรรมการ</a>
     <a onclick="showSection('succession')" id="nav-succession"><span class="icon">&#127919;</span> Succession Plan</a>
     <a onclick="showSection('changelog')" id="nav-changelog"><span class="icon">&#128221;</span> ประวัติกรรมการ</a>
     <a onclick="showSection('remuneration')" id="nav-remuneration"><span class="icon">&#128176;</span> ค่าตอบแทน</a>
@@ -602,6 +603,21 @@ function migrateDB() {
   });
   if (DB.directors) DB.directors.forEach(d => { if (!d.photo) d.photo = ''; if (d.boardRole === undefined) d.boardRole = 'member'; if (!d.iodCerts) d.iodCerts = {}; });
   if (!DB.iodPrograms || !DB.iodPrograms.length) DB.iodPrograms = ['DAP','DCP','RCP','BNCP','AACP'];
+  if (!DB.termRules) DB.termRules = { termYears:3, indepLimitYears:9, conversionDate:'2561-05-09', minIndependent:3 };
+  if (!DB.agmYears || !DB.agmYears.length) {
+    DB.agmYears = [2561,2562,2563,2564,2565,2566,2567,2568,2569,2570,2571,2572,2573,2574];
+    DB.agmDates = { '2561':'2561-04-27','2562':'2562-04-26','2563':'2563-04-24','2564':'2564-04-26','2565':'2565-04-25','2566':'2566-04-27','2567':'2567-04-29','2568':'2568-04-28','2569':'2569-04-29' };
+  }
+  if (!DB.agmDates) DB.agmDates = {};
+  if (DB.directors) DB.directors.forEach(d => {
+    if (d.firstAppoint === undefined) d.firstAppoint = d.startDate || '';
+    if (d.convAppoint === undefined) d.convAppoint = '';
+    if (d.nineYearDate === undefined) d.nineYearDate = '';
+    if (d.replacedName === undefined) d.replacedName = '';
+    if (d.termStatus === undefined) d.termStatus = 'active';
+    if (d.exitDate === undefined) d.exitDate = '';
+    if (!d.rotation) d.rotation = {};
+  });
   if (DB.directorTraining) DB.directorTraining.forEach(t => {
     if (!t.courseType) t.courseType = (t.category==='governance') ? 'governance' : 'internal';
     if (t.institute === undefined) t.institute = t.organizer || '';
@@ -617,9 +633,9 @@ function showSection(section) {
   document.querySelectorAll('#nav a').forEach(a => a.classList.remove('active'));
   const navEl = document.getElementById('nav-'+section);
   if (navEl) navEl.classList.add('active');
-  const titles = { dashboard:'Dashboard', meetings:'การประชุม NRC', directors:'ทะเบียนคณะกรรมการทั้งหมด', controllist:'Control List', succession:'Succession Plan', changelog:'ประวัติการเปลี่ยนแปลงกรรมการ', remuneration:'ค่าตอบแทนกรรมการ', training:'แผนพัฒนากรรมการ', assessment:'ประเมินผลกรรมการ', documents:'คลังเอกสาร', agm:'AGM Tracker', conflict:'ผลประโยชน์ทับซ้อน', settings:'ตั้งค่าระบบ' };
+  const titles = { dashboard:'Dashboard', meetings:'การประชุม NRC', directors:'ทะเบียนคณะกรรมการทั้งหมด', controllist:'Control List', boardterm:'วาระกรรมการ (Board Term & Rotation)', succession:'Succession Plan', changelog:'ประวัติการเปลี่ยนแปลงกรรมการ', remuneration:'ค่าตอบแทนกรรมการ', training:'แผนพัฒนากรรมการ', assessment:'ประเมินผลกรรมการ', documents:'คลังเอกสาร', agm:'AGM Tracker', conflict:'ผลประโยชน์ทับซ้อน', settings:'ตั้งค่าระบบ' };
   document.getElementById('page-title').textContent = titles[section]||section;
-  const renders = { dashboard:renderDashboard, meetings:renderMeetings, directors:renderDirectors, controllist:renderControlList, succession:renderSuccession, changelog:renderChangelog, remuneration:renderRemuneration, training:renderTraining, assessment:renderAssessment, documents:renderDocuments, agm:renderAGM, conflict:renderConflict, settings:renderSettings };
+  const renders = { dashboard:renderDashboard, meetings:renderMeetings, directors:renderDirectors, controllist:renderControlList, boardterm:renderBoardTerm, succession:renderSuccession, changelog:renderChangelog, remuneration:renderRemuneration, training:renderTraining, assessment:renderAssessment, documents:renderDocuments, agm:renderAGM, conflict:renderConflict, settings:renderSettings };
   document.getElementById('content').innerHTML = '';
   if (renders[section]) renders[section]();
 }
@@ -3124,6 +3140,162 @@ function resetData() {
   if (!confirm('ยืนยันอีกครั้ง — ข้อมูลทั้งหมดจะถูกลบถาวร')) return;
   DB=JSON.parse(JSON.stringify(DEFAULT_DATA)); saveData();
   alert('ล้างข้อมูลเรียบร้อยแล้ว'); showSection('dashboard');
+}
+
+// ============================================================
+// BOARD TERM & ROTATION — วาระกรรมการ
+// ============================================================
+const ROT_STATES = { reelect:{l:'ออก-เสนอกลับ',c:'#2E75B6',s:'P'}, retire:{l:'ครบวาระ ต้องหาคนใหม่',c:'#C00000',s:'NEW'}, in:{l:'เข้ารับตำแหน่ง',c:'#70AD47',s:'IN'}, exit:{l:'พ้นตำแหน่ง',c:'#888',s:'OUT'} };
+let boardTermTab='matrix';
+function termYearsFrom(beDate){ const c=toDateCE(beDate); if(!c) return null; return Math.floor((Date.now()-c)/(1000*60*60*24*365.25)); }
+function nineYearOf(d){ if(d.nineYearDate) return d.nineYearDate; if(d.type!=='independent') return ''; const base=d.convAppoint||d.firstAppoint||d.startDate; if(!base) return ''; const y=parseInt(String(base).slice(0,4)); if(!y) return ''; return (y + (DB.termRules.indepLimitYears||9)) + String(base).slice(4); }
+function activeBoardForTerm(){ return DB.directors.filter(d=>d.termStatus!=='resigned' && d.boardRole && d.boardRole!=='none'); }
+
+function renderBoardTerm(){
+  document.getElementById('content').innerHTML = `
+    <div class="flex-between mb-8">
+      <div class="section-title">&#128338; วาระกรรมการ (Board Term &amp; Rotation)</div>
+      <div class="btn-group">
+        <button class="btn btn-outline" onclick="autoComputeRotationAll()">&#9881; คำนวณวาระอัตโนมัติ</button>
+        <button class="btn btn-outline" onclick="editTermRules()">เกณฑ์</button>
+      </div>
+    </div>
+    <div class="tabs" id="bt-tabs">
+      <button class="tab-btn ${boardTermTab==='matrix'?'active':''}" onclick="boardTermSwitch('matrix',this)">ตารางวาระ (Rotation)</button>
+      <button class="tab-btn ${boardTermTab==='flags'?'active':''}" onclick="boardTermSwitch('flags',this)">สรุป &amp; ธงเตือน</button>
+      <button class="tab-btn ${boardTermTab==='indep'?'active':''}" onclick="boardTermSwitch('indep',this)">ผังกรรมการอิสระ</button>
+    </div>
+    <div id="bt-content">${boardTermTabHtml()}</div>`;
+}
+function boardTermSwitch(t,btn){ boardTermTab=t; document.querySelectorAll('#bt-tabs .tab-btn').forEach(b=>b.classList.remove('active')); btn.classList.add('active'); document.getElementById('bt-content').innerHTML=boardTermTabHtml(); }
+function boardTermTabHtml(){ return boardTermTab==='flags'?termFlagsHtml() : boardTermTab==='indep'?termIndepHtml() : termMatrixHtml(); }
+
+function termMatrixHtml(){
+  const yrs=DB.agmYears; const dirs=activeBoardForTerm();
+  const head=yrs.map(y=>`<th>${y}<br><span style="font-weight:400;font-size:9px">${DB.agmDates[y]?thDate(DB.agmDates[y]).replace(/ \d+$/,''):'—'}</span></th>`).join('');
+  const rows=dirs.map(d=>{
+    const cells=yrs.map(y=>{ const st=(d.rotation||{})[y]||''; const s=ROT_STATES[st];
+      return `<td style="text-align:center;cursor:pointer;${s?`background:${s.c}22`:''}" onclick="cycleRotation('${d.id}',${y})" title="${s?s.l:'คลิกเพื่อกำหนด'}">${s?`<span style="color:${s.c};font-weight:700;font-size:10px">${s.s}</span>`:'<span class="text-muted">·</span>'}</td>`;
+    }).join('');
+    return `<tr><td class="dir-name" style="text-align:left;cursor:pointer" onclick="editTermDirector('${d.id}')">${directorAvatar(d.name,22)} ${d.name}<br><span class="text-muted" style="font-size:10px">${typeLabel(d.type)}</span></td>${cells}</tr>`;
+  }).join('');
+  return `<div class="alert alert-info" style="font-size:12px">คลิกช่องเพื่อหมุนสถานะ: <b style="color:#2E75B6">P</b>=ออก-เสนอกลับ · <b style="color:#C00000">NEW</b>=ครบวาระ ต้องหาคนใหม่ · <b style="color:#70AD47">IN</b>=เข้ารับตำแหน่ง · <b>OUT</b>=พ้นตำแหน่ง &nbsp;|&nbsp; คลิกชื่อเพื่อแก้วันที่/วาระ</div>
+    <div class="panel skills-matrix"><div class="panel-body" style="padding:0;overflow-x:auto"><table style="width:100%;font-size:11px">
+      <thead><tr><th class="dir-name" style="text-align:left">กรรมการ \\ AGM (พ.ศ.)</th>${head}</tr></thead>
+      <tbody>${rows||`<tr><td colspan="${yrs.length+1}" class="empty-state">ยังไม่มีกรรมการในบอร์ด</td></tr>`}</tbody>
+    </table></div></div>`;
+}
+function cycleRotation(did,y){
+  const d=DB.directors.find(x=>x.id===did); if(!d)return; if(!d.rotation)d.rotation={};
+  const order=['','reelect','retire','in','exit']; const cur=d.rotation[y]||''; const nx=order[(order.indexOf(cur)+1)%order.length];
+  if(nx) d.rotation[y]=nx; else delete d.rotation[y];
+  saveData(); document.getElementById('bt-content').innerHTML=termMatrixHtml();
+}
+function autoComputeRotationAll(){
+  if(!confirm('คำนวณวาระอัตโนมัติจากวันที่ + กฎ '+DB.termRules.termYears+' ปี / '+DB.termRules.indepLimitYears+' ปี?\n(จะเขียนทับช่องที่มีอยู่ ปรับแก้ภายหลังได้)')) return;
+  const rules=DB.termRules; const yrs=DB.agmYears;
+  activeBoardForTerm().forEach(d=>{
+    const base=d.convAppoint||d.firstAppoint||d.startDate; if(!base){d.rotation={};return;}
+    const startY=parseInt(String(base).slice(0,4)); const ny=nineYearOf(d); const nyY=ny?parseInt(ny.slice(0,4)):null;
+    const rot={};
+    yrs.forEach(y=>{ if(y<startY)return; const diff=y-startY;
+      if(diff>0 && diff%rules.termYears===0){ rot[y]=(d.type==='independent'&&nyY&&y>=nyY)?'retire':'reelect'; }
+    });
+    d.rotation=rot;
+  });
+  saveData(); document.getElementById('bt-content').innerHTML=termMatrixHtml();
+  alert('คำนวณเสร็จ — ปรับแก้รายช่องตามจริงได้');
+}
+
+function termFlagsHtml(){
+  const dirs=activeBoardForTerm(); const curY=DB.company.fiscalYear||2569;
+  const retireNow=dirs.filter(d=>(d.rotation||{})[curY]);
+  const near9=dirs.filter(d=>{ const ny=nineYearOf(d); if(!ny)return false; const y=parseInt(ny.slice(0,4)); return y>=curY && y<=curY+1; });
+  const rows=dirs.map(d=>{
+    const t1=termYearsFrom(d.firstAppoint); const ny=nineYearOf(d); const nyY=ny?parseInt(ny.slice(0,4)):null; const warn9=nyY&&nyY<=curY+1;
+    const nextRot=DB.agmYears.filter(y=>['reelect','retire'].includes((d.rotation||{})[y])).find(y=>y>=curY);
+    return `<tr>
+      <td>${directorAvatar(d.name,24)} ${d.name}<br><span class="text-muted" style="font-size:10px">${typeLabel(d.type)}</span></td>
+      <td>${d.firstAppoint?thDate(d.firstAppoint):'-'}</td>
+      <td class="text-right">${t1!=null?t1+' ปี':'-'}</td>
+      <td>${ny?`<span style="${warn9?'color:var(--red);font-weight:700':''}">${thDate(ny)}${warn9?' ⚠':''}</span>`:'-'}</td>
+      <td>${nextRot?`AGM ${nextRot}`:'-'}</td>
+      <td style="font-size:12px">${d.replacedName||'-'}</td>
+    </tr>`;
+  }).join('');
+  const indepNow=dirs.filter(d=>d.type==='independent').length;
+  return `
+    <div class="cards-row">
+      <div class="card ${retireNow.length?'orange':''}"><div class="card-label">ออกตามวาระ AGM ${curY}</div><div class="card-value">${retireNow.length}</div><div class="card-sub">${retireNow.map(d=>stripPrefix(d.name)).join(', ')||'-'}</div></div>
+      <div class="card ${near9.length?'red':'green'}"><div class="card-label">ใกล้ครบ 9 ปี (≤1 ปี)</div><div class="card-value">${near9.length}</div><div class="card-sub">${near9.map(d=>stripPrefix(d.name)).join(', ')||'ไม่มี'}</div></div>
+      <div class="card ${indepNow<DB.termRules.minIndependent?'red':'blue'}"><div class="card-label">กรรมการอิสระปัจจุบัน</div><div class="card-value">${indepNow}</div><div class="card-sub">ขั้นต่ำ ${DB.termRules.minIndependent}</div></div>
+      <div class="card"><div class="card-label">กรรมการในบอร์ด</div><div class="card-value">${dirs.length}</div><div class="card-sub">คน</div></div>
+    </div>
+    <div class="panel"><div class="panel-header"><h3>📋 วาระการดำรงตำแหน่งรายคน</h3></div>
+    <div class="panel-body" style="padding:0"><table class="tbl">
+      <thead><tr><th>กรรมการ</th><th>แต่งตั้งครั้งแรก</th><th class="text-right">ปีที่ดำรง</th><th>ครบ 9 ปี</th><th>ออกตามวาระถัดไป</th><th>เข้าแทน</th></tr></thead>
+      <tbody>${rows||'<tr><td colspan="6" class="empty-state">ไม่มีข้อมูล</td></tr>'}</tbody></table></div></div>`;
+}
+
+function termIndepHtml(){
+  const yrs=DB.agmYears; const indeps=DB.directors.filter(d=>d.type==='independent');
+  const cols=yrs.map(y=>{
+    const active=indeps.filter(d=>{
+      const a=parseInt(String(d.convAppoint||d.firstAppoint||d.startDate||'0').slice(0,4))||0;
+      const ex=d.exitDate?parseInt(d.exitDate.slice(0,4)):9999;
+      const ny=nineYearOf(d); const nyY=ny?parseInt(ny.slice(0,4)):9999;
+      return a<=y && y<ex && y<nyY;
+    });
+    const below=active.length<DB.termRules.minIndependent;
+    return `<td style="vertical-align:top;${below?'background:#FCE4D6':''}">
+      <div style="font-weight:700;text-align:center;${below?'color:var(--red)':''}">${active.length}${below?' ⚠':''}</div>
+      <div style="font-size:10px;line-height:1.5">${active.map(d=>stripPrefix(d.name)).join('<br>')||'-'}</div></td>`;
+  }).join('');
+  return `<div class="alert alert-info" style="font-size:12px">จำนวน &amp; รายชื่อกรรมการอิสระแต่ละปี AGM (คำนวณจากวันแต่งตั้ง/พ้น/ครบ 9 ปี) — ช่องแดง = ต่ำกว่าขั้นต่ำ ${DB.termRules.minIndependent} คน</div>
+    <div class="panel skills-matrix"><div class="panel-body" style="padding:0;overflow-x:auto"><table style="width:100%;font-size:11px">
+      <thead><tr>${yrs.map(y=>`<th>AGM ${y}</th>`).join('')}</tr></thead>
+      <tbody><tr>${cols}</tr></tbody></table></div></div>`;
+}
+
+function editTermDirector(did){
+  const d=DB.directors.find(x=>x.id===did); if(!d)return;
+  openModal('วาระ — '+d.name,
+    `<div class="form-row">
+      <div class="form-group"><label>แต่งตั้งครั้งแรก (พ.ศ. yyyy-mm-dd)</label><input class="form-control" id="bt-first" value="${d.firstAppoint||''}" placeholder="2530-05-15"></div>
+      <div class="form-group"><label>แปรสภาพมหาชน (พ.ศ.)</label><input class="form-control" id="bt-conv" value="${d.convAppoint||''}" placeholder="2561-05-09"></div>
+    </div>
+    <div class="form-row">
+      <div class="form-group"><label>ครบ 9 ปี (เว้นว่าง=คำนวณ)</label><input class="form-control" id="bt-nine" value="${d.nineYearDate||''}" placeholder="2570-04-27"></div>
+      <div class="form-group"><label>สถานะ</label><select class="form-control" id="bt-status"><option value="active" ${d.termStatus!=='resigned'?'selected':''}>ดำรงตำแหน่ง</option><option value="resigned" ${d.termStatus==='resigned'?'selected':''}>พ้น/ลาออก</option></select></div>
+      <div class="form-group"><label>วันพ้นตำแหน่ง</label><input class="form-control" id="bt-exit" value="${d.exitDate||''}" placeholder="2563-04-24"></div>
+    </div>
+    <div class="form-group"><label>เข้าดำรงตำแหน่งแทน (ชื่อ)</label><input class="form-control" id="bt-repl" value="${(d.replacedName||'').replace(/"/g,'&quot;')}"></div>`,
+    `<button class="btn btn-outline" onclick="closeModal()">ยกเลิก</button><button class="btn btn-primary" onclick="saveTermDirector('${did}')">บันทึก</button>`);
+}
+function saveTermDirector(did){
+  const d=DB.directors.find(x=>x.id===did); if(!d)return;
+  d.firstAppoint=document.getElementById('bt-first').value.trim();
+  d.convAppoint=document.getElementById('bt-conv').value.trim();
+  d.nineYearDate=document.getElementById('bt-nine').value.trim();
+  d.termStatus=document.getElementById('bt-status').value;
+  d.exitDate=document.getElementById('bt-exit').value.trim();
+  d.replacedName=document.getElementById('bt-repl').value.trim();
+  saveData(); closeModal(); renderBoardTerm();
+}
+function editTermRules(){
+  const r=DB.termRules;
+  openModal('เกณฑ์วาระ',
+    `<div class="form-row">
+      <div class="form-group"><label>วาระ (ปี)</label><input type="number" class="form-control" id="trr-term" value="${r.termYears}"></div>
+      <div class="form-group"><label>เพดานอิสระ (ปี)</label><input type="number" class="form-control" id="trr-nine" value="${r.indepLimitYears}"></div>
+      <div class="form-group"><label>อิสระขั้นต่ำ (คน)</label><input type="number" class="form-control" id="trr-min" value="${r.minIndependent}"></div>
+    </div>
+    <div class="form-group"><label>วันแปรสภาพมหาชน (default)</label><input class="form-control" id="trr-conv" value="${r.conversionDate||''}"></div>`,
+    `<button class="btn btn-outline" onclick="closeModal()">ยกเลิก</button><button class="btn btn-primary" onclick="saveTermRules()">บันทึก</button>`);
+}
+function saveTermRules(){
+  DB.termRules={ termYears:parseInt(document.getElementById('trr-term').value)||3, indepLimitYears:parseInt(document.getElementById('trr-nine').value)||9, minIndependent:parseInt(document.getElementById('trr-min').value)||0, conversionDate:document.getElementById('trr-conv').value.trim() };
+  saveData(); closeModal(); renderBoardTerm();
 }
 
 // INIT
