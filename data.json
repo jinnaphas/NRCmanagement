@@ -237,8 +237,7 @@
         "2561": "in",
         "2564": "reelect",
         "2567": "reelect",
-        "2570": "reelect",
-        "2573": "retire"
+        "2570": "retire"
       }
     },
     {
@@ -282,8 +281,7 @@
         "2563": "in",
         "2565": "reelect",
         "2568": "reelect",
-        "2571": "reelect",
-        "2574": "retire"
+        "2571": "retire"
       }
     },
     {
@@ -571,7 +569,14 @@
       "note": "",
       "training": [],
       "photo": "https://drive.google.com/file/d/1vgrvzEm6KuKU5Md1PkQFSMN9uA3X40bb/view?usp=sharing",
-      "iodCerts": {}
+      "iodCerts": {},
+      "firstAppoint": "2569-01-01",
+      "convAppoint": "",
+      "nineYearDate": "",
+      "replacedName": "",
+      "termStatus": "active",
+      "exitDate": "",
+      "rotation": {}
     },
     {
       "id": "dmpvzhlb0j58gd",
@@ -601,7 +606,14 @@
       "note": "",
       "training": [],
       "photo": "https://drive.google.com/file/d/1Co8ATI0PoNlGo2y6YDd8G1rvRUkrVjlI/view?usp=drive_link",
-      "iodCerts": {}
+      "iodCerts": {},
+      "firstAppoint": "2569-01-01",
+      "convAppoint": "",
+      "nineYearDate": "",
+      "replacedName": "",
+      "termStatus": "active",
+      "exitDate": "",
+      "rotation": {}
     },
     {
       "id": "dmpvzjr71cuni9",
@@ -631,7 +643,14 @@
       "note": "",
       "training": [],
       "photo": "https://drive.google.com/file/d/10r2-xF2qU8I_GBBC-Z90EeeHQER75eoN/view?usp=drive_link",
-      "iodCerts": {}
+      "iodCerts": {},
+      "firstAppoint": "2569-01-01",
+      "convAppoint": "",
+      "nineYearDate": "",
+      "replacedName": "",
+      "termStatus": "active",
+      "exitDate": "",
+      "rotation": {}
     },
     {
       "id": "dmpvzl7x9ic18b",
@@ -661,7 +680,14 @@
       "note": "",
       "training": [],
       "photo": "https://drive.google.com/file/d/14jOaTNDYB-by_BqQhgd0OxX0FCltprRv/view?usp=sharing",
-      "iodCerts": {}
+      "iodCerts": {},
+      "firstAppoint": "2569-01-01",
+      "convAppoint": "",
+      "nineYearDate": "",
+      "replacedName": "",
+      "termStatus": "active",
+      "exitDate": "",
+      "rotation": {}
     },
     {
       "id": "dmpvzm3f64fhm4",
@@ -691,7 +717,14 @@
       "note": "",
       "training": [],
       "photo": "https://drive.google.com/file/d/1pfnsYOSq9LnV566_wgLluNLsSUGUJ8K_/view?usp=drive_link",
-      "iodCerts": {}
+      "iodCerts": {},
+      "firstAppoint": "2569-01-01",
+      "convAppoint": "",
+      "nineYearDate": "",
+      "replacedName": "",
+      "termStatus": "active",
+      "exitDate": "",
+      "rotation": {}
     },
     {
       "id": "dmpvzmvz56ijrb",
@@ -721,7 +754,14 @@
       "note": "",
       "training": [],
       "photo": "https://drive.google.com/file/d/1cFzxbp35dNx4TBCF0IJNON1IY5Qk1EhB/view?usp=drive_link",
-      "iodCerts": {}
+      "iodCerts": {},
+      "firstAppoint": "2569-01-01",
+      "convAppoint": "",
+      "nineYearDate": "",
+      "replacedName": "",
+      "termStatus": "active",
+      "exitDate": "",
+      "rotation": {}
     },
     {
       "id": "dmpvzntfr8tlj6",
@@ -751,7 +791,14 @@
       "note": "",
       "training": [],
       "photo": "https://drive.google.com/file/d/188n2GuAYRNJ4dAmhR_fdaEWwimejLD7s/view?usp=drive_link",
-      "iodCerts": {}
+      "iodCerts": {},
+      "firstAppoint": "2569-01-01",
+      "convAppoint": "",
+      "nineYearDate": "",
+      "replacedName": "",
+      "termStatus": "active",
+      "exitDate": "",
+      "rotation": {}
     },
     {
       "id": "dmpw0c5inb1r2v",
@@ -781,7 +828,14 @@
       "note": "",
       "training": [],
       "photo": "https://drive.google.com/file/d/1NQKNgbpp_eKhL13GvNKgiAZ1VB5OrmSX/view?usp=drive_link",
-      "iodCerts": {}
+      "iodCerts": {},
+      "firstAppoint": "2569-01-01",
+      "convAppoint": "",
+      "nineYearDate": "",
+      "replacedName": "",
+      "termStatus": "active",
+      "exitDate": "",
+      "rotation": {}
     },
     {
       "id": "dmpw0f34jdiu3x",
@@ -811,7 +865,14 @@
       "note": "",
       "training": [],
       "photo": "https://drive.google.com/file/d/1-I7P0uxNu7A80d7HlUIHDNbIHsh6GGbq/view?usp=drive_link",
-      "iodCerts": {}
+      "iodCerts": {},
+      "firstAppoint": "2569-01-01",
+      "convAppoint": "",
+      "nineYearDate": "",
+      "replacedName": "",
+      "termStatus": "active",
+      "exitDate": "",
+      "rotation": {}
     },
     {
       "id": "dmpw0g00rvkz39",
@@ -841,7 +902,14 @@
       "note": "",
       "training": [],
       "photo": "https://drive.google.com/file/d/1mRKIuk3XtTgYH7mBwfh68kUkUZEDSAUL/view?usp=drive_link",
-      "iodCerts": {}
+      "iodCerts": {},
+      "firstAppoint": "2569-01-01",
+      "convAppoint": "",
+      "nineYearDate": "",
+      "replacedName": "",
+      "termStatus": "active",
+      "exitDate": "",
+      "rotation": {}
     },
     {
       "id": "dmpw0h1kneaks5",
@@ -871,7 +939,14 @@
       "note": "",
       "training": [],
       "photo": "https://drive.google.com/file/d/10V7EJ-CetFeCJWpVxvCGQqi0lU-Hlv2o/view?usp=drive_link",
-      "iodCerts": {}
+      "iodCerts": {},
+      "firstAppoint": "2569-01-01",
+      "convAppoint": "",
+      "nineYearDate": "",
+      "replacedName": "",
+      "termStatus": "active",
+      "exitDate": "",
+      "rotation": {}
     },
     {
       "id": "dmpw0hy8ewe011",
@@ -901,7 +976,14 @@
       "note": "",
       "training": [],
       "photo": "https://drive.google.com/file/d/1OxKW-ilVsSxVD08ZpkZgN-Zjio5c6Ybr/view?usp=drive_link",
-      "iodCerts": {}
+      "iodCerts": {},
+      "firstAppoint": "2569-01-01",
+      "convAppoint": "",
+      "nineYearDate": "",
+      "replacedName": "",
+      "termStatus": "active",
+      "exitDate": "",
+      "rotation": {}
     },
     {
       "id": "dmpw0qtrlin69g",
@@ -931,7 +1013,14 @@
       "note": "",
       "training": [],
       "photo": "https://drive.google.com/file/d/1wbs1LJsWmcOqOuXho6HwY8VT0E6mbB0K/view?usp=drive_link",
-      "iodCerts": {}
+      "iodCerts": {},
+      "firstAppoint": "2569-01-01",
+      "convAppoint": "",
+      "nineYearDate": "",
+      "replacedName": "",
+      "termStatus": "active",
+      "exitDate": "",
+      "rotation": {}
     },
     {
       "id": "dmpw0s0ova1k5a",
@@ -961,7 +1050,14 @@
       "note": "",
       "training": [],
       "photo": "https://drive.google.com/file/d/1oZP1NmO52QL9ucVQVzv9iFR_1uXbFGC1/view?usp=drive_link",
-      "iodCerts": {}
+      "iodCerts": {},
+      "firstAppoint": "2569-01-01",
+      "convAppoint": "",
+      "nineYearDate": "",
+      "replacedName": "",
+      "termStatus": "active",
+      "exitDate": "",
+      "rotation": {}
     },
     {
       "id": "dmpw2169qo8biq",
@@ -991,7 +1087,14 @@
       "note": "",
       "training": [],
       "photo": "https://drive.google.com/file/d/19drP562GBZJ1FNmgl3Df02zknI0ahxXo/view?usp=drive_link",
-      "iodCerts": {}
+      "iodCerts": {},
+      "firstAppoint": "2569-01-01",
+      "convAppoint": "",
+      "nineYearDate": "",
+      "replacedName": "",
+      "termStatus": "active",
+      "exitDate": "",
+      "rotation": {}
     },
     {
       "id": "dmpw22afnqtk3r",
@@ -1021,7 +1124,14 @@
       "note": "",
       "training": [],
       "photo": "",
-      "iodCerts": {}
+      "iodCerts": {},
+      "firstAppoint": "2569-01-01",
+      "convAppoint": "",
+      "nineYearDate": "",
+      "replacedName": "",
+      "termStatus": "active",
+      "exitDate": "",
+      "rotation": {}
     },
     {
       "id": "dmpw23ccmxcbwa",
@@ -1051,7 +1161,14 @@
       "note": "",
       "training": [],
       "photo": "",
-      "iodCerts": {}
+      "iodCerts": {},
+      "firstAppoint": "2569-01-01",
+      "convAppoint": "",
+      "nineYearDate": "",
+      "replacedName": "",
+      "termStatus": "active",
+      "exitDate": "",
+      "rotation": {}
     },
     {
       "id": "dmpw2j9j6pnw7w",
@@ -1081,7 +1198,14 @@
       "note": "",
       "training": [],
       "photo": "https://drive.google.com/file/d/11SeA4kAoX8k8mGdEwIkg1Sf8odJluEXO/view?usp=drive_link",
-      "iodCerts": {}
+      "iodCerts": {},
+      "firstAppoint": "2569-01-01",
+      "convAppoint": "",
+      "nineYearDate": "",
+      "replacedName": "",
+      "termStatus": "active",
+      "exitDate": "",
+      "rotation": {}
     },
     {
       "id": "dmpw2k1i272e9i",
@@ -1111,7 +1235,14 @@
       "note": "",
       "training": [],
       "photo": "https://drive.google.com/file/d/1Qdcx3RYDN0a924jSXkshDk6w0IxL0XAx/view?usp=drive_link",
-      "iodCerts": {}
+      "iodCerts": {},
+      "firstAppoint": "2569-01-01",
+      "convAppoint": "",
+      "nineYearDate": "",
+      "replacedName": "",
+      "termStatus": "active",
+      "exitDate": "",
+      "rotation": {}
     },
     {
       "id": "dmpw2or4zlawi4",
@@ -1141,7 +1272,14 @@
       "note": "",
       "training": [],
       "photo": "https://drive.google.com/file/d/1RT9rsDYFjlEcMG5ydWlqAdT_HQpiTeu5/view?usp=drive_link",
-      "iodCerts": {}
+      "iodCerts": {},
+      "firstAppoint": "2569-01-01",
+      "convAppoint": "",
+      "nineYearDate": "",
+      "replacedName": "",
+      "termStatus": "active",
+      "exitDate": "",
+      "rotation": {}
     },
     {
       "id": "dmpw2rkjg8bh86",
@@ -1171,7 +1309,14 @@
       "note": "",
       "training": [],
       "photo": "https://drive.google.com/file/d/10342Es_tyYA_5yzfSCe8EnV6hPGWoVEZ/view?usp=drive_link",
-      "iodCerts": {}
+      "iodCerts": {},
+      "firstAppoint": "2569-01-01",
+      "convAppoint": "",
+      "nineYearDate": "",
+      "replacedName": "",
+      "termStatus": "active",
+      "exitDate": "",
+      "rotation": {}
     },
     {
       "id": "dmpw2u5kigy88j",
@@ -1201,7 +1346,14 @@
       "note": "",
       "training": [],
       "photo": "https://drive.google.com/file/d/1Fuhif52KSQLtGLnz3VC42gowaM-MicWi/view?usp=drive_link",
-      "iodCerts": {}
+      "iodCerts": {},
+      "firstAppoint": "2569-01-01",
+      "convAppoint": "",
+      "nineYearDate": "",
+      "replacedName": "",
+      "termStatus": "active",
+      "exitDate": "",
+      "rotation": {}
     },
     {
       "id": "dmpw2ums7h3qbs",
@@ -1231,7 +1383,14 @@
       "note": "",
       "training": [],
       "photo": "",
-      "iodCerts": {}
+      "iodCerts": {},
+      "firstAppoint": "2569-01-01",
+      "convAppoint": "",
+      "nineYearDate": "",
+      "replacedName": "",
+      "termStatus": "active",
+      "exitDate": "",
+      "rotation": {}
     },
     {
       "id": "dmpw2zi51ugmve",
@@ -1261,7 +1420,14 @@
       "note": "",
       "training": [],
       "photo": "",
-      "iodCerts": {}
+      "iodCerts": {},
+      "firstAppoint": "2569-01-01",
+      "convAppoint": "",
+      "nineYearDate": "",
+      "replacedName": "",
+      "termStatus": "active",
+      "exitDate": "",
+      "rotation": {}
     },
     {
       "id": "dmpw30ivcngcz9",
@@ -1291,7 +1457,14 @@
       "note": "",
       "training": [],
       "photo": "https://drive.google.com/file/d/1bLsmGhqIxRFzh1K6a1SBQG5EnIQHOIRL/view?usp=drive_link",
-      "iodCerts": {}
+      "iodCerts": {},
+      "firstAppoint": "2569-01-01",
+      "convAppoint": "",
+      "nineYearDate": "",
+      "replacedName": "",
+      "termStatus": "active",
+      "exitDate": "",
+      "rotation": {}
     },
     {
       "id": "dmpw316hwjvioc",
@@ -1321,7 +1494,14 @@
       "note": "",
       "training": [],
       "photo": "https://drive.google.com/file/d/1vS8TBfw_Ye7L2GkUlF2PAWZowNP74cJA/view?usp=drive_link",
-      "iodCerts": {}
+      "iodCerts": {},
+      "firstAppoint": "2569-01-01",
+      "convAppoint": "",
+      "nineYearDate": "",
+      "replacedName": "",
+      "termStatus": "active",
+      "exitDate": "",
+      "rotation": {}
     },
     {
       "id": "dmpw31ytclolmi",
@@ -1351,7 +1531,14 @@
       "note": "",
       "training": [],
       "photo": "",
-      "iodCerts": {}
+      "iodCerts": {},
+      "firstAppoint": "2569-01-01",
+      "convAppoint": "",
+      "nineYearDate": "",
+      "replacedName": "",
+      "termStatus": "active",
+      "exitDate": "",
+      "rotation": {}
     },
     {
       "id": "dmpw3cr6mmqpkt",
@@ -1381,7 +1568,14 @@
       "note": "",
       "training": [],
       "photo": "",
-      "iodCerts": {}
+      "iodCerts": {},
+      "firstAppoint": "2569-01-01",
+      "convAppoint": "",
+      "nineYearDate": "",
+      "replacedName": "",
+      "termStatus": "active",
+      "exitDate": "",
+      "rotation": {}
     },
     {
       "id": "dmpw3dg8xf1w5r",
@@ -1411,7 +1605,14 @@
       "note": "",
       "training": [],
       "photo": "",
-      "iodCerts": {}
+      "iodCerts": {},
+      "firstAppoint": "2569-01-01",
+      "convAppoint": "",
+      "nineYearDate": "",
+      "replacedName": "",
+      "termStatus": "active",
+      "exitDate": "",
+      "rotation": {}
     },
     {
       "id": "dmpw3fuh32942b",
@@ -1441,7 +1642,14 @@
       "note": "",
       "training": [],
       "photo": "",
-      "iodCerts": {}
+      "iodCerts": {},
+      "firstAppoint": "2569-01-01",
+      "convAppoint": "",
+      "nineYearDate": "",
+      "replacedName": "",
+      "termStatus": "active",
+      "exitDate": "",
+      "rotation": {}
     },
     {
       "id": "dmpw3g6wrhn6v2",
@@ -1471,7 +1679,14 @@
       "note": "",
       "training": [],
       "photo": "",
-      "iodCerts": {}
+      "iodCerts": {},
+      "firstAppoint": "2569-01-01",
+      "convAppoint": "",
+      "nineYearDate": "",
+      "replacedName": "",
+      "termStatus": "active",
+      "exitDate": "",
+      "rotation": {}
     },
     {
       "id": "dmpw3gpshn9jj8",
@@ -1501,7 +1716,14 @@
       "note": "",
       "training": [],
       "photo": "",
-      "iodCerts": {}
+      "iodCerts": {},
+      "firstAppoint": "2569-01-01",
+      "convAppoint": "",
+      "nineYearDate": "",
+      "replacedName": "",
+      "termStatus": "active",
+      "exitDate": "",
+      "rotation": {}
     }
   ],
   "meetings": [
