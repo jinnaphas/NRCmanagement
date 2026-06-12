@@ -57,6 +57,7 @@
 | **สรุปวาระ 2566-2569** | สรุปการประชุม NRC 25 ครั้ง | NRC/สรุปวาระการประชุม NRC 2566-2569.md |
 
 → สถาปัตยกรรม & กระบวนการบริหารด้วยแอป (v3) ฉบับเต็ม: memory/context/nrc-app.md
+→ **HANDOFF.md** (root): องค์ความรู้ + data model + วิธีทำงาน/deploy/ETL ครบชุด — อ่านก่อนเริ่มงาน
 
 ## Preferences
 - ภาษาหลัก: ภาษาไทย (English สำหรับ technical terms)

@@ -40,3 +40,13 @@ Dashboard · การประชุม · ทะเบียนคณะกร
 ## หมายเหตุการดูแล
 - คู่มือผู้ใช้/ติดตั้ง: `SETUP-GUIDE.md` (เปิด Pages, สร้าง token, ใส่ลิงก์ Drive, เผยแพร่)
 - วันที่เก็บเป็น พ.ศ. แสดงแบบไทย; ภาษาหลักไทย
+
+## อัปเดตฟีเจอร์ (v3.x — มิ.ย. 2569)
+- **ทะเบียนคณะกรรมการทั้งหมด = Master pool** → จัดคนเข้า บอร์ด PCC (`boardRole`) / คณะย่อย (role flags) / บริษัทย่อย
+- **Control List**: แท็บคณะกรรมการบริษัท (CG analysis + Board Skills Matrix + อำนาจลงนาม) / คณะย่อย / บริษัทย่อย (แก้ชื่อ + อำนาจลงนาม)
+- **พัฒนากรรมการ**: 3 แท็บ (ภาพรวม+สรุปคณะย่อย IOD compliance / IOD Certification Matrix / ประวัติการอบรม) — import จาก Excel แล้ว
+- **วาระกรรมการ (Board Term)** เมนูใหม่: Rotation Matrix (hybrid คำนวณ+แก้) / ธงเตือนออกตามวาระ+ครบ 9 ปี / ผังกรรมการอิสระ — import จาก Excel แล้ว
+- **Save & Publish**: ปุ่ม commit data.json ขึ้น GitHub ตรง ๆ (fine-grained token เฉพาะคนแก้)
+- **Deploy**: GitHub Actions (main-only) + Pages Source = "GitHub Actions" + `.nojekyll` · URL: https://jinnaphas.github.io/NRCmanagement/
+
+> 📌 รายละเอียดครบ + วิธีทำงาน/แก้ปัญหา/ETL: ดู **HANDOFF.md** ที่ repo root

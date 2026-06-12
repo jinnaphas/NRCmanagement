@@ -114,8 +114,8 @@
       "startDate": "",
       "boardRole": "member",
       "nrcRole": "none",
-      "acRole": "chair",
-      "rmcRole": "none",
+      "acRole": "none",
+      "rmcRole": "chair",
       "gcgRole": "none",
       "excoRole": "none",
       "skills": {
@@ -131,24 +131,7 @@
       },
       "note": "กรรมการบริษัท / กรรมการ NRC",
       "training": [],
-      "photo": "https://precise.co.th/storage/2025/02/4.-sutee.png",
-      "iodCerts": {
-        "DCP": "201/2015"
-      },
-      "firstAppoint": "2530-05-15",
-      "convAppoint": "2561-05-09",
-      "nineYearDate": "",
-      "replacedName": "",
-      "exitDate": "",
-      "termStatus": "active",
-      "rotation": {
-        "2561": "in",
-        "2562": "reelect",
-        "2565": "reelect",
-        "2568": "reelect",
-        "2571": "reelect",
-        "2574": "reelect"
-      }
+      "photo": "https://precise.co.th/storage/2025/02/4.-sutee.png"
     },
     {
       "id": "d5",
@@ -158,9 +141,10 @@
       "type": "nonexecutive",
       "gender": "male",
       "startDate": "",
+      "boardRole": "member",
       "nrcRole": "none",
       "acRole": "none",
-      "rmcRole": "chair",
+      "rmcRole": "none",
       "gcgRole": "none",
       "excoRole": "none",
       "skills": {
@@ -171,30 +155,12 @@
         "risk": 1,
         "hr": 0,
         "marketing": 0,
-        "industry": 1
+        "industry": 1,
+        "skmpvi5t2a": 0
       },
       "note": "กรรมการบริษัท / ประธาน RMC",
       "training": [],
-      "photo": "https://precise.co.th/storage/2025/02/3.-kitti-nat-1-3.png",
-      "boardRole": "member",
-      "iodCerts": {
-        "DCP": "205/2015",
-        "RCP": "35/2014"
-      },
-      "firstAppoint": "2530-05-15",
-      "convAppoint": "2561-05-09",
-      "nineYearDate": "",
-      "replacedName": "",
-      "exitDate": "",
-      "termStatus": "active",
-      "rotation": {
-        "2561": "in",
-        "2562": "reelect",
-        "2564": "reelect",
-        "2566": "reelect",
-        "2569": "reelect",
-        "2572": "reelect"
-      }
+      "photo": "https://precise.co.th/storage/2025/02/3.-kitti-nat-1-3.png"
     },
     {
       "id": "d6",
@@ -237,8 +203,7 @@
         "2561": "in",
         "2564": "reelect",
         "2567": "reelect",
-        "2570": "reelect",
-        "2573": "retire"
+        "2570": "retire"
       }
     },
     {
@@ -249,10 +214,11 @@
       "type": "independent",
       "gender": "male",
       "startDate": "",
+      "boardRole": "member",
       "nrcRole": "none",
       "acRole": "member",
       "rmcRole": "none",
-      "gcgRole": "member",
+      "gcgRole": "none",
       "excoRole": "none",
       "skills": {
         "finance": 1,
@@ -262,29 +228,12 @@
         "risk": 1,
         "hr": 0,
         "marketing": 0,
-        "industry": 1
+        "industry": 1,
+        "skmpvi5t2a": 0
       },
       "note": "กรรมการบริษัท / กรรมการ GCG / กรรมการ AC / กรรมการอิสระ",
       "training": [],
-      "photo": "https://precise.co.th/storage/2025/02/8.-boonchai.png",
-      "boardRole": "member",
-      "iodCerts": {
-        "DCP": "155/2012",
-        "AACP": "18/2015"
-      },
-      "firstAppoint": "2563-04-24",
-      "convAppoint": "2563-04-24",
-      "nineYearDate": "2572-04-24",
-      "replacedName": "นายสุริยา เลิศวัฒนะพงษ์",
-      "exitDate": "",
-      "termStatus": "active",
-      "rotation": {
-        "2563": "in",
-        "2565": "reelect",
-        "2568": "reelect",
-        "2571": "reelect",
-        "2574": "retire"
-      }
+      "photo": "https://precise.co.th/storage/2025/02/8.-boonchai.png"
     },
     {
       "id": "d8",
@@ -294,10 +243,11 @@
       "type": "independent",
       "gender": "male",
       "startDate": "",
+      "boardRole": "member",
       "nrcRole": "chair",
       "acRole": "none",
       "rmcRole": "none",
-      "gcgRole": "none",
+      "gcgRole": "chair",
       "excoRole": "none",
       "skills": {
         "finance": 0,
@@ -307,27 +257,12 @@
         "risk": 0,
         "hr": 1,
         "marketing": 0,
-        "industry": 0
+        "industry": 0,
+        "skmpvi5t2a": 0
       },
       "note": "กรรมการบริษัท / ประธาน NRC / กรรมการอิสระ",
       "training": [],
-      "photo": "https://precise.co.th/storage/2026/05/9.-%E0%B8%A3%E0%B8%A8.%E0%B8%94%E0%B8%A3.%E0%B8%A0%E0%B8%81.%E0%B8%A5%E0%B8%B7%E0%B8%AD%E0%B8%A3%E0%B8%B1%E0%B8%95%E0%B8%99%E0%B9%8C-%E0%B8%AD%E0%B8%99%E0%B8%B8%E0%B8%A3%E0%B8%B1%E0%B8%95%E0%B8%99%E0%B9%8C%E0%B8%9E%E0%B8%B2%E0%B8%99%E0%B8%B4%E0%B8%8A.png",
-      "boardRole": "member",
-      "iodCerts": {
-        "DAP": "233/2025",
-        "BNCP": "23/2025"
-      },
-      "firstAppoint": "2568-04-28",
-      "convAppoint": "2568-04-28",
-      "nineYearDate": "",
-      "replacedName": "นางนารี บุญธีรวร",
-      "exitDate": "",
-      "termStatus": "active",
-      "rotation": {
-        "2568": "in",
-        "2571": "reelect",
-        "2574": "reelect"
-      }
+      "photo": "https://precise.co.th/storage/2026/05/9.-%E0%B8%A3%E0%B8%A8.%E0%B8%94%E0%B8%A3.%E0%B8%A0%E0%B8%81.%E0%B8%A5%E0%B8%B7%E0%B8%AD%E0%B8%A3%E0%B8%B1%E0%B8%95%E0%B8%99%E0%B9%8C-%E0%B8%AD%E0%B8%99%E0%B8%B8%E0%B8%A3%E0%B8%B1%E0%B8%95%E0%B8%99%E0%B9%8C%E0%B8%9E%E0%B8%B2%E0%B8%99%E0%B8%B4%E0%B8%8A.png"
     },
     {
       "id": "d9",
@@ -337,10 +272,11 @@
       "type": "independent",
       "gender": "male",
       "startDate": "",
+      "boardRole": "member",
       "nrcRole": "member",
-      "acRole": "none",
+      "acRole": "member",
       "rmcRole": "none",
-      "gcgRole": "none",
+      "gcgRole": "member",
       "excoRole": "none",
       "skills": {
         "finance": 0,
@@ -350,27 +286,12 @@
         "risk": 0,
         "hr": 1,
         "marketing": 0,
-        "industry": 0
+        "industry": 0,
+        "skmpvi5t2a": 0
       },
       "note": "กรรมการบริษัท / กรรมการ NRC / กรรมการอิสระ",
       "training": [],
-      "photo": "https://precise.co.th/storage/2026/01/10.-%E0%B8%99%E0%B8%B2%E0%B8%A2%E0%B8%93%E0%B8%A3%E0%B8%87%E0%B8%84%E0%B9%8C-%E0%B8%88%E0%B8%B1%E0%B8%99%E0%B8%97%E0%B8%A3%E0%B9%8C%E0%B8%AA%E0%B8%A3%E0%B9%89%E0%B8%AD%E0%B8%A2.png",
-      "boardRole": "member",
-      "iodCerts": {
-        "DAP": "235/2025",
-        "BNCP": "24/2025"
-      },
-      "firstAppoint": "2568-04-28",
-      "convAppoint": "2568-04-28",
-      "nineYearDate": "",
-      "replacedName": "",
-      "exitDate": "",
-      "termStatus": "active",
-      "rotation": {
-        "2568": "in",
-        "2571": "reelect",
-        "2574": "reelect"
-      }
+      "photo": "https://precise.co.th/storage/2026/01/10.-%E0%B8%99%E0%B8%B2%E0%B8%A2%E0%B8%93%E0%B8%A3%E0%B8%87%E0%B8%84%E0%B9%8C-%E0%B8%88%E0%B8%B1%E0%B8%99%E0%B8%97%E0%B8%A3%E0%B9%8C%E0%B8%AA%E0%B8%A3%E0%B9%89%E0%B8%AD%E0%B8%A2.png"
     },
     {
       "id": "d10",
@@ -571,7 +492,14 @@
       "note": "",
       "training": [],
       "photo": "https://drive.google.com/file/d/1vgrvzEm6KuKU5Md1PkQFSMN9uA3X40bb/view?usp=sharing",
-      "iodCerts": {}
+      "iodCerts": {},
+      "firstAppoint": "2569-01-01",
+      "convAppoint": "",
+      "nineYearDate": "",
+      "replacedName": "",
+      "termStatus": "active",
+      "exitDate": "",
+      "rotation": {}
     },
     {
       "id": "dmpvzhlb0j58gd",
@@ -601,7 +529,14 @@
       "note": "",
       "training": [],
       "photo": "https://drive.google.com/file/d/1Co8ATI0PoNlGo2y6YDd8G1rvRUkrVjlI/view?usp=drive_link",
-      "iodCerts": {}
+      "iodCerts": {},
+      "firstAppoint": "2569-01-01",
+      "convAppoint": "",
+      "nineYearDate": "",
+      "replacedName": "",
+      "termStatus": "active",
+      "exitDate": "",
+      "rotation": {}
     },
     {
       "id": "dmpvzjr71cuni9",
@@ -631,7 +566,14 @@
       "note": "",
       "training": [],
       "photo": "https://drive.google.com/file/d/10r2-xF2qU8I_GBBC-Z90EeeHQER75eoN/view?usp=drive_link",
-      "iodCerts": {}
+      "iodCerts": {},
+      "firstAppoint": "2569-01-01",
+      "convAppoint": "",
+      "nineYearDate": "",
+      "replacedName": "",
+      "termStatus": "active",
+      "exitDate": "",
+      "rotation": {}
     },
     {
       "id": "dmpvzl7x9ic18b",
@@ -661,7 +603,14 @@
       "note": "",
       "training": [],
       "photo": "https://drive.google.com/file/d/14jOaTNDYB-by_BqQhgd0OxX0FCltprRv/view?usp=sharing",
-      "iodCerts": {}
+      "iodCerts": {},
+      "firstAppoint": "2569-01-01",
+      "convAppoint": "",
+      "nineYearDate": "",
+      "replacedName": "",
+      "termStatus": "active",
+      "exitDate": "",
+      "rotation": {}
     },
     {
       "id": "dmpvzm3f64fhm4",
@@ -691,7 +640,14 @@
       "note": "",
       "training": [],
       "photo": "https://drive.google.com/file/d/1pfnsYOSq9LnV566_wgLluNLsSUGUJ8K_/view?usp=drive_link",
-      "iodCerts": {}
+      "iodCerts": {},
+      "firstAppoint": "2569-01-01",
+      "convAppoint": "",
+      "nineYearDate": "",
+      "replacedName": "",
+      "termStatus": "active",
+      "exitDate": "",
+      "rotation": {}
     },
     {
       "id": "dmpvzmvz56ijrb",
@@ -721,7 +677,14 @@
       "note": "",
       "training": [],
       "photo": "https://drive.google.com/file/d/1cFzxbp35dNx4TBCF0IJNON1IY5Qk1EhB/view?usp=drive_link",
-      "iodCerts": {}
+      "iodCerts": {},
+      "firstAppoint": "2569-01-01",
+      "convAppoint": "",
+      "nineYearDate": "",
+      "replacedName": "",
+      "termStatus": "active",
+      "exitDate": "",
+      "rotation": {}
     },
     {
       "id": "dmpvzntfr8tlj6",
@@ -751,7 +714,14 @@
       "note": "",
       "training": [],
       "photo": "https://drive.google.com/file/d/188n2GuAYRNJ4dAmhR_fdaEWwimejLD7s/view?usp=drive_link",
-      "iodCerts": {}
+      "iodCerts": {},
+      "firstAppoint": "2569-01-01",
+      "convAppoint": "",
+      "nineYearDate": "",
+      "replacedName": "",
+      "termStatus": "active",
+      "exitDate": "",
+      "rotation": {}
     },
     {
       "id": "dmpw0c5inb1r2v",
@@ -781,7 +751,14 @@
       "note": "",
       "training": [],
       "photo": "https://drive.google.com/file/d/1NQKNgbpp_eKhL13GvNKgiAZ1VB5OrmSX/view?usp=drive_link",
-      "iodCerts": {}
+      "iodCerts": {},
+      "firstAppoint": "2569-01-01",
+      "convAppoint": "",
+      "nineYearDate": "",
+      "replacedName": "",
+      "termStatus": "active",
+      "exitDate": "",
+      "rotation": {}
     },
     {
       "id": "dmpw0f34jdiu3x",
@@ -811,7 +788,14 @@
       "note": "",
       "training": [],
       "photo": "https://drive.google.com/file/d/1-I7P0uxNu7A80d7HlUIHDNbIHsh6GGbq/view?usp=drive_link",
-      "iodCerts": {}
+      "iodCerts": {},
+      "firstAppoint": "2569-01-01",
+      "convAppoint": "",
+      "nineYearDate": "",
+      "replacedName": "",
+      "termStatus": "active",
+      "exitDate": "",
+      "rotation": {}
     },
     {
       "id": "dmpw0g00rvkz39",
@@ -841,7 +825,14 @@
       "note": "",
       "training": [],
       "photo": "https://drive.google.com/file/d/1mRKIuk3XtTgYH7mBwfh68kUkUZEDSAUL/view?usp=drive_link",
-      "iodCerts": {}
+      "iodCerts": {},
+      "firstAppoint": "2569-01-01",
+      "convAppoint": "",
+      "nineYearDate": "",
+      "replacedName": "",
+      "termStatus": "active",
+      "exitDate": "",
+      "rotation": {}
     },
     {
       "id": "dmpw0h1kneaks5",
@@ -871,7 +862,14 @@
       "note": "",
       "training": [],
       "photo": "https://drive.google.com/file/d/10V7EJ-CetFeCJWpVxvCGQqi0lU-Hlv2o/view?usp=drive_link",
-      "iodCerts": {}
+      "iodCerts": {},
+      "firstAppoint": "2569-01-01",
+      "convAppoint": "",
+      "nineYearDate": "",
+      "replacedName": "",
+      "termStatus": "active",
+      "exitDate": "",
+      "rotation": {}
     },
     {
       "id": "dmpw0hy8ewe011",
@@ -901,7 +899,14 @@
       "note": "",
       "training": [],
       "photo": "https://drive.google.com/file/d/1OxKW-ilVsSxVD08ZpkZgN-Zjio5c6Ybr/view?usp=drive_link",
-      "iodCerts": {}
+      "iodCerts": {},
+      "firstAppoint": "2569-01-01",
+      "convAppoint": "",
+      "nineYearDate": "",
+      "replacedName": "",
+      "termStatus": "active",
+      "exitDate": "",
+      "rotation": {}
     },
     {
       "id": "dmpw0qtrlin69g",
@@ -931,7 +936,14 @@
       "note": "",
       "training": [],
       "photo": "https://drive.google.com/file/d/1wbs1LJsWmcOqOuXho6HwY8VT0E6mbB0K/view?usp=drive_link",
-      "iodCerts": {}
+      "iodCerts": {},
+      "firstAppoint": "2569-01-01",
+      "convAppoint": "",
+      "nineYearDate": "",
+      "replacedName": "",
+      "termStatus": "active",
+      "exitDate": "",
+      "rotation": {}
     },
     {
       "id": "dmpw0s0ova1k5a",
@@ -961,7 +973,14 @@
       "note": "",
       "training": [],
       "photo": "https://drive.google.com/file/d/1oZP1NmO52QL9ucVQVzv9iFR_1uXbFGC1/view?usp=drive_link",
-      "iodCerts": {}
+      "iodCerts": {},
+      "firstAppoint": "2569-01-01",
+      "convAppoint": "",
+      "nineYearDate": "",
+      "replacedName": "",
+      "termStatus": "active",
+      "exitDate": "",
+      "rotation": {}
     },
     {
       "id": "dmpw2169qo8biq",
@@ -991,7 +1010,14 @@
       "note": "",
       "training": [],
       "photo": "https://drive.google.com/file/d/19drP562GBZJ1FNmgl3Df02zknI0ahxXo/view?usp=drive_link",
-      "iodCerts": {}
+      "iodCerts": {},
+      "firstAppoint": "2569-01-01",
+      "convAppoint": "",
+      "nineYearDate": "",
+      "replacedName": "",
+      "termStatus": "active",
+      "exitDate": "",
+      "rotation": {}
     },
     {
       "id": "dmpw22afnqtk3r",
@@ -1021,7 +1047,14 @@
       "note": "",
       "training": [],
       "photo": "",
-      "iodCerts": {}
+      "iodCerts": {},
+      "firstAppoint": "2569-01-01",
+      "convAppoint": "",
+      "nineYearDate": "",
+      "replacedName": "",
+      "termStatus": "active",
+      "exitDate": "",
+      "rotation": {}
     },
     {
       "id": "dmpw23ccmxcbwa",
@@ -1051,7 +1084,14 @@
       "note": "",
       "training": [],
       "photo": "",
-      "iodCerts": {}
+      "iodCerts": {},
+      "firstAppoint": "2569-01-01",
+      "convAppoint": "",
+      "nineYearDate": "",
+      "replacedName": "",
+      "termStatus": "active",
+      "exitDate": "",
+      "rotation": {}
     },
     {
       "id": "dmpw2j9j6pnw7w",
@@ -1081,7 +1121,14 @@
       "note": "",
       "training": [],
       "photo": "https://drive.google.com/file/d/11SeA4kAoX8k8mGdEwIkg1Sf8odJluEXO/view?usp=drive_link",
-      "iodCerts": {}
+      "iodCerts": {},
+      "firstAppoint": "2569-01-01",
+      "convAppoint": "",
+      "nineYearDate": "",
+      "replacedName": "",
+      "termStatus": "active",
+      "exitDate": "",
+      "rotation": {}
     },
     {
       "id": "dmpw2k1i272e9i",
@@ -1111,7 +1158,14 @@
       "note": "",
       "training": [],
       "photo": "https://drive.google.com/file/d/1Qdcx3RYDN0a924jSXkshDk6w0IxL0XAx/view?usp=drive_link",
-      "iodCerts": {}
+      "iodCerts": {},
+      "firstAppoint": "2569-01-01",
+      "convAppoint": "",
+      "nineYearDate": "",
+      "replacedName": "",
+      "termStatus": "active",
+      "exitDate": "",
+      "rotation": {}
     },
     {
       "id": "dmpw2or4zlawi4",
@@ -1141,7 +1195,14 @@
       "note": "",
       "training": [],
       "photo": "https://drive.google.com/file/d/1RT9rsDYFjlEcMG5ydWlqAdT_HQpiTeu5/view?usp=drive_link",
-      "iodCerts": {}
+      "iodCerts": {},
+      "firstAppoint": "2569-01-01",
+      "convAppoint": "",
+      "nineYearDate": "",
+      "replacedName": "",
+      "termStatus": "active",
+      "exitDate": "",
+      "rotation": {}
     },
     {
       "id": "dmpw2rkjg8bh86",
@@ -1171,7 +1232,14 @@
       "note": "",
       "training": [],
       "photo": "https://drive.google.com/file/d/10342Es_tyYA_5yzfSCe8EnV6hPGWoVEZ/view?usp=drive_link",
-      "iodCerts": {}
+      "iodCerts": {},
+      "firstAppoint": "2569-01-01",
+      "convAppoint": "",
+      "nineYearDate": "",
+      "replacedName": "",
+      "termStatus": "active",
+      "exitDate": "",
+      "rotation": {}
     },
     {
       "id": "dmpw2u5kigy88j",
@@ -1201,7 +1269,14 @@
       "note": "",
       "training": [],
       "photo": "https://drive.google.com/file/d/1Fuhif52KSQLtGLnz3VC42gowaM-MicWi/view?usp=drive_link",
-      "iodCerts": {}
+      "iodCerts": {},
+      "firstAppoint": "2569-01-01",
+      "convAppoint": "",
+      "nineYearDate": "",
+      "replacedName": "",
+      "termStatus": "active",
+      "exitDate": "",
+      "rotation": {}
     },
     {
       "id": "dmpw2ums7h3qbs",
@@ -1231,7 +1306,14 @@
       "note": "",
       "training": [],
       "photo": "",
-      "iodCerts": {}
+      "iodCerts": {},
+      "firstAppoint": "2569-01-01",
+      "convAppoint": "",
+      "nineYearDate": "",
+      "replacedName": "",
+      "termStatus": "active",
+      "exitDate": "",
+      "rotation": {}
     },
     {
       "id": "dmpw2zi51ugmve",
@@ -1261,7 +1343,14 @@
       "note": "",
       "training": [],
       "photo": "",
-      "iodCerts": {}
+      "iodCerts": {},
+      "firstAppoint": "2569-01-01",
+      "convAppoint": "",
+      "nineYearDate": "",
+      "replacedName": "",
+      "termStatus": "active",
+      "exitDate": "",
+      "rotation": {}
     },
     {
       "id": "dmpw30ivcngcz9",
@@ -1291,7 +1380,14 @@
       "note": "",
       "training": [],
       "photo": "https://drive.google.com/file/d/1bLsmGhqIxRFzh1K6a1SBQG5EnIQHOIRL/view?usp=drive_link",
-      "iodCerts": {}
+      "iodCerts": {},
+      "firstAppoint": "2569-01-01",
+      "convAppoint": "",
+      "nineYearDate": "",
+      "replacedName": "",
+      "termStatus": "active",
+      "exitDate": "",
+      "rotation": {}
     },
     {
       "id": "dmpw316hwjvioc",
@@ -1321,7 +1417,14 @@
       "note": "",
       "training": [],
       "photo": "https://drive.google.com/file/d/1vS8TBfw_Ye7L2GkUlF2PAWZowNP74cJA/view?usp=drive_link",
-      "iodCerts": {}
+      "iodCerts": {},
+      "firstAppoint": "2569-01-01",
+      "convAppoint": "",
+      "nineYearDate": "",
+      "replacedName": "",
+      "termStatus": "active",
+      "exitDate": "",
+      "rotation": {}
     },
     {
       "id": "dmpw31ytclolmi",
@@ -1351,7 +1454,14 @@
       "note": "",
       "training": [],
       "photo": "",
-      "iodCerts": {}
+      "iodCerts": {},
+      "firstAppoint": "2569-01-01",
+      "convAppoint": "",
+      "nineYearDate": "",
+      "replacedName": "",
+      "termStatus": "active",
+      "exitDate": "",
+      "rotation": {}
     },
     {
       "id": "dmpw3cr6mmqpkt",
@@ -1381,7 +1491,14 @@
       "note": "",
       "training": [],
       "photo": "",
-      "iodCerts": {}
+      "iodCerts": {},
+      "firstAppoint": "2569-01-01",
+      "convAppoint": "",
+      "nineYearDate": "",
+      "replacedName": "",
+      "termStatus": "active",
+      "exitDate": "",
+      "rotation": {}
     },
     {
       "id": "dmpw3dg8xf1w5r",
@@ -1411,7 +1528,14 @@
       "note": "",
       "training": [],
       "photo": "",
-      "iodCerts": {}
+      "iodCerts": {},
+      "firstAppoint": "2569-01-01",
+      "convAppoint": "",
+      "nineYearDate": "",
+      "replacedName": "",
+      "termStatus": "active",
+      "exitDate": "",
+      "rotation": {}
     },
     {
       "id": "dmpw3fuh32942b",
@@ -1441,7 +1565,14 @@
       "note": "",
       "training": [],
       "photo": "",
-      "iodCerts": {}
+      "iodCerts": {},
+      "firstAppoint": "2569-01-01",
+      "convAppoint": "",
+      "nineYearDate": "",
+      "replacedName": "",
+      "termStatus": "active",
+      "exitDate": "",
+      "rotation": {}
     },
     {
       "id": "dmpw3g6wrhn6v2",
@@ -1471,7 +1602,14 @@
       "note": "",
       "training": [],
       "photo": "",
-      "iodCerts": {}
+      "iodCerts": {},
+      "firstAppoint": "2569-01-01",
+      "convAppoint": "",
+      "nineYearDate": "",
+      "replacedName": "",
+      "termStatus": "active",
+      "exitDate": "",
+      "rotation": {}
     },
     {
       "id": "dmpw3gpshn9jj8",
@@ -1501,7 +1639,14 @@
       "note": "",
       "training": [],
       "photo": "",
-      "iodCerts": {}
+      "iodCerts": {},
+      "firstAppoint": "2569-01-01",
+      "convAppoint": "",
+      "nineYearDate": "",
+      "replacedName": "",
+      "termStatus": "active",
+      "exitDate": "",
+      "rotation": {}
     }
   ],
   "meetings": [
