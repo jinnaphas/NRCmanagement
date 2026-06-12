@@ -231,10 +231,11 @@
       "type": "independent",
       "gender": "male",
       "startDate": "",
+      "boardRole": "member",
       "nrcRole": "none",
       "acRole": "member",
       "rmcRole": "none",
-      "gcgRole": "member",
+      "gcgRole": "none",
       "excoRole": "none",
       "skills": {
         "finance": 1,
@@ -244,28 +245,12 @@
         "risk": 1,
         "hr": 0,
         "marketing": 0,
-        "industry": 1
+        "industry": 1,
+        "skmpvi5t2a": 0
       },
       "note": "กรรมการบริษัท / กรรมการ GCG / กรรมการ AC / กรรมการอิสระ",
       "training": [],
-      "photo": "https://precise.co.th/storage/2025/02/8.-boonchai.png",
-      "boardRole": "member",
-      "iodCerts": {
-        "DCP": "155/2012",
-        "AACP": "18/2015"
-      },
-      "firstAppoint": "2563-04-24",
-      "convAppoint": "2563-04-24",
-      "nineYearDate": "2572-04-24",
-      "replacedName": "นายสุริยา เลิศวัฒนะพงษ์",
-      "exitDate": "",
-      "termStatus": "active",
-      "rotation": {
-        "2563": "in",
-        "2565": "reelect",
-        "2568": "reelect",
-        "2571": "retire"
-      }
+      "photo": "https://precise.co.th/storage/2025/02/8.-boonchai.png"
     },
     {
       "id": "d8",
@@ -275,10 +260,11 @@
       "type": "independent",
       "gender": "male",
       "startDate": "",
+      "boardRole": "member",
       "nrcRole": "chair",
       "acRole": "none",
       "rmcRole": "none",
-      "gcgRole": "none",
+      "gcgRole": "chair",
       "excoRole": "none",
       "skills": {
         "finance": 0,
@@ -288,28 +274,12 @@
         "risk": 0,
         "hr": 1,
         "marketing": 0,
-        "industry": 0
+        "industry": 0,
+        "skmpvi5t2a": 0
       },
       "note": "กรรมการบริษัท / ประธาน NRC / กรรมการอิสระ",
       "training": [],
-      "photo": "https://precise.co.th/storage/2026/05/9.-%E0%B8%A3%E0%B8%A8.%E0%B8%94%E0%B8%A3.%E0%B8%A0%E0%B8%81.%E0%B8%A5%E0%B8%B7%E0%B8%AD%E0%B8%A3%E0%B8%B1%E0%B8%95%E0%B8%99%E0%B9%8C-%E0%B8%AD%E0%B8%99%E0%B8%B8%E0%B8%A3%E0%B8%B1%E0%B8%95%E0%B8%99%E0%B9%8C%E0%B8%9E%E0%B8%B2%E0%B8%99%E0%B8%B4%E0%B8%8A.png",
-      "boardRole": "member",
-      "iodCerts": {
-        "DAP": "233/2025",
-        "BNCP": "23/2025"
-      },
-      "firstAppoint": "2568-04-28",
-      "convAppoint": "2568-04-28",
-      "nineYearDate": "",
-      "replacedName": "นางนารี บุญธีรวร",
-      "exitDate": "",
-      "termStatus": "active",
-      "rotation": {
-        "2568": "in",
-        "2570": "exit",
-        "2571": "reelect",
-        "2574": "reelect"
-      }
+      "photo": "https://precise.co.th/storage/2026/05/9.-%E0%B8%A3%E0%B8%A8.%E0%B8%94%E0%B8%A3.%E0%B8%A0%E0%B8%81.%E0%B8%A5%E0%B8%B7%E0%B8%AD%E0%B8%A3%E0%B8%B1%E0%B8%95%E0%B8%99%E0%B9%8C-%E0%B8%AD%E0%B8%99%E0%B8%B8%E0%B8%A3%E0%B8%B1%E0%B8%95%E0%B8%99%E0%B9%8C%E0%B8%9E%E0%B8%B2%E0%B8%99%E0%B8%B4%E0%B8%8A.png"
     },
     {
       "id": "d9",
@@ -323,7 +293,7 @@
       "nrcRole": "member",
       "acRole": "member",
       "rmcRole": "none",
-      "gcgRole": "none",
+      "gcgRole": "member",
       "excoRole": "none",
       "skills": {
         "finance": 0,
