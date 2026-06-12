@@ -141,9 +141,10 @@
       "type": "nonexecutive",
       "gender": "male",
       "startDate": "",
+      "boardRole": "member",
       "nrcRole": "none",
       "acRole": "none",
-      "rmcRole": "chair",
+      "rmcRole": "none",
       "gcgRole": "none",
       "excoRole": "none",
       "skills": {
@@ -154,30 +155,12 @@
         "risk": 1,
         "hr": 0,
         "marketing": 0,
-        "industry": 1
+        "industry": 1,
+        "skmpvi5t2a": 0
       },
       "note": "กรรมการบริษัท / ประธาน RMC",
       "training": [],
-      "photo": "https://precise.co.th/storage/2025/02/3.-kitti-nat-1-3.png",
-      "boardRole": "member",
-      "iodCerts": {
-        "DCP": "205/2015",
-        "RCP": "35/2014"
-      },
-      "firstAppoint": "2530-05-15",
-      "convAppoint": "2561-05-09",
-      "nineYearDate": "",
-      "replacedName": "",
-      "exitDate": "",
-      "termStatus": "active",
-      "rotation": {
-        "2561": "in",
-        "2562": "reelect",
-        "2564": "reelect",
-        "2566": "reelect",
-        "2569": "reelect",
-        "2572": "reelect"
-      }
+      "photo": "https://precise.co.th/storage/2025/02/3.-kitti-nat-1-3.png"
     },
     {
       "id": "d6",
