@@ -13511,6 +13511,37 @@
         }
       ],
       "note": ""
+    },
+    {
+      "id": "ismqg34zmem2iq5",
+      "order": 0,
+      "company": "PCC",
+      "layer": 2,
+      "parentId": "is3",
+      "position": "Human Capital - Function Manager",
+      "incumbent": "นายจิณนภัสฐ์ ภัสฐาพงษ์",
+      "incumbentCode": "580942",
+      "successors": [
+        {
+          "name": "นางสาวศิรินญา ฤกษ์ปิ่นทอง",
+          "code": "490367",
+          "readiness": "ready-now",
+          "idp": ""
+        }
+      ],
+      "note": ""
+    },
+    {
+      "id": "ismqg38c9vbe1zi",
+      "order": 1,
+      "company": "PCC",
+      "layer": 2,
+      "parentId": "is3",
+      "position": "Digital Organization and Information Capital - Function Manager",
+      "incumbent": "นางสาวมนพร  พงศ์สิทธิศาสตร์",
+      "incumbentCode": "631739",
+      "successors": [],
+      "note": ""
     }
   ]
 }
