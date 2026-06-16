@@ -13218,8 +13218,8 @@
       "parentId": "",
       "position": "CEO-RS",
       "order": 0,
-      "incumbent": "",
-      "incumbentCode": "",
+      "incumbent": "นายภาสกร นราบริรักษ์",
+      "incumbentCode": "380085",
       "successors": [],
       "note": ""
     },
@@ -13230,9 +13230,22 @@
       "parentId": "",
       "position": "COO-RS",
       "order": 1,
-      "incumbent": "",
-      "incumbentCode": "",
-      "successors": [],
+      "incumbent": "นายอนุศาสน์ วรรณโท",
+      "incumbentCode": "470322",
+      "successors": [
+        {
+          "name": "นายนนทชา สิงหนุต",
+          "code": "550704",
+          "readiness": "ready-2y",
+          "idp": ""
+        },
+        {
+          "name": "นายนิชนันท์ ชูประสิทธิ์",
+          "code": "540574",
+          "readiness": "ready-2y",
+          "idp": ""
+        }
+      ],
       "note": ""
     },
     {
@@ -13242,9 +13255,22 @@
       "parentId": "",
       "position": "CTO-RS",
       "order": 2,
-      "incumbent": "",
-      "incumbentCode": "",
-      "successors": [],
+      "incumbent": "นายวิชัย ยิ่งจอหอ",
+      "incumbentCode": "611431",
+      "successors": [
+        {
+          "name": "นางสาวภัทรวดี จิรสุทธินันท์",
+          "code": "520483",
+          "readiness": "ready-2y",
+          "idp": ""
+        },
+        {
+          "name": "นางสาวภัทริดา กองสิน",
+          "code": "560745",
+          "readiness": "ready-2y",
+          "idp": ""
+        }
+      ],
       "note": ""
     },
     {
@@ -13254,8 +13280,8 @@
       "parentId": "",
       "position": "CFO-RS",
       "order": 3,
-      "incumbent": "",
-      "incumbentCode": "",
+      "incumbent": "นางสาวจันจิรา ปั้นเขียว",
+      "incumbentCode": "631727",
       "successors": [],
       "note": ""
     },
@@ -13292,7 +13318,20 @@
       "order": 2,
       "incumbent": "นายวิชัย ยิ่งจอหอ",
       "incumbentCode": "611431",
-      "successors": [],
+      "successors": [
+        {
+          "name": "นายกษิดิศ รักษ์ชูชื่น",
+          "code": "652028",
+          "readiness": "ready-2y",
+          "idp": ""
+        },
+        {
+          "name": "นายนราวิชญ์ สมนา",
+          "code": "641815",
+          "readiness": "ready-2y",
+          "idp": ""
+        }
+      ],
       "note": ""
     },
     {
@@ -13357,22 +13396,9 @@
       "parentId": "",
       "position": "CTO-RS",
       "order": 2,
-      "incumbent": "นายวิชัย ยิ่งจอหอ",
-      "incumbentCode": "611431",
-      "successors": [
-        {
-          "name": "นายกษิดิศ รักษ์ชูชื่น",
-          "code": "652028",
-          "readiness": "ready-2y",
-          "idp": ""
-        },
-        {
-          "name": "นายนราวิชญ์ สมนา",
-          "code": "641815",
-          "readiness": "ready-not",
-          "idp": ""
-        }
-      ],
+      "incumbent": "นายอมร แดงโชติ",
+      "incumbentCode": "390127",
+      "successors": [],
       "note": ""
     },
     {
