@@ -13473,6 +13473,44 @@
       "incumbentCode": "540609",
       "successors": [],
       "note": ""
+    },
+    {
+      "id": "ismqg31v381gcey",
+      "order": 0,
+      "company": "PSP",
+      "layer": 2,
+      "parentId": "is12",
+      "position": "ฺBusiness Manager - PSP101",
+      "incumbent": "นายนิชนันท์ ชูประสิทธิ์",
+      "incumbentCode": "540574",
+      "successors": [
+        {
+          "name": "นางสาวปิยาภรณ์ กฤชเพ็ชร",
+          "code": "570802",
+          "readiness": "ready-2y",
+          "idp": ""
+        }
+      ],
+      "note": ""
+    },
+    {
+      "id": "ismqg33f92m1v1i",
+      "order": 0,
+      "company": "PSP",
+      "layer": 3,
+      "parentId": "ismqg31v381gcey",
+      "position": "SCADA Engineering and Solution Delivery Division",
+      "incumbent": "นางสาวปิยาภรณ์ กฤชเพ็ชร",
+      "incumbentCode": "570802",
+      "successors": [
+        {
+          "name": "นายธัชกร สิงห์ทอง",
+          "code": "591127",
+          "readiness": "ready-2y",
+          "idp": ""
+        }
+      ],
+      "note": ""
     }
   ]
 }
