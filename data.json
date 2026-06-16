@@ -139,7 +139,14 @@
         "2568": "reelect",
         "2571": "reelect",
         "2574": "reelect"
-      }
+      },
+      "iodCerts": {},
+      "firstAppoint": "",
+      "convAppoint": "",
+      "nineYearDate": "",
+      "replacedName": "",
+      "termStatus": "active",
+      "exitDate": ""
     },
     {
       "id": "d5",
@@ -176,7 +183,14 @@
         "2566": "reelect",
         "2569": "reelect",
         "2572": "reelect"
-      }
+      },
+      "iodCerts": {},
+      "firstAppoint": "",
+      "convAppoint": "",
+      "nineYearDate": "",
+      "replacedName": "",
+      "termStatus": "active",
+      "exitDate": ""
     },
     {
       "id": "d6",
@@ -256,7 +270,13 @@
         "2565": "reelect",
         "2568": "reelect",
         "2571": "retire"
-      }
+      },
+      "firstAppoint": "",
+      "convAppoint": "",
+      "nineYearDate": "",
+      "replacedName": "",
+      "termStatus": "active",
+      "exitDate": ""
     },
     {
       "id": "d8",
@@ -290,7 +310,14 @@
         "2568": "in",
         "2571": "reelect",
         "2574": "reelect"
-      }
+      },
+      "iodCerts": {},
+      "firstAppoint": "",
+      "convAppoint": "",
+      "nineYearDate": "",
+      "replacedName": "",
+      "termStatus": "active",
+      "exitDate": ""
     },
     {
       "id": "d9",
@@ -324,7 +351,14 @@
         "2568": "in",
         "2571": "reelect",
         "2574": "reelect"
-      }
+      },
+      "iodCerts": {},
+      "firstAppoint": "",
+      "convAppoint": "",
+      "nineYearDate": "",
+      "replacedName": "",
+      "termStatus": "active",
+      "exitDate": ""
     },
     {
       "id": "d10",
@@ -13050,8 +13084,8 @@
       "parentId": "",
       "position": "President",
       "order": 0,
-      "incumbent": "",
-      "incumbentCode": "",
+      "incumbent": "นายกิตติ  สัมฤทธิ์",
+      "incumbentCode": "260001",
       "successors": [],
       "note": ""
     },
@@ -13062,8 +13096,8 @@
       "parentId": "",
       "position": "Vice President: Financial Capital",
       "order": 1,
-      "incumbent": "",
-      "incumbentCode": "",
+      "incumbent": "นางสาวทิพย์สุดา ทองใหญ่",
+      "incumbentCode": "611309",
       "successors": [],
       "note": ""
     },
@@ -13074,9 +13108,16 @@
       "parentId": "",
       "position": "Vice President: Intellectual Capital",
       "order": 2,
-      "incumbent": "",
-      "incumbentCode": "",
-      "successors": [],
+      "incumbent": "นายวิชัย ยิ่งจอหอ",
+      "incumbentCode": "611431",
+      "successors": [
+        {
+          "name": "นางสาวณิชา  ณัฐชยางกุล",
+          "code": "611329",
+          "readiness": "ready-now",
+          "idp": ""
+        }
+      ],
       "note": ""
     },
     {
@@ -13086,8 +13127,8 @@
       "parentId": "",
       "position": "Vice President: Corporate Governance",
       "order": 3,
-      "incumbent": "",
-      "incumbentCode": "",
+      "incumbent": "นายเกตินาท  สัมฤทธิ์",
+      "incumbentCode": "470330",
       "successors": [],
       "note": ""
     },
@@ -13098,8 +13139,8 @@
       "parentId": "",
       "position": "Vice President: Corporate Investment",
       "order": 4,
-      "incumbent": "",
-      "incumbentCode": "",
+      "incumbent": "นายกิตติ  สัมฤทธิ์",
+      "incumbentCode": "260001",
       "successors": [],
       "note": ""
     },
@@ -13110,9 +13151,16 @@
       "parentId": "",
       "position": "Risk & Compliance, Legal Manager",
       "order": 5,
-      "incumbent": "",
-      "incumbentCode": "",
-      "successors": [],
+      "incumbent": "นางสาวณิชา  ณัฐชยางกุล",
+      "incumbentCode": "611329",
+      "successors": [
+        {
+          "name": "นางสาวฐานิติณณ์ วราหไพฑูรย์",
+          "code": "652016",
+          "readiness": "ready-1y",
+          "idp": ""
+        }
+      ],
       "note": ""
     },
     {
@@ -13122,8 +13170,8 @@
       "parentId": "",
       "position": "CEO-RS",
       "order": 0,
-      "incumbent": "",
-      "incumbentCode": "",
+      "incumbent": "นายภัทราวุธ  ศักดา",
+      "incumbentCode": "480338",
       "successors": [],
       "note": ""
     },
@@ -13134,8 +13182,8 @@
       "parentId": "",
       "position": "COO-RS",
       "order": 1,
-      "incumbent": "",
-      "incumbentCode": "",
+      "incumbent": "นายเศกสรร  ปรีชา",
+      "incumbentCode": "490368",
       "successors": [],
       "note": ""
     },
@@ -13146,8 +13194,8 @@
       "parentId": "",
       "position": "CTO-RS",
       "order": 2,
-      "incumbent": "",
-      "incumbentCode": "",
+      "incumbent": "นายภัทราวุธ  ศักดา",
+      "incumbentCode": "480338",
       "successors": [],
       "note": ""
     },
@@ -13158,8 +13206,8 @@
       "parentId": "",
       "position": "CFO-RS",
       "order": 3,
-      "incumbent": "",
-      "incumbentCode": "",
+      "incumbent": "นางสาวทิพย์สุดา ทองใหญ่",
+      "incumbentCode": "611309",
       "successors": [],
       "note": ""
     },
@@ -13218,8 +13266,8 @@
       "parentId": "",
       "position": "CEO-RS",
       "order": 0,
-      "incumbent": "",
-      "incumbentCode": "",
+      "incumbent": "นายวิชัย ยิ่งจอหอ",
+      "incumbentCode": "611431",
       "successors": [],
       "note": ""
     },
@@ -13230,8 +13278,8 @@
       "parentId": "",
       "position": "COO-RS",
       "order": 1,
-      "incumbent": "",
-      "incumbentCode": "",
+      "incumbent": "นายวิชัย ยิ่งจอหอ",
+      "incumbentCode": "611431",
       "successors": [],
       "note": ""
     },
@@ -13242,8 +13290,8 @@
       "parentId": "",
       "position": "CTO-RS",
       "order": 2,
-      "incumbent": "",
-      "incumbentCode": "",
+      "incumbent": "นายวิชัย ยิ่งจอหอ",
+      "incumbentCode": "611431",
       "successors": [],
       "note": ""
     },
@@ -13254,8 +13302,8 @@
       "parentId": "",
       "position": "CFO-RS",
       "order": 3,
-      "incumbent": "",
-      "incumbentCode": "",
+      "incumbent": "นางสาวจันจิรา ปั้นเขียว",
+      "incumbentCode": "631727",
       "successors": [],
       "note": ""
     },
@@ -13266,8 +13314,8 @@
       "parentId": "",
       "position": "MD",
       "order": 0,
-      "incumbent": "",
-      "incumbentCode": "",
+      "incumbent": "นายอมร แดงโชติ",
+      "incumbentCode": "390127",
       "successors": [],
       "note": ""
     },
@@ -13278,8 +13326,8 @@
       "parentId": "",
       "position": "CEO-RS",
       "order": 0,
-      "incumbent": "",
-      "incumbentCode": "",
+      "incumbent": "นายอมร แดงโชติ",
+      "incumbentCode": "390127",
       "successors": [],
       "note": ""
     },
@@ -13290,9 +13338,16 @@
       "parentId": "",
       "position": "COO-RS",
       "order": 1,
-      "incumbent": "",
-      "incumbentCode": "",
-      "successors": [],
+      "incumbent": "นายอมร แดงโชติ",
+      "incumbentCode": "390127",
+      "successors": [
+        {
+          "name": "นายณัฐวุฒิ ยิ่งถาวร",
+          "code": "591007",
+          "readiness": "ready-now",
+          "idp": ""
+        }
+      ],
       "note": ""
     },
     {
@@ -13302,9 +13357,22 @@
       "parentId": "",
       "position": "CTO-RS",
       "order": 2,
-      "incumbent": "",
-      "incumbentCode": "",
-      "successors": [],
+      "incumbent": "นายวิชัย ยิ่งจอหอ",
+      "incumbentCode": "611431",
+      "successors": [
+        {
+          "name": "นายกษิดิศ รักษ์ชูชื่น",
+          "code": "652028",
+          "readiness": "ready-2y",
+          "idp": ""
+        },
+        {
+          "name": "นายนราวิชญ์ สมนา",
+          "code": "641815",
+          "readiness": "ready-not",
+          "idp": ""
+        }
+      ],
       "note": ""
     },
     {
@@ -13314,8 +13382,8 @@
       "parentId": "",
       "position": "CFO-RS",
       "order": 3,
-      "incumbent": "",
-      "incumbentCode": "",
+      "incumbent": "นางสาวทิพย์สุดา ทองใหญ่",
+      "incumbentCode": "611309",
       "successors": [],
       "note": ""
     },
@@ -13326,9 +13394,22 @@
       "parentId": "",
       "position": "MD",
       "order": 0,
-      "incumbent": "",
-      "incumbentCode": "",
-      "successors": [],
+      "incumbent": "นายณัฐวุฒิ ยิ่งถาวร",
+      "incumbentCode": "591007",
+      "successors": [
+        {
+          "name": "นายจิรศักดิ์ มุสิกทัศน์",
+          "code": "560749",
+          "readiness": "ready-now",
+          "idp": ""
+        },
+        {
+          "name": "นายชัยทัต   ประทุมวัลย์",
+          "code": "611393",
+          "readiness": "ready-not",
+          "idp": ""
+        }
+      ],
       "note": ""
     },
     {
@@ -13338,8 +13419,8 @@
       "parentId": "",
       "position": "MD",
       "order": 0,
-      "incumbent": "",
-      "incumbentCode": "",
+      "incumbent": "นายณัฐวุฒิ ยิ่งถาวร",
+      "incumbentCode": "591007",
       "successors": [],
       "note": ""
     }
