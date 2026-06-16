@@ -103,6 +103,21 @@ textarea.form-control { resize: vertical; min-height: 80px; }
 .succession-card .sc-successor .name { font-size: 13px; font-weight: 600; }
 .readiness { display: inline-block; padding: 2px 8px; border-radius: 10px; font-size: 11px; font-weight: 600; }
 .ready-now { background: #E2EFDA; color: #375623; } .ready-1y { background: #DEEAF1; color: var(--blue); } .ready-2y { background: #FFF2CC; color: #996633; } .ready-not { background: #FCE4D6; color: var(--red); }
+.co-section { border: 1px solid var(--border); border-radius: 8px; margin-bottom: 14px; overflow: hidden; background:#fff; }
+.co-section > summary { list-style: none; cursor: pointer; padding: 12px 16px; background: var(--navy); color: #fff; display: flex; align-items: center; justify-content: space-between; gap: 10px; font-weight: 700; }
+.co-section > summary::-webkit-details-marker { display: none; }
+.co-section > summary .co-meta { display: flex; align-items: center; gap: 10px; font-weight: 500; font-size: 12px; }
+.co-section[open] > summary { border-bottom: 1px solid var(--border); }
+.co-section .co-body { padding: 14px; }
+.cov-badge { display:inline-block; padding:2px 9px; border-radius:10px; font-size:11px; font-weight:700; background:rgba(255,255,255,0.18); }
+.emp-toolbar { display:flex; flex-wrap:wrap; gap:8px; align-items:center; margin-bottom:12px; }
+.emp-toolbar input, .emp-toolbar select { padding:7px 10px; border:1px solid var(--border); border-radius:6px; font-size:13px; }
+.emp-toolbar input.search { flex:1; min-width:220px; }
+.emp-table { width:100%; border-collapse:collapse; font-size:12.5px; }
+.emp-table th { background:#F2F5FA; text-align:left; padding:8px 10px; border-bottom:2px solid var(--border); color:var(--navy); position:sticky; top:0; }
+.emp-table td { padding:7px 10px; border-bottom:1px solid var(--border); vertical-align:middle; }
+.emp-table tr:hover { background:#F7FAFD; }
+.co-pill { display:inline-block; padding:1px 7px; border-radius:9px; font-size:10.5px; font-weight:700; background:#DEEAF1; color:var(--navy); }
 .section-title { font-size: 16px; font-weight: 700; color: var(--navy); margin-bottom: 14px; display: flex; align-items: center; gap: 8px; }
 .divider { border: none; border-top: 1px solid var(--border); margin: 16px 0; }
 .text-muted { color: var(--text-light); font-size: 12px; }
@@ -199,6 +214,8 @@ textarea.form-control { resize: vertical; min-height: 80px; }
     <a onclick="showSection('controllist')" id="nav-controllist"><span class="icon">&#127970;</span> Control List</a>
     <a onclick="showSection('boardterm')" id="nav-boardterm"><span class="icon">&#128338;</span> วาระกรรมการ</a>
     <a onclick="showSection('succession')" id="nav-succession"><span class="icon">&#127919;</span> Succession Plan</a>
+    <a onclick="showSection('internalsucc')" id="nav-internalsucc"><span class="icon">&#127793;</span> Internal Succession</a>
+    <a onclick="showSection('employees')" id="nav-employees"><span class="icon">&#128100;</span> พนักงาน (Master)</a>
     <a onclick="showSection('changelog')" id="nav-changelog"><span class="icon">&#128221;</span> ประวัติกรรมการ</a>
     <a onclick="showSection('remuneration')" id="nav-remuneration"><span class="icon">&#128176;</span> ค่าตอบแทน</a>
     <a onclick="showSection('training')" id="nav-training"><span class="icon">&#128218;</span> พัฒนากรรมการ</a>
@@ -440,7 +457,9 @@ const DEFAULT_DATA = {
   documents: [],
   agmItems: [],
   independenceChecks: [],
-  conflictLog: []
+  conflictLog: [],
+  employees: [],
+  internalSuccession: []
 };
 
 let DB = {};
@@ -593,6 +612,8 @@ function migrateDB() {
   if (!DB.agmItems) DB.agmItems = [];
   if (!DB.independenceChecks) DB.independenceChecks = [];
   if (!DB.conflictLog) DB.conflictLog = [];
+  if (!DB.employees) DB.employees = [];
+  if (!DB.internalSuccession || !DB.internalSuccession.length) DB.internalSuccession = defaultSuccPositions();
   if (!DB.skillsList || !DB.skillsList.length) DB.skillsList = JSON.parse(JSON.stringify(DEFAULT_SKILLS));
   if (!DB.company) DB.company = {};
   if (!DB.company.signatoryIds) DB.company.signatoryIds = [];
@@ -633,9 +654,9 @@ function showSection(section) {
   document.querySelectorAll('#nav a').forEach(a => a.classList.remove('active'));
   const navEl = document.getElementById('nav-'+section);
   if (navEl) navEl.classList.add('active');
-  const titles = { dashboard:'Dashboard', meetings:'การประชุม NRC', directors:'ทะเบียนคณะกรรมการทั้งหมด', controllist:'Control List', boardterm:'วาระกรรมการ (Board Term & Rotation)', succession:'Succession Plan', changelog:'ประวัติการเปลี่ยนแปลงกรรมการ', remuneration:'ค่าตอบแทนกรรมการ', training:'แผนพัฒนากรรมการ', assessment:'ประเมินผลกรรมการ', documents:'คลังเอกสาร', agm:'AGM Tracker', conflict:'ผลประโยชน์ทับซ้อน', settings:'ตั้งค่าระบบ' };
+  const titles = { dashboard:'Dashboard', meetings:'การประชุม NRC', directors:'ทะเบียนคณะกรรมการทั้งหมด', controllist:'Control List', boardterm:'วาระกรรมการ (Board Term & Rotation)', succession:'Succession Plan', internalsucc:'Internal Succession Plan', employees:'พนักงาน (Master Data)', changelog:'ประวัติการเปลี่ยนแปลงกรรมการ', remuneration:'ค่าตอบแทนกรรมการ', training:'แผนพัฒนากรรมการ', assessment:'ประเมินผลกรรมการ', documents:'คลังเอกสาร', agm:'AGM Tracker', conflict:'ผลประโยชน์ทับซ้อน', settings:'ตั้งค่าระบบ' };
   document.getElementById('page-title').textContent = titles[section]||section;
-  const renders = { dashboard:renderDashboard, meetings:renderMeetings, directors:renderDirectors, controllist:renderControlList, boardterm:renderBoardTerm, succession:renderSuccession, changelog:renderChangelog, remuneration:renderRemuneration, training:renderTraining, assessment:renderAssessment, documents:renderDocuments, agm:renderAGM, conflict:renderConflict, settings:renderSettings };
+  const renders = { dashboard:renderDashboard, meetings:renderMeetings, directors:renderDirectors, controllist:renderControlList, boardterm:renderBoardTerm, succession:renderSuccession, internalsucc:renderInternalSucc, employees:renderEmployees, changelog:renderChangelog, remuneration:renderRemuneration, training:renderTraining, assessment:renderAssessment, documents:renderDocuments, agm:renderAGM, conflict:renderConflict, settings:renderSettings };
   document.getElementById('content').innerHTML = '';
   if (renders[section]) renders[section]();
 }
@@ -1852,6 +1873,220 @@ function deleteSuccession(id) {
   if (!confirm('ลบตำแหน่งนี้?')) return;
   DB.succession=DB.succession.filter(x=>x.id!==id);
   saveData(); closeModal(); renderSuccession();
+}
+
+// ============================================================
+// EMPLOYEE MASTER + INTERNAL SUCCESSION PLAN
+// ============================================================
+const SUCC_COMPANIES = [
+  { code:'PCC', short:'Precise Corporation',           name:'บริษัท พรีไซซ คอร์ปอเรชั่น จำกัด (มหาชน)' },
+  { code:'PEM', short:'Precise Electric Manufacturing', name:'Precise Electric Manufacturing Co., Ltd.' },
+  { code:'PSP', short:'Precise System & Project',       name:'Precise System & Project Co., Ltd.' },
+  { code:'PDE', short:'Precise Digital Economy',        name:'Precise Digital Economy Co., Ltd.' },
+  { code:'PSL', short:'Precise Smart Life',             name:'Precise Smart Life Co., Ltd.' },
+  { code:'PPP', short:'Precise Power Producer',         name:'Precise Power Producer Co., Ltd.' },
+  { code:'SBP', short:'Songkhla Biopower',              name:'Songkhla Biopower Co., Ltd.' },
+  { code:'PCE', short:'Precise Clean Energy',           name:'Precise Clean Energy Co., Ltd.' }
+];
+// ตำแหน่งตั้งต้น (ใช้ตอน DB ยังไม่มีข้อมูล internalSuccession)
+function defaultSuccPositions() {
+  const seed = [
+    ['PCC',['President','Vice President: Financial Capital','Vice President: Intellectual Capital','Vice President: Corporate Governance','Vice President: Corporate Investment','Risk & Compliance, Legal Manager']],
+    ['PEM',['CEO-RS','COO-RS','CTO-RS','CFO-RS']],
+    ['PSP',['CEO-RS','COO-RS','CTO-RS','CFO-RS']],
+    ['PDE',['CEO-RS','COO-RS','CTO-RS','CFO-RS']],
+    ['PSL',['MD']],
+    ['PPP',['CEO-RS','COO-RS','CTO-RS','CFO-RS']],
+    ['SBP',['MD']],
+    ['PCE',['MD']]
+  ];
+  const out=[]; let n=1;
+  seed.forEach(([co,arr])=>arr.forEach((pos,i)=>out.push({ id:'is'+(n++), company:co, position:pos, order:i, incumbent:'', incumbentCode:'', successors:[], note:'' })));
+  return out;
+}
+function empByCode(code){ if(!code) return null; return DB.employees.find(e=>e.code===code)||null; }
+function empByName(name){ if(!name) return null; const n=String(name).trim(); return DB.employees.find(e=>String(e.name).trim()===n)||null; }
+function empServiceYears(e){ if(!e.serviceDate) return ''; const d=new Date(e.serviceDate); if(isNaN(d.getTime())) return ''; const y=(Date.now()-d.getTime())/(365.25*86400000); return y>=0?y.toFixed(1):''; }
+function ensureEmpDatalist(){ if(document.getElementById('emp-datalist')) return; const dl=document.createElement('datalist'); dl.id='emp-datalist'; dl.innerHTML=DB.employees.map(e=>`<option value="${e.name}">${e.company} · ${e.jobRole||e.position||''}${e.level?' · '+e.level:''}</option>`).join(''); document.body.appendChild(dl); }
+
+// ---- Employee Master page ----
+let empFilters = { q:'', company:'', group:'' };
+function renderEmployees(){
+  ensureEmpDatalist();
+  const groups=[...new Set(DB.employees.map(e=>e.group).filter(Boolean))];
+  document.getElementById('content').innerHTML = `
+    <div class="section-title">&#128100; พนักงาน (Master Data)</div>
+    <div class="alert alert-info">ทะเบียนพนักงานระดับวิชาชีพขึ้นไป <b>${DB.employees.length}</b> คน — ใช้เป็นฐานข้อมูลกลางสำหรับเลือกผู้ดำรงตำแหน่ง/ผู้สืบทอดในหน้า Internal Succession Plan</div>
+    <div class="emp-toolbar">
+      <input class="search" id="emp-q" placeholder="&#128269; ค้นหา ชื่อ / รหัส / ตำแหน่ง / หน่วยงาน" oninput="empRenderTable()" value="${empFilters.q}">
+      <select id="emp-company" onchange="empRenderTable()">
+        <option value="">ทุกบริษัท</option>
+        ${SUCC_COMPANIES.map(c=>`<option value="${c.code}" ${empFilters.company===c.code?'selected':''}>${c.code} — ${c.short}</option>`).join('')}
+      </select>
+      <select id="emp-group" onchange="empRenderTable()">
+        <option value="">ทุกกลุ่ม</option>
+        ${groups.map(g=>`<option value="${g}" ${empFilters.group===g?'selected':''}>${g}</option>`).join('')}
+      </select>
+      <span class="text-muted" id="emp-count"></span>
+    </div>
+    <div id="emp-table-wrap" style="max-height:calc(100vh - 250px);overflow:auto;border:1px solid var(--border);border-radius:8px"></div>`;
+  empRenderTable();
+}
+function empRenderTable(){
+  const qEl=document.getElementById('emp-q'); if(qEl) empFilters.q=qEl.value;
+  const cEl=document.getElementById('emp-company'); if(cEl) empFilters.company=cEl.value;
+  const gEl=document.getElementById('emp-group'); if(gEl) empFilters.group=gEl.value;
+  const q=empFilters.q.trim().toLowerCase();
+  const list=DB.employees.filter(e=>{
+    if(empFilters.company && e.company!==empFilters.company) return false;
+    if(empFilters.group && e.group!==empFilters.group) return false;
+    if(q){ const hay=`${e.code} ${e.name} ${e.nameEn} ${e.position} ${e.jobRole} ${e.dept} ${e.div} ${e.level}`.toLowerCase(); if(!hay.includes(q)) return false; }
+    return true;
+  });
+  const rows=list.map(e=>`<tr>
+    <td>${e.code}</td>
+    <td><div style="display:flex;align-items:center;gap:7px">${directorAvatar(e.name,26)}<div><div style="font-weight:600">${e.name}</div><div class="text-muted" style="font-size:10.5px">${e.nameEn||''}</div></div></div></td>
+    <td>${e.jobRole||e.position||'-'}${e.jobRole&&e.position?`<div class="text-muted" style="font-size:10.5px">${e.position}</div>`:''}</td>
+    <td style="text-align:center">${e.level||'-'}</td>
+    <td>${e.group||'-'}</td>
+    <td>${e.dept||'-'}${e.div?`<div class="text-muted" style="font-size:10.5px">${e.div}</div>`:''}</td>
+    <td style="text-align:center"><span class="co-pill">${e.company}</span></td>
+    <td style="text-align:center">${empServiceYears(e)||'-'}</td>
+  </tr>`).join('');
+  document.getElementById('emp-table-wrap').innerHTML=`<table class="emp-table">
+    <thead><tr><th>รหัส</th><th>ชื่อ-สกุล</th><th>ตำแหน่ง / Job Role</th><th>ระดับ</th><th>กลุ่ม</th><th>หน่วยงาน</th><th>บริษัท</th><th>อายุงาน(ปี)</th></tr></thead>
+    <tbody>${rows||'<tr><td colspan="8" class="text-muted" style="text-align:center;padding:20px">ไม่พบข้อมูล</td></tr>'}</tbody></table>`;
+  const cnt=document.getElementById('emp-count'); if(cnt) cnt.textContent=`แสดง ${list.length} / ${DB.employees.length} คน`;
+}
+
+// ---- Internal Succession Plan page ----
+function renderInternalSucc(){
+  ensureEmpDatalist();
+  const byCo={}; DB.internalSuccession.forEach(p=>{ (byCo[p.company]=byCo[p.company]||[]).push(p); });
+  const order=SUCC_COMPANIES.map(c=>c.code);
+  const cos=Object.keys(byCo).sort((a,b)=>(order.indexOf(a)+1||99)-(order.indexOf(b)+1||99));
+  const sections=cos.map(code=>{
+    const meta=SUCC_COMPANIES.find(c=>c.code===code)||{code,short:code,name:code};
+    const list=byCo[code].slice().sort((a,b)=>(a.order||0)-(b.order||0));
+    const filled=list.filter(p=>(p.successors||[]).length).length;
+    const cards=list.map(isPositionCard).join('');
+    return `<details class="co-section" open>
+      <summary>
+        <span>${meta.code} <span style="font-weight:500;font-size:12px;opacity:.85">${meta.short}</span></span>
+        <span class="co-meta"><span class="cov-badge">ผู้สืบทอด ${filled}/${list.length}</span>
+          <button class="btn btn-sm btn-light" onclick="event.preventDefault();event.stopPropagation();editInternalSucc(null,'${code}')">+ ตำแหน่ง</button></span>
+      </summary>
+      <div class="co-body"><div class="succession-grid">${cards||'<p class="text-muted">ยังไม่มีตำแหน่ง</p>'}</div></div>
+    </details>`;
+  }).join('');
+  const total=DB.internalSuccession.length, withSucc=DB.internalSuccession.filter(p=>(p.successors||[]).length).length;
+  document.getElementById('content').innerHTML=`
+    <div class="flex-between mb-8">
+      <div class="section-title">&#127793; Internal Succession Plan</div>
+      <button class="btn btn-primary" onclick="editInternalSucc(null,'')">+ เพิ่มตำแหน่ง</button>
+    </div>
+    <div class="alert alert-info">
+      ครอบคลุม <b>${withSucc}/${total}</b> ตำแหน่งที่มีผู้สืบทอด · เลือกชื่อจากทะเบียนพนักงาน (${DB.employees.length} คน) หรือพิมพ์เอง
+      <span style="float:right">
+        <span class="readiness ready-now" style="margin-right:4px">Ready Now</span>
+        <span class="readiness ready-1y" style="margin-right:4px">1Y</span>
+        <span class="readiness ready-2y" style="margin-right:4px">2-3Y</span>
+        <span class="readiness ready-not">ยังไม่พร้อม</span></span>
+    </div>
+    ${sections||'<p class="text-muted">ยังไม่มีข้อมูล</p>'}`;
+}
+function isPositionCard(p){
+  const inc=p.incumbentCode?empByCode(p.incumbentCode):empByName(p.incumbent);
+  const incLine=p.incumbent
+    ? `<div style="display:flex;align-items:center;gap:6px">${directorAvatar(p.incumbent,22)}<div><strong>${p.incumbent}</strong>${inc?`<div class="text-muted" style="font-size:10.5px">${inc.jobRole||inc.position||''}${inc.level?' · '+inc.level:''}</div>`:''}</div></div>`
+    : `<span class="text-muted">— ยังไม่ระบุผู้ดำรงตำแหน่ง —</span>`;
+  const succ=(p.successors||[]).map(s=>{
+    const m=s.code?empByCode(s.code):empByName(s.name);
+    return `<div class="sc-successor">
+      <div class="flex-between"><div class="name" style="display:flex;align-items:center;gap:7px">${directorAvatar(s.name,22)}<span>${s.name}</span></div>
+        <span class="readiness ${s.readiness}">${READINESS_MAP[s.readiness]?READINESS_MAP[s.readiness][1]:s.readiness}</span></div>
+      ${m?`<div class="text-muted" style="font-size:10.5px;margin-left:29px">${m.jobRole||m.position||''}${m.level?' · '+m.level:''} · ${m.company}</div>`:''}
+      ${s.idp?`<div class="text-muted" style="font-size:11px;margin-left:29px">IDP: ${s.idp}</div>`:''}
+    </div>`;
+  }).join('');
+  return `<div class="succession-card">
+    <div class="sc-header"><h4>${p.position}</h4>
+      <div class="btn-group">
+        <button class="btn btn-sm btn-light" onclick="editInternalSucc('${p.id}')">&#9998;</button>
+        <button class="btn btn-sm btn-light-red" onclick="deleteInternalSucc('${p.id}')">&#128465;</button>
+      </div></div>
+    <div class="sc-body">
+      <div class="text-muted" style="font-size:11px;margin-bottom:4px">ผู้ดำรงตำแหน่ง</div>
+      <div style="margin-bottom:10px">${incLine}</div>
+      <div class="text-muted" style="font-size:11px;margin-bottom:4px">ผู้สืบทอด (${(p.successors||[]).length})</div>
+      ${succ||'<div class="text-muted">ยังไม่มีผู้สืบทอด</div>'}
+      ${p.note?`<div class="alert alert-info" style="padding:6px 10px;font-size:12px;margin-top:8px">${p.note}</div>`:''}
+    </div></div>`;
+}
+function editInternalSucc(id, companyCode){
+  ensureEmpDatalist();
+  const p=id?DB.internalSuccession.find(x=>x.id===id):null; const isNew=!p;
+  const f=p||{ id:genId('is'), company:companyCode||'PCC', position:'', incumbent:'', incumbentCode:'', successors:[], note:'' };
+  const succForms=(f.successors||[]).map((s,i)=>buildISSuccessorForm(i,s)).join('');
+  openModal(isNew?'เพิ่มตำแหน่ง Internal Succession':`แก้ไข — ${f.position}`,
+    `<div class="form-row">
+       <div class="form-group"><label>บริษัท</label><select class="form-control" id="fis-co">
+         ${SUCC_COMPANIES.map(c=>`<option value="${c.code}" ${f.company===c.code?'selected':''}>${c.code} — ${c.short}</option>`).join('')}
+       </select></div>
+       <div class="form-group"><label>ตำแหน่ง</label><input class="form-control" id="fis-pos" value="${f.position}"></div>
+     </div>
+     <div class="form-group"><label>ผู้ดำรงตำแหน่งปัจจุบัน (เลือกจาก Master หรือพิมพ์เอง)</label>
+       <input class="form-control" id="fis-inc" list="emp-datalist" value="${f.incumbent||''}" placeholder="พิมพ์ชื่อ หรือเลือกจากรายชื่อ"></div>
+     <div style="font-weight:700;color:var(--navy);font-size:13px;margin:12px 0 6px">ผู้สืบทอด</div>
+     <div id="is-successor-forms">${succForms}</div>
+     <button class="btn btn-sm btn-outline mt-8" onclick="addISSuccessorForm()">+ เพิ่มผู้สืบทอด</button>
+     <div class="form-group mt-16"><label>หมายเหตุ</label><textarea class="form-control" id="fis-note">${f.note||''}</textarea></div>`,
+    `<button class="btn btn-outline" onclick="closeModal()">ยกเลิก</button>
+     ${!isNew?`<button class="btn btn-red" onclick="deleteInternalSucc('${f.id}')">&#128465; ลบ</button>`:''}
+     <button class="btn btn-primary" onclick="saveInternalSucc('${f.id}',${isNew})">บันทึก</button>`);
+}
+function buildISSuccessorForm(i,s){
+  s=s||{};
+  return `<div class="is-successor-form" style="border:1px solid var(--border);border-radius:6px;padding:10px;margin-bottom:8px">
+    <div style="font-weight:700;color:var(--navy);font-size:12px;margin-bottom:6px;display:flex;justify-content:space-between">
+      <span>ผู้สืบทอด #${i+1}</span>
+      <button type="button" class="btn btn-sm btn-red" style="padding:2px 7px" onclick="this.closest('.is-successor-form').remove()">&#10005;</button>
+    </div>
+    <div class="form-row">
+      <div class="form-group"><label>ชื่อ (เลือก/พิมพ์)</label><input class="form-control isf-name" list="emp-datalist" value="${s.name||''}"></div>
+      <div class="form-group"><label>ความพร้อม</label><select class="form-control isf-ready">
+        ${Object.entries(READINESS_MAP).map(([k,v])=>`<option value="${k}" ${s.readiness===k?'selected':''}>${v[1]}</option>`).join('')}
+      </select></div>
+    </div>
+    <div class="form-group mb-0"><label>IDP / แผนพัฒนา</label><input class="form-control isf-idp" value="${s.idp||''}"></div>
+  </div>`;
+}
+function addISSuccessorForm(){
+  const c=document.getElementById('is-successor-forms'); if(!c) return;
+  const n=c.querySelectorAll('.is-successor-form').length;
+  const div=document.createElement('div'); div.innerHTML=buildISSuccessorForm(n,{});
+  c.appendChild(div.firstElementChild);
+}
+function saveInternalSucc(id,isNew){
+  const position=document.getElementById('fis-pos').value.trim(); if(!position) return alert('กรุณาระบุตำแหน่ง');
+  const company=document.getElementById('fis-co').value;
+  const incName=document.getElementById('fis-inc').value.trim();
+  const incEmp=empByName(incName);
+  const successors=[];
+  document.querySelectorAll('.is-successor-form').forEach(form=>{
+    const name=form.querySelector('.isf-name').value.trim();
+    if(name){ const m=empByName(name); successors.push({ name, code:m?m.code:'', readiness:form.querySelector('.isf-ready').value, idp:form.querySelector('.isf-idp').value.trim() }); }
+  });
+  const note=document.getElementById('fis-note').value;
+  const rec={ company, position, incumbent:incName, incumbentCode:incEmp?incEmp.code:'', successors, note };
+  if(isNew){ const orders=DB.internalSuccession.filter(p=>p.company===company).map(p=>p.order||0); const mx=orders.length?Math.max(...orders):-1; DB.internalSuccession.push(Object.assign({ id, order:mx+1 }, rec)); }
+  else { const p=DB.internalSuccession.find(x=>x.id===id); if(p) Object.assign(p, rec); }
+  saveData(); closeModal(); renderInternalSucc();
+}
+function deleteInternalSucc(id){
+  if(!confirm('ลบตำแหน่งนี้?')) return;
+  DB.internalSuccession=DB.internalSuccession.filter(x=>x.id!==id);
+  saveData(); closeModal(); renderInternalSucc();
 }
 
 // ============================================================
