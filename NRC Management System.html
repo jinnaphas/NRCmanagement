@@ -614,6 +614,7 @@ function migrateDB() {
   if (!DB.conflictLog) DB.conflictLog = [];
   if (!DB.employees) DB.employees = [];
   if (!DB.internalSuccession || !DB.internalSuccession.length) DB.internalSuccession = defaultSuccPositions();
+  DB.internalSuccession.forEach(p => { if (p.layer === undefined) p.layer = 1; if (p.parentId === undefined) p.parentId = ''; });
   if (!DB.skillsList || !DB.skillsList.length) DB.skillsList = JSON.parse(JSON.stringify(DEFAULT_SKILLS));
   if (!DB.company) DB.company = {};
   if (!DB.company.signatoryIds) DB.company.signatoryIds = [];
@@ -1901,9 +1902,17 @@ function defaultSuccPositions() {
     ['PCE',['MD']]
   ];
   const out=[]; let n=1;
-  seed.forEach(([co,arr])=>arr.forEach((pos,i)=>out.push({ id:'is'+(n++), company:co, position:pos, order:i, incumbent:'', incumbentCode:'', successors:[], note:'' })));
+  seed.forEach(([co,arr])=>arr.forEach((pos,i)=>out.push({ id:'is'+(n++), company:co, layer:1, parentId:'', position:pos, order:i, incumbent:'', incumbentCode:'', successors:[], note:'' })));
   return out;
 }
+const SUCC_LAYERS = {
+  1: { label:'C-Level',          th:'ผู้บริหารระดับสูง',  childLabel:'Business Manager' },
+  2: { label:'Business Manager', th:'ผู้จัดการสายธุรกิจ', childLabel:'Function Manager' },
+  3: { label:'Function Manager', th:'ผู้จัดการสายงาน',    childLabel:'' }
+};
+function succChildren(id){ return DB.internalSuccession.filter(p=>(p.parentId||'')===id).sort((a,b)=>(a.order||0)-(b.order||0)); }
+function succDescendants(id){ let out=[]; succChildren(id).forEach(c=>{ out.push(c); out=out.concat(succDescendants(c.id)); }); return out; }
+function succAncestors(p){ const chain=[]; let cur=p; while(cur && cur.parentId){ const par=DB.internalSuccession.find(x=>x.id===cur.parentId); if(!par) break; chain.unshift(par); cur=par; } return chain; }
 function empByCode(code){ if(!code) return null; return DB.employees.find(e=>e.code===code)||null; }
 function empByName(name){ if(!name) return null; const n=String(name).trim(); return DB.employees.find(e=>String(e.name).trim()===n)||null; }
 function empServiceYears(e){ if(!e.serviceDate) return ''; const d=new Date(e.serviceDate); if(isNaN(d.getTime())) return ''; const y=(Date.now()-d.getTime())/(365.25*86400000); return y>=0?y.toFixed(1):''; }
@@ -1960,33 +1969,48 @@ function empRenderTable(){
 }
 
 // ---- Internal Succession Plan page ----
+let succFocusId = '';   // '' = overview (companies + L1) · else = drill เข้าไปดูลูกของตำแหน่งนี้
+function succHome(){ succFocusId=''; renderInternalSucc(); }
+function succDrillTo(id){ succFocusId=id; renderInternalSucc(); }
+function succCoverage(list){
+  const by={1:[0,0],2:[0,0],3:[0,0]}; let tw=0, tt=0;
+  list.forEach(p=>{ const L=p.layer||1; by[L][1]++; tt++; if((p.successors||[]).length){ by[L][0]++; tw++; } });
+  const detail=[1,2,3].filter(L=>by[L][1]).map(L=>`L${L} ${by[L][0]}/${by[L][1]}`).join(' · ');
+  return { withSucc:tw, total:tt, detail };
+}
 function renderInternalSucc(){
   ensureEmpDatalist();
-  const byCo={}; DB.internalSuccession.forEach(p=>{ (byCo[p.company]=byCo[p.company]||[]).push(p); });
+  const focus = succFocusId ? DB.internalSuccession.find(p=>p.id===succFocusId) : null;
+  if (succFocusId && !focus) succFocusId='';
+  if (focus) return renderSuccDrill(focus);
+  renderSuccOverview();
+}
+function renderSuccOverview(){
   const order=SUCC_COMPANIES.map(c=>c.code);
-  const cos=Object.keys(byCo).sort((a,b)=>(order.indexOf(a)+1||99)-(order.indexOf(b)+1||99));
+  const cos=[...new Set(DB.internalSuccession.map(p=>p.company))].sort((a,b)=>(order.indexOf(a)+1||99)-(order.indexOf(b)+1||99));
   const sections=cos.map(code=>{
     const meta=SUCC_COMPANIES.find(c=>c.code===code)||{code,short:code,name:code};
-    const list=byCo[code].slice().sort((a,b)=>(a.order||0)-(b.order||0));
-    const filled=list.filter(p=>(p.successors||[]).length).length;
-    const cards=list.map(isPositionCard).join('');
+    const all=DB.internalSuccession.filter(p=>p.company===code);
+    const l1=all.filter(p=>(p.layer||1)===1).sort((a,b)=>(a.order||0)-(b.order||0));
+    const cov=succCoverage(all);
+    const cards=l1.map(p=>isPositionCard(p)).join('');
     return `<details class="co-section" open>
       <summary>
         <span>${meta.code} <span style="font-weight:500;font-size:12px;opacity:.85">${meta.short}</span></span>
-        <span class="co-meta"><span class="cov-badge">ผู้สืบทอด ${filled}/${list.length}</span>
-          <button class="btn btn-sm btn-light" onclick="event.preventDefault();event.stopPropagation();editInternalSucc(null,'${code}')">+ ตำแหน่ง</button></span>
+        <span class="co-meta"><span class="cov-badge" title="${cov.detail}">ผู้สืบทอด ${cov.withSucc}/${cov.total}</span>
+          <button class="btn btn-sm btn-light" onclick="event.preventDefault();event.stopPropagation();editInternalSucc(null,'${code}','',1)">+ C-Level</button></span>
       </summary>
       <div class="co-body"><div class="succession-grid">${cards||'<p class="text-muted">ยังไม่มีตำแหน่ง</p>'}</div></div>
     </details>`;
   }).join('');
-  const total=DB.internalSuccession.length, withSucc=DB.internalSuccession.filter(p=>(p.successors||[]).length).length;
+  const cov=succCoverage(DB.internalSuccession);
   document.getElementById('content').innerHTML=`
     <div class="flex-between mb-8">
       <div class="section-title">&#127793; Internal Succession Plan</div>
-      <button class="btn btn-primary" onclick="editInternalSucc(null,'')">+ เพิ่มตำแหน่ง</button>
+      <button class="btn btn-primary" onclick="editInternalSucc(null,'','',1)">+ เพิ่มตำแหน่ง C-Level</button>
     </div>
     <div class="alert alert-info">
-      ครอบคลุม <b>${withSucc}/${total}</b> ตำแหน่งที่มีผู้สืบทอด · เลือกชื่อจากทะเบียนพนักงาน (${DB.employees.length} คน) หรือพิมพ์เอง
+      ครอบคลุม <b>${cov.withSucc}/${cov.total}</b> ตำแหน่งที่มีผู้สืบทอด (ทุกชั้น: ${cov.detail}) · คลิก <b>&#128193; ↓</b> บนการ์ดเพื่อเจาะลง Business → Function Manager
       <span style="float:right">
         <span class="readiness ready-now" style="margin-right:4px">Ready Now</span>
         <span class="readiness ready-1y" style="margin-right:4px">1Y</span>
@@ -1995,7 +2019,33 @@ function renderInternalSucc(){
     </div>
     ${sections||'<p class="text-muted">ยังไม่มีข้อมูล</p>'}`;
 }
-function isPositionCard(p){
+function renderSuccDrill(focus){
+  const meta=SUCC_COMPANIES.find(c=>c.code===focus.company)||{code:focus.company,short:focus.company};
+  const anc=succAncestors(focus);
+  const crumbs=[`<a onclick="succHome()" style="cursor:pointer;color:var(--blue)">&#127968; ทั้งหมด</a>`,
+    `<a onclick="succHome()" style="cursor:pointer;color:var(--blue)">${meta.code}</a>`]
+    .concat(anc.map(a=>`<a onclick="succDrillTo('${a.id}')" style="cursor:pointer;color:var(--blue)">${a.position}</a>`))
+    .concat([`<span style="font-weight:700">${focus.position}</span>`]);
+  const focusLayer=focus.layer||1, childLayer=focusLayer+1, childMeta=SUCC_LAYERS[childLayer];
+  const children=succChildren(focus.id), cov=succCoverage(children);
+  const childCards=children.map(c=>isPositionCard(c)).join('');
+  document.getElementById('content').innerHTML=`
+    <div class="flex-between mb-8">
+      <div class="section-title">&#127793; Internal Succession Plan</div>
+      <button class="btn btn-outline btn-sm" onclick="succHome()">&#8592; กลับหน้ารวม</button>
+    </div>
+    <div class="alert alert-info" style="display:flex;align-items:center;gap:4px;flex-wrap:wrap">${crumbs.join('<span style="opacity:.5"> &#8250; </span>')}</div>
+    <div class="text-muted" style="font-size:11px;margin:4px 0 2px">ตำแหน่งที่กำลังดู — ${SUCC_LAYERS[focusLayer].label}</div>
+    <div style="max-width:520px;margin-bottom:14px">${isPositionCard(focus,{showDrill:false})}</div>
+    <hr class="divider">
+    <div class="flex-between mb-8">
+      <div class="section-title" style="font-size:14px;margin-bottom:0">${childMeta?childMeta.label:'ทีมงาน'} ภายใต้ ${focus.position} <span class="text-muted">(${children.length}${children.length?` · ผู้สืบทอด ${cov.withSucc}/${cov.total}`:''})</span></div>
+      ${childMeta?`<button class="btn btn-primary btn-sm" onclick="editInternalSucc(null,'${focus.company}','${focus.id}',${childLayer})">+ ${childMeta.label}</button>`:''}
+    </div>
+    <div class="succession-grid">${childCards||`<p class="text-muted">ยังไม่มี${childMeta?childMeta.label:''} — กดปุ่ม + เพื่อเพิ่ม</p>`}</div>`;
+}
+function isPositionCard(p, opts){
+  opts=opts||{}; const showDrill=opts.showDrill!==false; const L=p.layer||1;
   const inc=p.incumbentCode?empByCode(p.incumbentCode):empByName(p.incumbent);
   const incLine=p.incumbent
     ? `<div style="display:flex;align-items:center;gap:6px">${directorAvatar(p.incumbent,22)}<div><strong>${p.incumbent}</strong>${inc?`<div class="text-muted" style="font-size:10.5px">${inc.jobRole||inc.position||''}${inc.level?' · '+inc.level:''}</div>`:''}</div></div>`
@@ -2009,6 +2059,8 @@ function isPositionCard(p){
       ${s.idp?`<div class="text-muted" style="font-size:11px;margin-left:29px">IDP: ${s.idp}</div>`:''}
     </div>`;
   }).join('');
+  const kids=L<3?succChildren(p.id).length:0;
+  const drill=(L<3&&showDrill)?`<div style="border-top:1px solid var(--border);padding:8px 12px;background:#FAFBFD"><button class="btn btn-sm btn-outline" style="width:100%" onclick="succDrillTo('${p.id}')">&#128193; ${SUCC_LAYERS[L+1].label} (${kids}) &#8595;</button></div>`:'';
   return `<div class="succession-card">
     <div class="sc-header"><h4>${p.position}</h4>
       <div class="btn-group">
@@ -2016,24 +2068,34 @@ function isPositionCard(p){
         <button class="btn btn-sm btn-light-red" onclick="deleteInternalSucc('${p.id}')">&#128465;</button>
       </div></div>
     <div class="sc-body">
+      <div style="margin-bottom:8px"><span class="co-pill" title="${SUCC_LAYERS[L].th}">L${L} · ${SUCC_LAYERS[L].label}</span></div>
       <div class="text-muted" style="font-size:11px;margin-bottom:4px">ผู้ดำรงตำแหน่ง</div>
       <div style="margin-bottom:10px">${incLine}</div>
       <div class="text-muted" style="font-size:11px;margin-bottom:4px">ผู้สืบทอด (${(p.successors||[]).length})</div>
       ${succ||'<div class="text-muted">ยังไม่มีผู้สืบทอด</div>'}
       ${p.note?`<div class="alert alert-info" style="padding:6px 10px;font-size:12px;margin-top:8px">${p.note}</div>`:''}
-    </div></div>`;
+    </div>
+    ${drill}</div>`;
 }
-function editInternalSucc(id, companyCode){
+function editInternalSucc(id, companyCode, parentId, layer){
   ensureEmpDatalist();
   const p=id?DB.internalSuccession.find(x=>x.id===id):null; const isNew=!p;
-  const f=p||{ id:genId('is'), company:companyCode||'PCC', position:'', incumbent:'', incumbentCode:'', successors:[], note:'' };
-  const succForms=(f.successors||[]).map((s,i)=>buildISSuccessorForm(i,s)).join('');
-  openModal(isNew?'เพิ่มตำแหน่ง Internal Succession':`แก้ไข — ${f.position}`,
-    `<div class="form-row">
-       <div class="form-group"><label>บริษัท</label><select class="form-control" id="fis-co">
+  const f=p||{ id:genId('is'), company:companyCode||'PCC', layer:layer||1, parentId:parentId||'', position:'', incumbent:'', incumbentCode:'', successors:[], note:'' };
+  const L=f.layer||1, lm=SUCC_LAYERS[L];
+  const parent=f.parentId?DB.internalSuccession.find(x=>x.id===f.parentId):null;
+  const meta=SUCC_COMPANIES.find(c=>c.code===f.company)||{code:f.company,short:f.company};
+  const coField=(L===1)
+    ? `<div class="form-group"><label>บริษัท</label><select class="form-control" id="fis-co">
          ${SUCC_COMPANIES.map(c=>`<option value="${c.code}" ${f.company===c.code?'selected':''}>${c.code} — ${c.short}</option>`).join('')}
-       </select></div>
-       <div class="form-group"><label>ตำแหน่ง</label><input class="form-control" id="fis-pos" value="${f.position}"></div>
+       </select></div>`
+    : `<input type="hidden" id="fis-co" value="${f.company}">
+       <div class="form-group"><label>สังกัด</label><div class="form-control" style="background:#F2F5FA">${meta.code} ${meta.short}${parent?` &#8250; <b>${parent.position}</b>`:''}</div></div>`;
+  const succForms=(f.successors||[]).map((s,i)=>buildISSuccessorForm(i,s)).join('');
+  openModal(isNew?`เพิ่ม ${lm.label}`:`แก้ไข — ${f.position}`,
+    `<input type="hidden" id="fis-layer" value="${L}"><input type="hidden" id="fis-parent" value="${f.parentId||''}">
+     <div class="form-row">
+       ${coField}
+       <div class="form-group"><label>ตำแหน่ง (${lm.label})</label><input class="form-control" id="fis-pos" value="${f.position}"></div>
      </div>
      <div class="form-group"><label>ผู้ดำรงตำแหน่งปัจจุบัน (เลือกจาก Master หรือพิมพ์เอง)</label>
        <input class="form-control" id="fis-inc" list="emp-datalist" value="${f.incumbent||''}" placeholder="พิมพ์ชื่อ หรือเลือกจากรายชื่อ"></div>
@@ -2070,6 +2132,8 @@ function addISSuccessorForm(){
 function saveInternalSucc(id,isNew){
   const position=document.getElementById('fis-pos').value.trim(); if(!position) return alert('กรุณาระบุตำแหน่ง');
   const company=document.getElementById('fis-co').value;
+  const layer=parseInt(document.getElementById('fis-layer').value)||1;
+  const parentId=document.getElementById('fis-parent').value||'';
   const incName=document.getElementById('fis-inc').value.trim();
   const incEmp=empByName(incName);
   const successors=[];
@@ -2078,14 +2142,19 @@ function saveInternalSucc(id,isNew){
     if(name){ const m=empByName(name); successors.push({ name, code:m?m.code:'', readiness:form.querySelector('.isf-ready').value, idp:form.querySelector('.isf-idp').value.trim() }); }
   });
   const note=document.getElementById('fis-note').value;
-  const rec={ company, position, incumbent:incName, incumbentCode:incEmp?incEmp.code:'', successors, note };
-  if(isNew){ const orders=DB.internalSuccession.filter(p=>p.company===company).map(p=>p.order||0); const mx=orders.length?Math.max(...orders):-1; DB.internalSuccession.push(Object.assign({ id, order:mx+1 }, rec)); }
+  const rec={ company, layer, parentId, position, incumbent:incName, incumbentCode:incEmp?incEmp.code:'', successors, note };
+  if(isNew){ const sib=DB.internalSuccession.filter(p=>(p.parentId||'')===parentId && p.company===company).map(p=>p.order||0); const mx=sib.length?Math.max(...sib):-1; DB.internalSuccession.push(Object.assign({ id, order:mx+1 }, rec)); }
   else { const p=DB.internalSuccession.find(x=>x.id===id); if(p) Object.assign(p, rec); }
   saveData(); closeModal(); renderInternalSucc();
 }
 function deleteInternalSucc(id){
-  if(!confirm('ลบตำแหน่งนี้?')) return;
-  DB.internalSuccession=DB.internalSuccession.filter(x=>x.id!==id);
+  const p=DB.internalSuccession.find(x=>x.id===id); if(!p) return;
+  const desc=succDescendants(id);
+  const msg=desc.length?`ลบ "${p.position}" และตำแหน่งลูกอีก ${desc.length} ตำแหน่ง?`:`ลบ "${p.position}"?`;
+  if(!confirm(msg)) return;
+  const remove=new Set([id, ...desc.map(d=>d.id)]);
+  DB.internalSuccession=DB.internalSuccession.filter(x=>!remove.has(x.id));
+  if(remove.has(succFocusId)) succFocusId=(p.parentId && DB.internalSuccession.find(x=>x.id===p.parentId))?p.parentId:'';
   saveData(); closeModal(); renderInternalSucc();
 }
 

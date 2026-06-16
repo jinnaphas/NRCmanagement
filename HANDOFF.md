@@ -53,9 +53,12 @@ directorTraining[]: { id, directorId, directorName, course, institute,
 employees[]: { code, name, nameEn, gender, company(PCC|PEM|PSP|PDE|PSL|PPP|SBP|PCE),
   position, jobRole, level, group, dept, div, serviceDate(CE), birthDate(CE), education, major }
   // Master pool พนักงานระดับวิชาชีพขึ้นไป (import จาก Employee XLS) — ใช้เลือกในหน้า Internal Succession
-internalSuccession[]: { id, company, position, order, incumbent, incumbentCode,
-  successors[]{ name, code, readiness(ready-now|ready-1y|ready-2y|ready-not), idp }, note }
-  // defaultSuccPositions() = ตำแหน่งตั้งต้น 25 ตำแหน่ง (8 บริษัท) seed เมื่อ DB ว่าง
+internalSuccession[]: { id, company, layer(1|2|3), parentId, position, order,
+  incumbent, incumbentCode, successors[]{ name, code,
+  readiness(ready-now|ready-1y|ready-2y|ready-not), idp }, note }
+  // โครงสร้าง tree 3 ชั้น/บริษัท: L1=C-Level · L2=Business Manager · L3=Function Manager
+  // parentId ผูกชั้น (L1 = '') · drill-down + breadcrumb · ลบ = cascade ลบลูกด้วย
+  // defaultSuccPositions() = ตำแหน่ง L1 ตั้งต้น 25 ตำแหน่ง (8 บริษัท) seed เมื่อ DB ว่าง
 skillsList[]: {key,label}                  // Board Skills Matrix (แก้/เพิ่ม/ลบได้)
 iodPrograms[]: ['DAP','DCP','RCP','BNCP','AACP']
 termRules: { termYears:3, indepLimitYears:9, conversionDate:'2561-05-09', minIndependent:3 }
@@ -71,7 +74,7 @@ agmYears[]: [2561..2574]   agmDates{ '2561':'2561-04-27', ... }
 | **ทะเบียนคณะกรรมการทั้งหมด** | Master pool ของทุกคน (ไม่ใช่บอร์ด PCC อัตโนมัติ) |
 | Control List | แท็บ คณะกรรมการบริษัท (derive จากบอร์ด + CG analysis + Board Skills Matrix + อำนาจลงนาม PCC) / คณะย่อย (derive จาก role flags) / บริษัทย่อย (แก้ชื่อ + อำนาจลงนาม + เลือกคนจาก Master) |
 | **วาระกรรมการ (Board Term)** | แท็บ Rotation Matrix (คลิกหมุน P/NEW/IN/OUT + คำนวณวาระอัตโนมัติ hybrid) / สรุป&ธงเตือน (ออกตามวาระ, ใกล้ครบ 9 ปี) / ผังกรรมการอิสระรายปี |
-| **Internal Succession** | แผนสืบทอดตำแหน่งผู้บริหารบริษัทในเครือ — จัดกลุ่มตามบริษัท (พับ/ขยายได้) แต่ละตำแหน่งมี incumbent + ผู้สืบทอด (ความพร้อม 4 ระดับ + IDP) เลือกชื่อจาก Employee Master (datalist) หรือพิมพ์เอง |
+| **Internal Succession** | แผนสืบทอดผู้บริหารบริษัทในเครือ — tree 3 ชั้น/บริษัท (L1 C-Level → L2 Business Manager → L3 Function Manager) drill-down + breadcrumb · แต่ละตำแหน่งมี incumbent + ผู้สืบทอด (ความพร้อม 4 ระดับ + IDP) เลือกชื่อจาก Employee Master (datalist) หรือพิมพ์เอง · ลบ = cascade |
 | **พนักงาน (Master)** | ทะเบียนพนักงานระดับวิชาชีพขึ้นไป (399 คน, import จาก XLS) ค้นหา/กรองตามบริษัท-กลุ่ม · เป็น pool เลือกผู้สืบทอด |
 | ค่าตอบแทน | — |
 | **พัฒนากรรมการ** | 3 แท็บ: ภาพรวม (ชม.พัฒนา + สรุปคณะย่อย+IOD compliance) / IOD Certification Matrix / ประวัติการอบรม (filter) |
