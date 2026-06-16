@@ -13423,6 +13423,30 @@
       "incumbentCode": "591007",
       "successors": [],
       "note": ""
+    },
+    {
+      "id": "ismqg2eqee0v1ql",
+      "order": 0,
+      "company": "PEM",
+      "layer": 2,
+      "parentId": "is8",
+      "position": "ฺBusiness Manager - PEM101",
+      "incumbent": "นางสาวสุธาทิพย์  ไชยพลบาล",
+      "incumbentCode": "540586",
+      "successors": [],
+      "note": ""
+    },
+    {
+      "id": "ismqg2f80tqo08f",
+      "order": 1,
+      "company": "PEM",
+      "layer": 2,
+      "parentId": "is8",
+      "position": "ฺBusiness Manager - PEM102",
+      "incumbent": "นายนพดล  เปียงใจ",
+      "incumbentCode": "540609",
+      "successors": [],
+      "note": ""
     }
   ]
 }
