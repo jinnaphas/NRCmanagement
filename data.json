@@ -13236,8 +13236,8 @@
       "company": "PDE",
       "position": "CEO-RS",
       "order": 0,
-      "incumbent": "",
-      "incumbentCode": "",
+      "incumbent": "นายวิชัย ยิ่งจอหอ",
+      "incumbentCode": "611431",
       "successors": [],
       "note": ""
     },
@@ -13246,8 +13246,8 @@
       "company": "PDE",
       "position": "COO-RS",
       "order": 1,
-      "incumbent": "",
-      "incumbentCode": "",
+      "incumbent": "นายวิชัย ยิ่งจอหอ",
+      "incumbentCode": "611431",
       "successors": [],
       "note": ""
     },
@@ -13256,8 +13256,8 @@
       "company": "PDE",
       "position": "CTO-RS",
       "order": 2,
-      "incumbent": "",
-      "incumbentCode": "",
+      "incumbent": "นายวิชัย ยิ่งจอหอ",
+      "incumbentCode": "611431",
       "successors": [],
       "note": ""
     },
@@ -13266,8 +13266,8 @@
       "company": "PDE",
       "position": "CFO-RS",
       "order": 3,
-      "incumbent": "",
-      "incumbentCode": "",
+      "incumbent": "นางสาวจันจิรา ปั้นเขียว",
+      "incumbentCode": "631727",
       "successors": [],
       "note": ""
     },
@@ -13276,8 +13276,8 @@
       "company": "PSL",
       "position": "MD",
       "order": 0,
-      "incumbent": "",
-      "incumbentCode": "",
+      "incumbent": "นายอมร แดงโชติ",
+      "incumbentCode": "390127",
       "successors": [],
       "note": ""
     },
@@ -13286,8 +13286,8 @@
       "company": "PPP",
       "position": "CEO-RS",
       "order": 0,
-      "incumbent": "",
-      "incumbentCode": "",
+      "incumbent": "นายอมร แดงโชติ",
+      "incumbentCode": "390127",
       "successors": [],
       "note": ""
     },
@@ -13296,9 +13296,16 @@
       "company": "PPP",
       "position": "COO-RS",
       "order": 1,
-      "incumbent": "",
-      "incumbentCode": "",
-      "successors": [],
+      "incumbent": "นายอมร แดงโชติ",
+      "incumbentCode": "390127",
+      "successors": [
+        {
+          "name": "นายณัฐวุฒิ ยิ่งถาวร",
+          "code": "591007",
+          "readiness": "ready-now",
+          "idp": ""
+        }
+      ],
       "note": ""
     },
     {
@@ -13306,9 +13313,22 @@
       "company": "PPP",
       "position": "CTO-RS",
       "order": 2,
-      "incumbent": "",
-      "incumbentCode": "",
-      "successors": [],
+      "incumbent": "นายวิชัย ยิ่งจอหอ",
+      "incumbentCode": "611431",
+      "successors": [
+        {
+          "name": "นายกษิดิศ รักษ์ชูชื่น",
+          "code": "652028",
+          "readiness": "ready-2y",
+          "idp": ""
+        },
+        {
+          "name": "นายนราวิชญ์ สมนา",
+          "code": "641815",
+          "readiness": "ready-not",
+          "idp": ""
+        }
+      ],
       "note": ""
     },
     {
@@ -13316,8 +13336,8 @@
       "company": "PPP",
       "position": "CFO-RS",
       "order": 3,
-      "incumbent": "",
-      "incumbentCode": "",
+      "incumbent": "นางสาวทิพย์สุดา ทองใหญ่",
+      "incumbentCode": "611309",
       "successors": [],
       "note": ""
     },
@@ -13326,9 +13346,22 @@
       "company": "SBP",
       "position": "MD",
       "order": 0,
-      "incumbent": "",
-      "incumbentCode": "",
-      "successors": [],
+      "incumbent": "นายณัฐวุฒิ ยิ่งถาวร",
+      "incumbentCode": "591007",
+      "successors": [
+        {
+          "name": "นายจิรศักดิ์ มุสิกทัศน์",
+          "code": "560749",
+          "readiness": "ready-now",
+          "idp": ""
+        },
+        {
+          "name": "นายชัยทัต   ประทุมวัลย์",
+          "code": "611393",
+          "readiness": "ready-not",
+          "idp": ""
+        }
+      ],
       "note": ""
     },
     {
@@ -13336,8 +13369,8 @@
       "company": "PCE",
       "position": "MD",
       "order": 0,
-      "incumbent": "",
-      "incumbentCode": "",
+      "incumbent": "นายณัฐวุฒิ ยิ่งถาวร",
+      "incumbentCode": "591007",
       "successors": [],
       "note": ""
     }
