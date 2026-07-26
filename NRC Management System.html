@@ -601,7 +601,7 @@ function migrateDB() {
       if (!m.momAttachments) m.momAttachments = [];
       if (!m.agendaFile) m.agendaFile = '';
       if (!m.momFile) m.momFile = '';
-      if (m.agendaItems) m.agendaItems.forEach(a => { if (!a.attachments) a.attachments = []; });
+      if (m.agendaItems) m.agendaItems.forEach(a => { if (!a.attachments) a.attachments = []; if (!a.category) a.category = agendaItemCat(a); });
     });
   }
   if (!DB.directorChangelog) DB.directorChangelog = [];
@@ -879,6 +879,25 @@ function renderDashboard() {
 // ============================================================
 // MEETINGS
 // ============================================================
+// ── หมวดวาระการประชุม (ตามรูปแบบระเบียบวาระ NRC) ─────────────────────────────
+const AGENDA_CATS = [
+  { key:'chair',    label:'เรื่องที่ประธานฯ แจ้งต่อที่ประชุมทราบ' },
+  { key:'minutes',  label:'เรื่องรับรองรายงานการประชุม' },
+  { key:'followup', label:'เรื่องสืบเนื่อง' },
+  { key:'consider', label:'เรื่องพิจารณาความเห็นชอบ' },
+  { key:'inform',   label:'เรื่องเพื่อทราบ' },
+  { key:'other',    label:'เรื่องอื่นๆ' }
+];
+const AGENDA_CAT_TYPE = { chair:'inform', minutes:'approve', followup:'inform', consider:'approve', inform:'inform', other:'other' };
+// หาหมวดของวาระ (ถ้ายังไม่ระบุ เดาจากชื่อ/ประเภทเดิม)
+function agendaItemCat(a){
+  if (a.category) return a.category;
+  if (/รับรองรายงานการประชุม/.test(a.title||'')) return 'minutes';
+  if (a.type==='inform') return 'inform';
+  if (a.type==='approve') return 'consider';
+  return 'other';
+}
+
 function renderMeetings() {
   const meetings = [...DB.meetings].sort((a,b)=>a.no-b.no);
   const rows = meetings.map(m=>`
@@ -933,18 +952,28 @@ function renderActionItemsTable() {
 
 function viewMeeting(id) {
   const m = DB.meetings.find(x=>x.id===id); if (!m) return;
-  const agendaRows = (m.agendaItems||[]).map((a,i)=>`
-    <tr>
-      <td>${i+1}</td><td><strong>${a.title}</strong></td>
-      <td><span class="tag">${a.type==='approve'?'พิจารณาอนุมัติ':a.type==='inform'?'รับทราบ':a.type}</span></td>
-      <td>${statusBadge(a.status)}</td>
-      <td>${(a.attachments&&a.attachments.length)?`<span class="tag">&#128196; ${a.attachments.length}</span>`:'-'}</td>
-      <td>
-        <button class="btn btn-sm btn-primary" onclick="manageAgendaAttachments('${id}','${a.id}')">&#128206;</button>
-        <button class="btn btn-sm btn-orange" onclick="editAgendaItem('${id}','${a.id}')">&#9998;</button>
-        <button class="btn btn-sm btn-red" onclick="deleteAgendaItem('${id}','${a.id}')">&#128465;</button>
-      </td>
-    </tr>`).join('');
+  const agendaGrouped = AGENDA_CATS.map((cat,ci)=>{
+    const items=(m.agendaItems||[]).filter(a=>agendaItemCat(a)===cat.key);
+    const rows=items.map((a,ii)=>`
+      <tr>
+        <td style="white-space:nowrap;font-weight:600;color:var(--navy);width:44px">${ci+1}.${ii+1}</td>
+        <td><strong>${a.title}</strong>${a.note?`<br><span class="text-muted">${a.note}</span>`:''}</td>
+        <td>${statusBadge(a.status)}</td>
+        <td>${(a.attachments&&a.attachments.length)?`<span class="tag">&#128196; ${a.attachments.length}</span>`:'-'}</td>
+        <td style="white-space:nowrap">
+          <button class="btn btn-sm btn-primary" onclick="manageAgendaAttachments('${id}','${a.id}')">&#128206;</button>
+          <button class="btn btn-sm btn-orange" onclick="editAgendaItem('${id}','${a.id}')">&#9998;</button>
+          <button class="btn btn-sm btn-red" onclick="deleteAgendaItem('${id}','${a.id}')">&#128465;</button>
+        </td>
+      </tr>`).join('');
+    return `<div style="margin-bottom:10px;border:1px solid var(--border);border-radius:6px;overflow:hidden">
+      <div style="display:flex;justify-content:space-between;align-items:center;background:var(--navy);color:#fff;padding:7px 12px">
+        <strong style="font-size:13px">วาระที่ ${ci+1}&nbsp;&nbsp;${cat.label}</strong>
+        <button class="btn btn-sm btn-light" onclick="addAgendaItem('${id}','${cat.key}')">+ วาระย่อย</button>
+      </div>
+      ${items.length?`<table class="tbl" style="margin:0"><tbody>${rows}</tbody></table>`:`<div class="text-muted" style="padding:7px 12px;font-size:12px">— ไม่มีวาระย่อย —</div>`}
+    </div>`;
+  }).join('');
 
   const agendaDocs = (m.agendaAttachments&&m.agendaAttachments.length) ?
     m.agendaAttachments.map(att=>`<div class="meeting-doc-card"><span class="doc-icon">${fileIcon(att.name)}</span><div class="doc-info"><div class="doc-name">${attAnchor(att)}</div><div class="doc-size">${formatSize(att.size)}</div></div></div>`).join('') :
@@ -979,12 +1008,8 @@ function viewMeeting(id) {
       </div>
     </div>
 
-    <h4 style="color:var(--navy);margin:14px 0 8px">วาระการประชุม</h4>
-    <table class="tbl">
-      <thead><tr><th>#</th><th>วาระ</th><th>ประเภท</th><th>สถานะ</th><th>ไฟล์แนบ</th><th>จัดการ</th></tr></thead>
-      <tbody>${agendaRows||'<tr><td colspan="6" class="empty-state">ยังไม่มีวาระ</td></tr>'}</tbody>
-    </table>
-    <button class="btn btn-primary mt-8" onclick="addAgendaItem('${id}')">+ เพิ่มวาระ</button>`,
+    <h4 style="color:var(--navy);margin:14px 0 8px">วาระการประชุม <span class="text-muted" style="font-weight:400">(${(m.agendaItems||[]).length} วาระย่อย · แบ่ง 6 หมวด)</span></h4>
+    ${agendaGrouped}`,
     `<button class="btn btn-outline" onclick="closeModal()">ปิด</button>`);
 }
 
@@ -1094,20 +1119,19 @@ function deleteMeeting(id) {
   saveData(); renderMeetings();
 }
 
-function addAgendaItem(meetingId) { editAgendaItemForm(meetingId, null); }
+function addAgendaItem(meetingId, cat) { editAgendaItemForm(meetingId, null, cat); }
 function editAgendaItem(meetingId, agendaId) { editAgendaItemForm(meetingId, agendaId); }
 
-function editAgendaItemForm(meetingId, agendaId) {
+function editAgendaItemForm(meetingId, agendaId, presetCat) {
   const m=DB.meetings.find(x=>x.id===meetingId); if (!m) return;
   const a = agendaId ? (m.agendaItems||[]).find(x=>x.id===agendaId) : null;
-  const isNew=!a; const f=a||{ id:genId('a'), title:'', type:'approve', status:'pending', note:'' };
+  const isNew=!a; const f=a||{ id:genId('a'), title:'', category:presetCat||'consider', status:'pending', note:'' };
+  const curCat = f.category || agendaItemCat(f);
   openModal(isNew?'เพิ่มวาระ':'แก้ไขวาระ',
     `<div class="form-group"><label>ชื่อวาระ</label><input class="form-control" id="fa-title" value="${f.title}" placeholder="ระบุชื่อวาระ..."></div>
      <div class="form-row">
-       <div class="form-group"><label>ประเภท</label><select class="form-control" id="fa-type">
-         <option value="approve" ${f.type==='approve'?'selected':''}>พิจารณาอนุมัติ</option>
-         <option value="inform" ${f.type==='inform'?'selected':''}>รับทราบ</option>
-         <option value="other" ${f.type==='other'?'selected':''}>อื่นๆ</option>
+       <div class="form-group"><label>หมวดวาระ</label><select class="form-control" id="fa-cat">
+         ${AGENDA_CATS.map((c,ci)=>`<option value="${c.key}" ${curCat===c.key?'selected':''}>วาระที่ ${ci+1} — ${c.label}</option>`).join('')}
        </select></div>
        <div class="form-group"><label>สถานะ</label><select class="form-control" id="fa-status">
          <option value="pending" ${f.status==='pending'?'selected':''}>รอดำเนินการ</option>
@@ -1124,11 +1148,12 @@ function editAgendaItemForm(meetingId, agendaId) {
 function saveAgendaItem(meetingId, agendaId, isNew) {
   const m=DB.meetings.find(x=>x.id===meetingId); if (!m) return;
   if (!m.agendaItems) m.agendaItems=[];
-  const title=document.getElementById('fa-title').value.trim(), type=document.getElementById('fa-type').value;
+  const title=document.getElementById('fa-title').value.trim();
+  const category=document.getElementById('fa-cat').value, type=AGENDA_CAT_TYPE[category]||'other';
   const status=document.getElementById('fa-status').value, note=document.getElementById('fa-note').value;
   if (!title) return alert('กรุณาระบุชื่อวาระ');
-  if (isNew) { m.agendaItems.push({ id:agendaId, title, type, status, note, attachments:[] }); }
-  else { const a=m.agendaItems.find(x=>x.id===agendaId); if (a) Object.assign(a,{ title, type, status, note }); }
+  if (isNew) { m.agendaItems.push({ id:agendaId, title, category, type, status, note, attachments:[] }); }
+  else { const a=m.agendaItems.find(x=>x.id===agendaId); if (a) Object.assign(a,{ title, category, type, status, note }); }
   saveData(); closeModal(); viewMeeting(meetingId);
 }
 

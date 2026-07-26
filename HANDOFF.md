@@ -41,8 +41,11 @@ directors[]: {
   termStatus(active|resigned), exitDate, rotation{ <ปีพ.ศ.>: reelect|retire|in|exit }
 }
 meetings[]: { id, year, no, date, type, status, agendaAttachments[], momAttachments[],
-              agendaItems[{id,title,type,status,note,attachments[]}], actionItems[], note }
+              agendaItems[{id,title,category,type,status,note,attachments[]}], actionItems[], note }
   attachments: { name, link }              // link = Drive share link
+  // agendaItems.category = 6 หมวดตามระเบียบวาระ NRC (AGENDA_CATS):
+  //   chair(วาระ1) · minutes(วาระ2) · followup(วาระ3) · consider(วาระ4) · inform(วาระ5) · other(วาระ6)
+  //   viewMeeting จัดกลุ่ม 6 หมวด + เลข N.M อัตโนมัติ · type derive จาก category (AGENDA_CAT_TYPE)
 actionItems[], succession[], directorChangelog[], remuneration[], selfAssessments[],
 documents[]: { id, title, docType, version, effectiveDate, approvedBy, file{name,link}, note }
 agmItems[], independenceChecks[], conflictLog[]

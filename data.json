@@ -1970,48 +1970,143 @@
       "momAttachments": [],
       "agendaItems": [
         {
-          "id": "a17",
-          "title": "รับรองรายงานการประชุม NRC ครั้งที่ 4/2569",
+          "id": "m5c1",
+          "title": "พิจารณาเห็นชอบการทบทวน/แก้ไขกฎบัตรคณะกรรมการบริษัท",
+          "category": "consider",
           "type": "approve",
           "status": "pending",
           "note": "",
           "attachments": []
         },
         {
-          "id": "a18",
-          "title": "5.1 แจ้งเพื่อทราบการใช้งบประมาณขึ้นเงินเดือนประจำปี 2569",
+          "id": "m5c2",
+          "title": "พิจารณาเห็นชอบการทบทวน/แก้ไขกฎบัตรเลขานุการบริษัท",
+          "category": "consider",
           "type": "approve",
           "status": "pending",
           "note": "",
           "attachments": []
         },
         {
-          "id": "a19",
-          "title": "รายงานผลการประเมิน CEO รอบ 6 เดือน",
+          "id": "m5c3",
+          "title": "พิจารณาเห็นชอบการเชิญผู้ถือหุ้นเสนอระเบียบวาระสำหรับการประชุมสามัญผู้ถือหุ้นประจำปี 2570 และเสนอชื่อบุคคลเพื่อเข้ารับการพิจารณาเลือกตั้งเป็นกรรมการบริษัทฯ เป็นการล่วงหน้า",
+          "category": "consider",
+          "type": "approve",
+          "status": "pending",
+          "note": "",
+          "attachments": []
+        },
+        {
+          "id": "m5c4",
+          "title": "พิจารณาเห็นชอบทบทวน/แก้ไข บทบาท อำนาจหน้าที่ และความรับผิดชอบของ ประธานเจ้าหน้าที่บริหาร (Chief Executive Officer: CEO)",
+          "category": "consider",
+          "type": "approve",
+          "status": "pending",
+          "note": "",
+          "attachments": []
+        },
+        {
+          "id": "m5c5",
+          "title": "พิจารณาเห็นชอบปรับปรุงโครงสร้างองค์กรบริษัท พรีไซซ คอร์ปอเรชั่น จำกัด (มหาชน) (PCC)",
+          "category": "consider",
+          "type": "approve",
+          "status": "pending",
+          "note": "",
+          "attachments": []
+        },
+        {
+          "id": "m5c6",
+          "title": "พิจารณาเห็นชอบการสรรหา และว่าจ้าง ตำแหน่งประธานเจ้าหน้าที่บริหาร (CEO) และ Group COO",
+          "category": "consider",
+          "type": "approve",
+          "status": "pending",
+          "note": "",
+          "attachments": []
+        },
+        {
+          "id": "m5c7",
+          "title": "พิจารณาเห็นชอบการสรรหา และว่าจ้าง ตำแหน่ง เลขานุการบริษัท (Corporate Secretary)",
+          "category": "consider",
+          "type": "approve",
+          "status": "pending",
+          "note": "",
+          "attachments": []
+        },
+        {
+          "id": "m5c8",
+          "title": "พิจารณาเห็นชอบ ทบทวนความหลากหลายทางทักษะของคณะกรรมการ (Board Skill Matrix) ให้เหมาะสมกับ Strategy ของบริษัท",
+          "category": "consider",
+          "type": "approve",
+          "status": "pending",
+          "note": "",
+          "attachments": []
+        },
+        {
+          "id": "m5c9",
+          "title": "พิจารณาเห็นชอบงบประมาณ “โครงการพัฒนา Digital Organization and Agentic Transformation และจัดตั้งพร้อมพัฒนาทีม Center of Excellence (CoE)” และ “PPA/Long Term Contract RST and Platform Development”",
+          "category": "consider",
+          "type": "approve",
+          "status": "pending",
+          "note": "",
+          "attachments": []
+        },
+        {
+          "id": "m5c10",
+          "title": "พิจารณาเห็นชอบ การปรับปรุงแบบประเมินผลงานของผู้บริหารสูงสุด (CEO) ประจำปี 2569",
+          "category": "consider",
+          "type": "approve",
+          "status": "pending",
+          "note": "",
+          "attachments": []
+        },
+        {
+          "id": "m5c11",
+          "title": "พิจารณาเห็นชอบโอนย้ายและแต่งตั้งพนักงานระดับ 10 - 13",
+          "category": "consider",
+          "type": "approve",
+          "status": "pending",
+          "note": "",
+          "attachments": []
+        },
+        {
+          "id": "m5i1",
+          "title": "แจ้งเพื่อทราบการขึ้นเงินเดือนประจำปี 2569",
+          "category": "inform",
           "type": "inform",
           "status": "pending",
           "note": "",
           "attachments": []
         },
         {
-          "id": "a20",
-          "title": "ทบทวนรายชื่อกรรมการบริษัทย่อยและ Sub-Committee",
-          "type": "approve",
+          "id": "m5i2",
+          "title": "แจ้งเพื่อทราบตารางการรับผิดชอบ (Succession Plan RACI Matrix) และแผนการสรรหา และ Succession Plan พร้อมการพัฒนาผู้บริหาร ที่รับผิดชอบโดย คณะกรรมการสรรหาและพิจารณาค่าตอบแทน (NRC)",
+          "category": "inform",
+          "type": "inform",
           "status": "pending",
           "note": "",
           "attachments": []
         },
         {
-          "id": "amq5hjkxcso5c2",
-          "title": "4.1 พิจารณาเห็นชอบปรับปรุงโครงสร้างองค์กร PCC",
-          "type": "approve",
+          "id": "m5i3",
+          "title": "แจ้งเพื่อทราบตารางการรับผิดชอบ (Succession Plan RACI Matrix) และแผนการสรรหา และ Succession Plan พร้อมการพัฒนาผู้บริหาร ที่รับผิดชอบโดย ประธานเจ้าหน้าที่บริหาร (CEO) และ Group COO",
+          "category": "inform",
+          "type": "inform",
+          "status": "pending",
+          "note": "",
+          "attachments": []
+        },
+        {
+          "id": "m5o1",
+          "title": "แจ้งการประชุม คณะกรรมการสรรหาและพิจารณาค่าตอบแทน ครั้งที่ 6/2569 วันที่ 16 ตุลาคม 2569",
+          "category": "other",
+          "type": "other",
           "status": "pending",
           "note": "",
           "attachments": []
         }
       ],
       "actionItems": [],
-      "note": ""
+      "note": "เวลา 14:00 น. · สถานที่ ห้องประชุมชั้น 2 อาคารพรีไซซวงศ์สว่าง"
     },
     {
       "id": "m6",
