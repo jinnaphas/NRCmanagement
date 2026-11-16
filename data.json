@@ -519,7 +519,9 @@
       "training": [],
       "photo": "https://en.precise.co.th/storage/2026/05/admin-photo-temp.png",
       "boardRole": "member",
-      "iodCerts": {},
+      "iodCerts": {
+        "DAP": "249/2026"
+      },
       "firstAppoint": "2569-04-29",
       "convAppoint": "2569-04-29",
       "nineYearDate": "",
@@ -6259,6 +6261,62 @@
       "batch": "",
       "result": "",
       "note": "กำลังศึกษา"
+    },
+    {
+      "directorName": "นางสาวอุมาพร สุเมธกิจการ",
+      "course": "The Board's Role in Mergers and Acquisitions (BMA)",
+      "institute": "สมาคมส่งเสริมสถาบันกรรมการบริษัทไทย",
+      "courseType": "iod",
+      "dateText": "14/09/2569 - 14/09/2569",
+      "year": 2569,
+      "hours": 6,
+      "batch": "18/2026",
+      "result": "",
+      "note": "",
+      "id": "trh20in2zgb",
+      "directorId": "dmpvhla39ootro"
+    },
+    {
+      "directorName": "นางสาวอุมาพร สุเมธกิจการ",
+      "course": "Director Accreditation Program (DAP)",
+      "institute": "สมาคมส่งเสริมสถาบันกรรมการบริษัทไทย",
+      "courseType": "iod",
+      "dateText": "19/10/2569 - 20/10/2569",
+      "year": 2569,
+      "hours": 12,
+      "batch": "DAP 249/2026",
+      "result": "",
+      "note": "",
+      "id": "trsiu13d10z",
+      "directorId": "dmpvhla39ootro"
+    },
+    {
+      "directorName": "รศ.ดร.ภก.ลือรัตน์ อนุรัตน์พานิช",
+      "course": "ESG in the Boardroom: A Practical Guide for Board (ESG)",
+      "institute": "สมาคมส่งเสริมสถาบันกรรมการบริษัทไทย",
+      "courseType": "iod",
+      "dateText": "28/10/2569 - 28/10/2569",
+      "year": 2569,
+      "hours": 6,
+      "batch": "19/2026",
+      "result": "",
+      "note": "",
+      "id": "trhchi80gij",
+      "directorId": "d8"
+    },
+    {
+      "directorName": "นายณรงค์ จันทร์สร้อย",
+      "course": "ESG in the Boardroom: A Practical Guide for Board (ESG)",
+      "institute": "สมาคมส่งเสริมสถาบันกรรมการบริษัทไทย",
+      "courseType": "iod",
+      "dateText": "28/10/2569 - 28/10/2569",
+      "year": 2569,
+      "hours": 6,
+      "batch": "19/2026",
+      "result": "",
+      "note": "",
+      "id": "trz7ra9wj0c",
+      "directorId": "d9"
     }
   ],
   "selfAssessments": [],
